@@ -1,0 +1,70 @@
+####################
+# Work in progress #
+####################
+
+######################
+# Symlinks for tests #
+######################
+igor/*.py
+igor/util
+
+##############
+# Temp files #
+##############
+*~
+*sw[po]
+cache.sqlite
+.cache
+
+################
+# Secret files #
+################
+config_secret.py
+
+################
+# Python files #
+################
+*.py[cod]
+__pycache__
+*.egg-info
+
+###################
+# Generated files #
+###################
+env
+.build
+.tox
+frontend/dist
+frontend/node_modules
+/docs/html/
+/docs/ref
+
+
+##############
+# Data files #
+##############
+data/
+*.db
+*.sqlite3
+*.ipynb
+.ipynb_checkpoints
+*.log
+*.zip
+*.tar
+*.gz
+*.bz2
+*.rar
+
+########################
+# Reserved local files #
+########################
+tmp
+
+###########################
+# 3rd party configuration #
+###########################
+*.kdev4
+.ropeproject
+.idea
+.directory
+.coverage
