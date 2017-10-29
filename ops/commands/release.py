@@ -3,6 +3,9 @@
 Helper commands for releasing to pypi.
 """
 from __future__ import absolute_import, unicode_literals
+
+from os.path import expanduser
+
 from fabric.api import local
 
 from .common import conf
@@ -102,3 +105,18 @@ def release(component='patch', target='local'):
     """
     make_release(component)
     upload(target)
+
+
+def gen_pypirc(username, password, path='~/.pypirc'):
+    path = expanduser(path)
+
+    with open(path, 'w') as fp:
+        fp.write('\n'.join((
+            '[distutils]',
+            'index-servers = pypi',
+            '',
+            '[pypi]',
+            'username = {}'.format(username),
+            'password = {}'.format(password),
+            '',
+        )))

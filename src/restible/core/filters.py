@@ -31,6 +31,8 @@ def from_string(value):
 
     If the string is an integer it will return an int, if it's a float, then it
     will return float otherwise it will just return a string.
+
+    TODO: Add date and datetime support
     """
     try:
         if value.isdigit():
