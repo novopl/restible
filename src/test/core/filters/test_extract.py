@@ -19,34 +19,7 @@ from restible.core.filters import extract
         'filter3': 3.14159
     })
 ))
-def test_extracts_values_correctly(data, rf):
-    request = rf.get('/', data)
-
-    filters = extract(request)
+def test_extracts_values_correctly(data):
+    filters = extract({str(n): str(v) for n, v in data.items()})
 
     assert filters == data
-
-
-@pytest.mark.parametrize('params,expected', (
-    ('filter=value', {'filter': 'value'}),
-    ('filter=123', {'filter': 123}),
-    ('filter=3.14159', {'filter': 3.14159}),
-    ('filter1=value&filter2=123&filter3=3.14159', {
-        'filter1': 'value',
-        'filter2': 123,
-        'filter3': 3.14159
-    })
-))
-def test_extracts_values_correctly_when_passing_pure_url(params, expected, rf):
-    request = rf.get('/?' + params)
-
-    filters = extract(request)
-
-    assert filters == expected
-
-
-def test_duplicate_filters_raise_ValueError(rf):
-    request = rf.get('/?value=first&value=second')
-
-    with pytest.raises(ValueError):
-        extract(request)

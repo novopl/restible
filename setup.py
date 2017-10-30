@@ -17,7 +17,11 @@ setup(
     description="Python library to help building RESTfull APIs",
     long_description=read('README.rst'),
     package_dir={'restible': 'src/restible'},
-    packages=['restible'],
+    packages=[
+        'restible',
+        'restible.core',
+        'restible.django',
+    ],
     install_requires=[
         l.strip() for l in read('ops/requirements.txt').split() if '==' in l
     ],
