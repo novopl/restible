@@ -6,7 +6,7 @@ from __future__ import absolute_import, unicode_literals
 
 # stdlib imports
 import sys
-from os.path import expanduser
+from os.path import join
 
 # 3rd party imports
 from fabric.api import local
@@ -111,9 +111,9 @@ def release(component='patch', target='local'):
     upload(target)
 
 
-def gen_pypirc(username=None, password=None, path='~/.pypirc'):
+def gen_pypirc(username=None, password=None):
     """ Generate .pypirc config with the given credentials. """
-    path = expanduser(path)
+    path = join(conf.getenv('HOME'), '.pypirc')
     username = username or conf.getenv('PYPI_USER', None)
     password = password or conf.getenv('PYPI_PASS', None)
 
@@ -130,7 +130,8 @@ def gen_pypirc(username=None, password=None, path='~/.pypirc'):
             '    pypi',
             '',
             '[pypi]',
-            'username={}'.format(username),
-            'password={}'.format(password),
+            'repository: https://upload.pypi.org/legacy/'
+            'username: {}'.format(username),
+            'password: {}'.format(password),
             '',
         )))
