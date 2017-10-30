@@ -47,6 +47,15 @@ class RestEndpoint(object):
 
         self.resource = res_cls()
 
+    def get_ok_status(self, verb):
+        """ Get a valid ok status code for a given rest verb. """
+        if verb == 'create':
+            return 201
+        elif verb == 'delete':
+            return 204
+        else:
+            return 200
+
     def dispatch(self, request, **keys):
         """ Dispatch the request to the appropriate resource method.
 
@@ -82,7 +91,7 @@ class RestEndpoint(object):
             if self.is_http_response(result):
                 return result
             else:
-                return self.json_response(200, result)
+                return self.json_response(self.get_ok_status(rest_verb), result)
 
         except ValueError as ex:
             L.exception('Invalid REST invocation')
