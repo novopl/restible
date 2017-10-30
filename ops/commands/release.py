@@ -111,6 +111,8 @@ def gen_pypirc(username, password, path='~/.pypirc'):
     """ Generate .pypirc config with the given credentials. """
     path = expanduser(path)
 
+    log.info("Generating .pypirc config ^94{}".format(path))
+
     with open(path, 'w') as fp:
         fp.write('\n'.join((
             '[distutils]',
