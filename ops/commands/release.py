@@ -126,7 +126,7 @@ def gen_pypirc(username=None, password=None, path='~/.pypirc'):
     with open(path, 'w') as fp:
         fp.write('\n'.join((
             '[distutils]',
-            'index-servers = '
+            'index-servers = ',
             '    pypi',
             '',
             '[pypi]',
