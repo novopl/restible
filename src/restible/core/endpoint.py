@@ -204,6 +204,6 @@ class RestEndpoint(object):
                 ))
 
         if verb in ('query',):
-            handler_args['filters'] = filters.extract(request)
+            handler_args['filters'] = filters.extract(request.GET)
 
         return handler_args

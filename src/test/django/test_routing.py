@@ -2,6 +2,9 @@
 # pylint: disable=missing-docstring
 from __future__ import absolute_import, unicode_literals
 
+# stdlib imports
+import sys
+
 # 3rd party imports
 import pytest
 from mock import Mock, patch
@@ -30,6 +33,7 @@ urlpatterns = make_urls(DjangoEndpoint, [
 ])
 
 
+@pytest.mark.django
 @pytest.mark.urls(__name__)
 @pytest.mark.parametrize('method,url,args,verb', (
     ('GET', '/fake1/', {}, 'query'),
@@ -53,6 +57,7 @@ def test_all_urls_are_resolved_to_proper_verbs(method, url, args, verb, client):
             _handler1.assert_called_once()
 
 
+@pytest.mark.django
 @pytest.mark.urls(__name__)
 @patch.object(FakeResource1, 'get', Mock(return_value={}))
 @patch.object(FakeResource1, 'query', Mock(return_value={}))
@@ -70,6 +75,8 @@ def test_combines_urls_from_multiple_endpoints(url, client):
     assert r.status_code < 300
 
 
+@pytest.mark.skipif(sys.version_info < (3, 0),
+                    reason="Hacky solution doesn't work in python2")
 def test_can_pass_resource_directly():
     urlpatterns = make_urls(DjangoEndpoint, [
         FakeResource1,

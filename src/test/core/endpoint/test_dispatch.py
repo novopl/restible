@@ -13,6 +13,15 @@ from mock import Mock, patch
 from restible import RestEndpoint, RestResource
 
 
+class FakeRequest(object):
+    def __init__(self, **kwargs):
+        self.body = kwargs.pop('body', '').encode('utf-8')
+        self.GET = kwargs.pop('query', {})
+
+        for name, value in kwargs.items():
+            setattr(self, name, value)
+
+
 class FakeResponse(object):
     name = 'fake'
 
@@ -57,9 +66,9 @@ class ReadOnlyResource(RestResource):
         }
 
 
-def test_returns_200_if_everything_is_ok(rf):
+def test_returns_200_if_everything_is_ok():
     endpoint = FakeEndpoint(ReadOnlyResource)
-    request = rf.get('/test')
+    request = FakeRequest(method='GET')
 
     response = endpoint.dispatch(request)
 
@@ -71,23 +80,23 @@ def test_returns_200_if_everything_is_ok(rf):
     ('PUT', None),
     ('DELETE', None),
 ))
-def test_return_405_if_no_rest_verb_is_matched(http_method, pk, rf):
+def test_return_405_if_no_rest_verb_is_matched(http_method, pk):
     # This test should not break on JSON decode error (empty body)
     # because .dispatch() should fail earlier.
     endpoint = FakeEndpoint(ReadOnlyResource)
-    request = rf.generic(http_method, '/test')
+    request = FakeRequest(method=http_method)
 
     response = endpoint.dispatch(request, read_only_pk=pk)
 
     assert response.status_code == 405
 
 
-def test_return_405_if_handler_method_is_not_implemented(rf):
+def test_return_405_if_handler_method_is_not_implemented():
     endpoint = FakeEndpoint(ReadOnlyResource)
-    request = rf.generic(
-        'POST', '/test',
+    request = FakeRequest(
+        method='POST',
         content_type='application/json',
-        data={},
+        body='{}'
     )
 
     response = endpoint.dispatch(request)
@@ -95,18 +104,18 @@ def test_return_405_if_handler_method_is_not_implemented(rf):
     assert response.status_code == 405
 
 
-def test_return_405_if_handler_method_is_not_callable(rf):
+def test_return_405_if_handler_method_is_not_callable():
     endpoint = FakeEndpoint(ReadOnlyResource)
-    request = rf.generic('OPTIONS', '/test')
+    request = FakeRequest(method='OPTIONS')
 
     response = endpoint.dispatch(request, read_only_pk=123)
 
     assert response.status_code == 405
 
 
-def test_returns_FakeResponse_when_handler_returns_dict(rf):
+def test_returns_FakeResponse_when_handler_returns_dict():
     endpoint = FakeEndpoint(ReadOnlyResource)
-    request = rf.get('/test')
+    request = FakeRequest(method='GET')
 
     response = endpoint.dispatch(request, read_only_pk=123)
 
@@ -116,9 +125,9 @@ def test_returns_FakeResponse_when_handler_returns_dict(rf):
 @patch.object(ReadOnlyResource, 'get', Mock(
     return_value=FakeResponse(status=418, data={'detail': 'useless'})
 ))
-def test_returns_the_handler_response_directly_if_its_FakeResponse(rf):
+def test_returns_the_handler_response_directly_if_its_FakeResponse():
     endpoint = FakeEndpoint(ReadOnlyResource)
-    request = rf.get('/test')
+    request = FakeRequest(method='GET')
 
     response = endpoint.dispatch(request, read_only_pk=123)
 
@@ -129,29 +138,19 @@ def test_returns_the_handler_response_directly_if_its_FakeResponse(rf):
     }
 
 
-def test_returns_400_if_it_cant_extract_filters(rf):
-    endpoint = FakeEndpoint(ReadOnlyResource)
-    # duplicate filters are not allowed
-    request = rf.get('/test?value=first&value=second')
-
-    response = endpoint.dispatch(request)
-
-    assert response.status_code == 400
-
-
 @patch.object(ReadOnlyResource, 'head', Mock(
     side_effect=RuntimeError('Test handling exceptions in resource handlers')
 ))
-def test_returns_500_if_unhandled_exception_occurs_in_the_handler(rf):
+def test_returns_500_if_unhandled_exception_occurs_in_the_handler():
     endpoint = FakeEndpoint(ReadOnlyResource)
-    request = rf.head('/test')
+    request = FakeRequest(method='HEAD')
 
     response = endpoint.dispatch(request)
 
     assert response.status_code == 500
 
 
-def test_handler_is_called_with_request_as_first_argument(rf):
+def test_handler_is_called_with_request_as_first_argument():
     endpoint = FakeEndpoint(ReadOnlyResource)
 
     rest_verb = 'create'
@@ -161,7 +160,10 @@ def test_handler_is_called_with_request_as_first_argument(rf):
     with patch.object(ReadOnlyResource, rest_verb) as _create:
         _create.return_value = {}
 
-        request = rf.generic(http_method, '/test', data={})
+        request = FakeRequest(
+            method=http_method,
+            body='{}'
+        )
         endpoint.dispatch(request, read_only_pk=pk)
 
         _create.assert_called_once()
@@ -175,13 +177,16 @@ def test_handler_is_called_with_request_as_first_argument(rf):
     ('update', 'PUT', 1234),
     ('delete', 'DELETE', 1234),
 ))
-def test_attaches_keys_to_the_request(rest_verb, http_method, pk, rf):
+def test_attaches_keys_to_the_request(rest_verb, http_method, pk):
     endpoint = FakeEndpoint(ReadOnlyResource)
 
     with patch.object(ReadOnlyResource, rest_verb) as _create:
         _create.return_value = {}
 
-        request = rf.generic(http_method, '/test', data={})
+        request = FakeRequest(
+            method=http_method,
+            body='{}'
+        )
         endpoint.dispatch(request, read_only_pk=pk)
 
         _create.assert_called_once()

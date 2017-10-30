@@ -8,20 +8,15 @@ quite simple - we just extract the filters from GET query params.
 from __future__ import absolute_import, unicode_literals
 
 
-def extract(request):
+def extract(get_params):
     """ Extract filters from request GET params.
 
     :param HttpRequest request:
     :return dict:
     """
     filters = {}
-    for name, values in request.GET.lists():
-        if len(values) > 1:
-            raise ValueError("Duplicate filters are not supported ({})".format(
-                values
-            ))
-
-        filters[name] = from_string(values[0])
+    for name, value in get_params.items():
+        filters[name] = from_string(value)
 
     return filters
 

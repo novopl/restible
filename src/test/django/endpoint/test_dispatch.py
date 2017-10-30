@@ -3,7 +3,7 @@
 from __future__ import absolute_import, unicode_literals
 
 # 3rd party imports
-from django.http import JsonResponse
+import pytest
 
 # Project imports
 from restible import RestResource
@@ -18,6 +18,9 @@ class ReadOnlyResource(RestResource):
         self.options = True
 
     def query(self, request, filters):
+        # Import here so the tests can run without django installed
+        from django.http import JsonResponse
+
         return JsonResponse(status=200, safe=False, data=[
             {'id': 123, 'name': 'test_resource'},
             {'id': 321, 'name': 'resource_test'},
@@ -30,6 +33,7 @@ class ReadOnlyResource(RestResource):
         }
 
 
+@pytest.mark.django
 def test_aliased_as_endpoint_call_operator(rf):
     endpoint = DjangoEndpoint(ReadOnlyResource)
     request = rf.get('/test')
