@@ -20,7 +20,14 @@ conf.init({
         'default': {'paths': [
             'src/test',
             'ops/commands',
-        ]}
+        ]},
+        'no_django': {
+            'mark': 'not django',
+            'paths': [
+                'src/test',
+                'ops/commands',
+            ]
+        }
     }
 })
 

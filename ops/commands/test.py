@@ -39,6 +39,7 @@ def test(**opts):
     verbose = int(opts.get('verbose', '0'))
     show_locals = conf.is_true(opts.get('locals', 'on'))
     coverage = conf.is_true(opts.get('coverage', 'on'))
+    plugins = opts.get('plugins', '').split(',')
 
     if coverage:
         args += [
@@ -52,10 +53,11 @@ def test(**opts):
     if junit:
         args += ['--junitxml={}/test-results.xml'.format('.build')]
 
-    if DJANGO_TEST_SETTINGS is not None:
-        args += ['--ds {}'.format(DJANGO_TEST_SETTINGS)]
-    elif DJANGO_SETTINGS is not None:
-        args += ['--ds {}'.format(DJANGO_SETTINGS)]
+    if '-django' not in plugins:
+        if DJANGO_TEST_SETTINGS is not None:
+            args += ['--ds {}'.format(DJANGO_TEST_SETTINGS)]
+        elif DJANGO_SETTINGS is not None:
+            args += ['--ds {}'.format(DJANGO_SETTINGS)]
 
     if not sugar:
         args += ['-p no:sugar']
@@ -67,6 +69,16 @@ def test(**opts):
 
     if show_locals:
         args += ['-l']
+
+    if plugins:
+        for plug_name in plugins:
+            if not plug_name.strip():
+                continue
+
+            if plug_name.startswith('-'):
+                args += ['-p no:{}'.format(plug_name[1:])]
+            else:
+                args += ['-p {}'.format(plug_name)]
 
     test_config = {'paths': SRC_PATH}
     if test_type is not None:

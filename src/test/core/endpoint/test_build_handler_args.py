@@ -9,8 +9,17 @@ import pytest
 from restible import RestEndpoint
 
 
-def test_works_for_query(rf):
-    request = rf.get('/test')
+class FakeRequest(object):
+    def __init__(self, **kwargs):
+        self.body = kwargs.pop('body', '').encode('utf-8')
+        self.GET = kwargs.pop('query', {})
+
+        for name, value in kwargs.items():
+            setattr(self, name, value)
+
+
+def test_works_for_query():
+    request = FakeRequest()
 
     args = RestEndpoint.build_handler_args('query', request)
 
@@ -18,11 +27,11 @@ def test_works_for_query(rf):
     assert 'filters' in args
 
 
-def test_extracts_filters_from_get_params_for_query(rf):
-    request = rf.get('/test', data={
+def test_extracts_filters_from_get_params_for_query():
+    request = FakeRequest(query={
         'filter1': 'value1',
-        'filter2': 123,
-        'filter3': 3.14159
+        'filter2': '123',
+        'filter3': '3.14159'
     })
 
     args = RestEndpoint.build_handler_args('query', request)
@@ -40,16 +49,19 @@ def test_extracts_filters_from_get_params_for_query(rf):
     assert filters['filter3'] == 3.14159
 
 
-def test_works_for_get(rf):
-    request = rf.get('/test')
+def test_works_for_get():
+    request = FakeRequest()
 
     args = RestEndpoint.build_handler_args('get', request)
 
     assert args == {}
 
 
-def test_works_for_create(rf):
-    request = rf.post('/test', data={}, content_type='application/json')
+def test_works_for_create():
+    request = FakeRequest(
+        content_type='application/json',
+        body='{}'
+    )
 
     args = RestEndpoint.build_handler_args('create', request)
 
@@ -58,8 +70,11 @@ def test_works_for_create(rf):
     assert args['data'] == {}
 
 
-def test_works_for_update(rf):
-    request = rf.post('/test', data={}, content_type='application/json')
+def test_works_for_update():
+    request = FakeRequest(
+        content_type='application/json',
+        body='{}'
+    )
 
     args = RestEndpoint.build_handler_args('update', request)
 
@@ -67,9 +82,11 @@ def test_works_for_update(rf):
     assert args['data'] == {}
 
 
-def test_raises_ValueError_on_invalid_json(rf):
-    request = rf.post('/test', data='asasdfasdf',
-                      content_type='application/json')
+def test_raises_ValueError_on_invalid_json():
+    request = FakeRequest(
+        content_type='application/json',
+        body='fake_data'
+    )
 
     with pytest.raises(ValueError):
         RestEndpoint.build_handler_args('update', request)
