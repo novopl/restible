@@ -5,7 +5,7 @@ Per-project configuration support
 from __future__ import absolute_import, unicode_literals
 
 # stdlib imports
-from os import listdir
+from os import environ, listdir
 from os.path import abspath, dirname, join, normpath
 
 
@@ -16,6 +16,11 @@ g_proj_path = None
 def is_true(value):
     """ Convert various string values to boolean. """
     return value.lower() in ('yes', 'y', 'true', 'on')
+
+
+def getenv(name, default=None):
+    """ Get the value of an ENV variable. """
+    return environ.get(name, default)
 
 
 def proj_path(path):
