@@ -108,6 +108,7 @@ def release(component='patch', target='local'):
 
 
 def gen_pypirc(username, password, path='~/.pypirc'):
+    """ Generate .pypirc config with the given credentials. """
     path = expanduser(path)
 
     with open(path, 'w') as fp:

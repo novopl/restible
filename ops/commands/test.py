@@ -80,7 +80,6 @@ def test(**opts):
             else:
                 args += ['-p {}'.format(plug_name)]
 
-
     test_config = {'paths': SRC_PATH}
     if test_type is not None:
         test_config = TEST_TYPES.get(test_type)
