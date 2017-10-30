@@ -130,7 +130,7 @@ def gen_pypirc(username=None, password=None):
             '    pypi',
             '',
             '[pypi]',
-            'repository: https://upload.pypi.org/legacy/'
+            'repository: https://upload.pypi.org/legacy/',
             'username: {}'.format(username),
             'password: {}'.format(password),
             '',
