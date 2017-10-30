@@ -37,6 +37,5 @@ deployment:
   pypi:
     branch: master
     commands:
-      - fab gen_pypirc
-      - fab upload:pypi
+      - fab gen_pypirc && fab upload:pypi
       - rm ~/.pypirc
