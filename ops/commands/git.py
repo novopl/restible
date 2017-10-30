@@ -54,7 +54,8 @@ def addgithooks():
             'fab test',
         ]))
 
-    log.info("Making pre-push hook executable")
+    log.info("Making hooks executable")
+    os.chmod(conf.proj_path('.git/hooks/pre-commit'), 0o755)
     os.chmod(conf.proj_path('.git/hooks/pre-push'), 0o755)
 
 
