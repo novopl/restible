@@ -37,6 +37,6 @@ deployment:
   pypi:
     branch: master
     commands:
-      - fab gen_pypirc:"$PYPI_USER","$PYPI_PASS"
+      - fab gen_pypirc
       - fab upload:pypi
       - rm ~/.pypirc

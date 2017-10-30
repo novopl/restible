@@ -4,10 +4,14 @@ Helper commands for releasing to pypi.
 """
 from __future__ import absolute_import, unicode_literals
 
-from os.path import expanduser
+# stdlib imports
+import sys
+from os.path import join
 
+# 3rd party imports
 from fabric.api import local
 
+# local imports
 from .common import conf
 from .common import log
 from .common import project
@@ -107,17 +111,27 @@ def release(component='patch', target='local'):
     upload(target)
 
 
-def gen_pypirc(username, password, path='~/.pypirc'):
+def gen_pypirc(username=None, password=None):
     """ Generate .pypirc config with the given credentials. """
-    path = expanduser(path)
+    path = join(conf.getenv('HOME'), '.pypirc')
+    username = username or conf.getenv('PYPI_USER', None)
+    password = password or conf.getenv('PYPI_PASS', None)
+
+    if username is None or password is None:
+        log.err("You must provide $PYPI_USER and $PYPI_PASS")
+        sys.exit(1)
+
+    log.info("Generating .pypirc config ^94{}".format(path))
 
     with open(path, 'w') as fp:
         fp.write('\n'.join((
             '[distutils]',
-            'index-servers = pypi',
+            'index-servers = ',
+            '    pypi',
             '',
             '[pypi]',
-            'username = {}'.format(username),
-            'password = {}'.format(password),
+            'repository: https://upload.pypi.org/legacy/',
+            'username: {}'.format(username),
+            'password: {}'.format(password),
             '',
         )))
