@@ -39,13 +39,21 @@ class RestEndpoint(object):
     """
 
     def __init__(self, res_cls):
-        if not (
-            isinstance(res_cls, type) and
-            issubclass(res_cls, RestResource)
-        ):
+        if self.is_resource(res_cls):
             raise ValueError('res_cls must be a subclass of RestResource')
 
         self.resource = res_cls()
+
+    def is_resource(self, res_cls):
+        """ Check if the given object is a resource class.
+
+        :param type res_cls:
+            Object to test.
+        :return bool:
+            **True** if *res_cls* is a resource class.
+        """
+        return not (isinstance(res_cls, type) and
+                    issubclass(res_cls, RestResource))
 
     def get_ok_status(self, verb):
         """ Get a valid ok status code for a given rest verb. """
