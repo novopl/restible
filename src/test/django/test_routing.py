@@ -15,6 +15,11 @@ from restible.django import DjangoEndpoint
 from restible.core.routing import make_urls
 
 
+#####################
+#     Test data     #
+#####################
+
+
 class FakeResource1(RestResource):
     name = 'fake1'
 
@@ -31,6 +36,11 @@ urlpatterns = make_urls(DjangoEndpoint, [
     FakeResource1,
     CustomDjangoEndpoint(FakeResource2),
 ])
+
+
+#####################
+#       Tests       #
+#####################
 
 
 @pytest.mark.django
@@ -83,5 +93,5 @@ def test_can_pass_resource_directly():
     ])
 
     assert len(urlpatterns) == 2
-    assert urlpatterns[0].lookup_str.endswith('RestEndpoint.dispatch')
-    assert urlpatterns[1].lookup_str.endswith('RestEndpoint.dispatch')
+    assert 'DjangoEndpoint.dispatch' in urlpatterns[0].lookup_str
+    assert 'DjangoEndpoint.dispatch' in urlpatterns[1].lookup_str

@@ -14,7 +14,7 @@ code is left for the subclasses.
 from __future__ import absolute_import, unicode_literals
 
 # stdlib imports
-import json
+from collections import namedtuple
 from logging import getLogger
 
 # local imports
@@ -23,6 +23,7 @@ from . import filters
 
 
 L = getLogger(__name__)
+RestResult = namedtuple('RestResult', 'status,headers,data')
 
 
 class RestEndpoint(object):
@@ -30,11 +31,6 @@ class RestEndpoint(object):
 
     The endpoint responsibility is to provide a bridge between HTTP and
     `RestResource`.  The latter should never directly deal with HTTP.
-
-    The subclasses must implement the following methods:
-
-    - `is_http_response()`
-    - `json_response()`
 
     """
 
@@ -64,94 +60,76 @@ class RestEndpoint(object):
         else:
             return 200
 
-    def dispatch(self, request, **keys):
-        """ Dispatch the request to the appropriate resource method.
+    def process_result(self, result, rest_verb):
+        """ Unify the handler result into a stable format.
 
-        This should handle both standard REST verbs as well as custom
-        actions supported by the resource.
+        The unified format is ``(status, headers, data)``.
 
-        :param HttpRequest request:
-            The HTTP request.
-        :param Any pk:
-            The primary key for the object. This should be taken from the URL
-            and if present it means the detail view was called. Lack of ``pk``.
-            indicates that the request was made against the list URL.
-        :return RestResponse:
-            The ``RestResponse`` received from the resource implementation.
+        :param tuple|dict|list result:
+            The result as returned from the handler
+        :param rest_verb:
+            The rest verb for this request
+        :return tuple(int, dict, dict):
+            Tuple . The handlers can return data in
+            the shortened forms, either ``(status, data)`` or just ``data``.
+            This method will expand those results with default and return a
+            unified result tuple.
         """
-        request.rest_keys = keys
+        status = self.get_ok_status(rest_verb)
+        headers = {}
+        data = None
 
+        if isinstance(result, tuple):
+            if len(result) == 2:
+                status, data = result
+            elif len(result) == 3:
+                status, headers, data = result
+        else:
+            data = result
+
+        return RestResult(status, headers, data)
+
+    def call_rest_handler(self, method, request):
+        """
+
+        :param str method:
+            HTTP method. Must be uppercase
+        :param request:
+            HTTP request. It is assumed the request object hast the following
+            members: ``rest_keys``,
+        :return tuple(int, dict, dict):
+            Tuple ``(status, headers, data)``. The handlers can return data in
+            the shortened forms, either ``(status, data)`` or just ``data``.
+            This method will expand those results with default and return a
+            unified result tuple.
+        """
         my_pk = request.rest_keys.get(self.resource.name + '_pk')
 
-        rest_verb = self.determine_rest_verb(request.method, my_pk)
+        rest_verb = self.determine_rest_verb(method, my_pk)
         if rest_verb is None:
-            return self.json_response(405)
+            return RestResult(405, {}, None)
 
         handler = getattr(self.resource, rest_verb, None)
-
         if handler is None or not callable(handler):
-            return self.json_response(405)
+            return RestResult(405, {}, None)
 
         try:
             handler_args = self.build_handler_args(rest_verb, request)
             result = handler(request, **handler_args)
-
-            if self.is_http_response(result):
-                return result
-            else:
-                return self.json_response(self.get_ok_status(rest_verb), result)
+            return self.process_result(result, rest_verb)
 
         except ValueError as ex:
             L.exception('Invalid REST invocation')
             L.error(ex)
-            return self.json_response(400, {'detail': str(ex)})
+            return RestResult(400, {}, {'detail': str(ex)})
 
         except NotImplementedError as ex:
-            return self.json_response(405, {'detail': str(ex)})
+            return RestResult(405, {}, {'detail': str(ex)})
 
         except Exception as ex:
             L.exception('Unhandled resource exception')
             L.error(ex)
-            return self.json_response(500, {'detail': str(ex)})
-
-    def is_http_response(self, result):
-        """ Check if the given object is complete HTTP response.
-
-        **Has to be implemented by subclasses.**
-
-        If this method returns False, the *response* will be used to build the
-        actual response that is returned to the calling endpoint. Having this
-        in a separate method makes it possible to customise this behaviour in
-        the subclasses and thus possibly support more web frameworks in the
-        future.
-
-        :param Any result:
-            Resource handler result. This is what is returned by one of the
-            handling methods of a given `RestResource`.
-        :return:
-            **True** if the response can be directly returned to the calling
-            framework, **False** if it's just a data and the actual framework
-            specific response has to still be built.
-        """
-        raise NotImplementedError(
-            "RestEndpoint sublasses must implement .is_http_response()"
-        )
-
-    def json_response(self, status, data=None):
-        """ Return a framework specific HTTP response.
-
-        **Has to be implemented by subclasses.**
-
-        :param int status:
-            HTTP status code.
-        :param dict|list data:
-            Data that will be JSON serialized and sent as the response body.
-        :return:
-            Framework specific HTTP response object.
-        """
-        raise NotImplementedError(
-            "RestEndpoint sublasses must implement .json_response()"
-        )
+            return RestResult(500, {}, {'detail': str(ex)})
 
     @classmethod
     def determine_rest_verb(cls, http_method, pk):
@@ -184,6 +162,25 @@ class RestEndpoint(object):
             return None
 
     @classmethod
+    def extract_request_data(cls, request):
+        """ Extract request data as a python data structure
+
+        This method is here to provide an easy way to implement new framework
+        support. The way the request data is handled is framework dependant
+        so each endpoint implementation for the given framework must provide
+        and implementation of this function.
+
+        :param Request request:
+            Underlying framework dependant request.
+        :return:
+            A python data structure (dict,list,string, primitive type) that is
+            the request data extract from the underlying
+        """
+        raise NotImplementedError(
+            "RestEndpoint sublasses must implement .extract_request_data()"
+        )
+
+    @classmethod
     def build_handler_args(cls, verb, request):
         """ Build handler invocation arguments.
 
@@ -209,16 +206,7 @@ class RestEndpoint(object):
         handler_args = {}
 
         if verb in ('create', 'update'):
-            try:
-                if request.body:
-                    body = request.body.decode('utf-8')
-                    handler_args['data'] = json.loads(body)
-                else:
-                    handler_args['data'] = None
-            except:
-                raise ValueError("Invalid JSON body: '{}'".format(
-                    request.body.decode('utf-8')
-                ))
+            handler_args['data'] = cls.extract_request_data(request)
 
         if verb in ('query',):
             handler_args['filters'] = filters.extract(request.GET)

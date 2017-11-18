@@ -14,8 +14,7 @@ class FakeResource(RestResource):
 
 
 @pytest.mark.parametrize('method_name,args', (
-    ('is_http_response', {'result': None}),
-    ('json_response', {'status': 200}),
+    ('extract_request_data', {'request': None}),
 ))
 def test_abstract_methods_raise_NotImplementedError(method_name, args):
     endpoint = RestEndpoint(FakeResource)
