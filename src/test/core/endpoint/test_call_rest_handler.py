@@ -49,12 +49,6 @@ class FakeEndpoint(RestEndpoint):
     def extract_request_data(cls, request):
         return request.data
 
-    def json_response(self, status, data={}):
-        return FakeResponse(status=status, data=data)
-
-    def is_http_response(self, result):
-        return isinstance(result, FakeResponse)
-
 
 class ReadOnlyResource(RestResource):
     name = 'read_only'
@@ -63,13 +57,13 @@ class ReadOnlyResource(RestResource):
         super(ReadOnlyResource, self).__init__()
         self.options = True
 
-    def query(self, request, filters):
+    def rest_query(self, request, filters):
         return 200, [
             {'id': 123, 'name': 'test_resource'},
             {'id': 321, 'name': 'resource_test'},
         ]
 
-    def get(self, request):
+    def rest_get(self, request):
         return {
             'id': request.rest_keys['read_only_pk'],
             'name': 'test_resource'
@@ -126,7 +120,7 @@ def test_return_405_if_handler_method_is_not_callable():
 def test_fills_in_the_defaults_if_only_data_is_returned_from_handler():
     endpoint = FakeEndpoint(ReadOnlyResource)
 
-    with patch.object(ReadOnlyResource, 'get') as _get:
+    with patch.object(ReadOnlyResource, 'rest_get') as _get:
         _get.return_value = {'msg': 'hello'}
 
         request = FakeRequest(rest_keys={'read_only_pk': 123})
@@ -140,7 +134,7 @@ def test_fills_in_the_defaults_if_only_data_is_returned_from_handler():
 def test_fills_in_the_defaults_if_only_status_and_data_is_returned():
     endpoint = FakeEndpoint(ReadOnlyResource)
 
-    with patch.object(ReadOnlyResource, 'get') as _get:
+    with patch.object(ReadOnlyResource, 'rest_get') as _get:
         _get.return_value = (418, {'msg': 'hello'})
 
         request = FakeRequest(rest_keys={'read_only_pk': 123})
@@ -154,7 +148,7 @@ def test_fills_in_the_defaults_if_only_status_and_data_is_returned():
 def test_returns_everything_if_the_handler_returns_full_result():
     endpoint = FakeEndpoint(ReadOnlyResource)
 
-    with patch.object(ReadOnlyResource, 'get') as _get:
+    with patch.object(ReadOnlyResource, 'rest_get') as _get:
         _get.return_value = (418, {'X-Hdr': 'value'}, {'msg': 'hello'})
 
         request = FakeRequest(rest_keys={'read_only_pk': 123})
@@ -165,7 +159,7 @@ def test_returns_everything_if_the_handler_returns_full_result():
         assert result.data == _get.return_value[2]
 
 
-@patch.object(ReadOnlyResource, 'head', Mock(
+@patch.object(ReadOnlyResource, 'rest_head', Mock(
     side_effect=RuntimeError('Test handling exceptions in resource handlers')
 ))
 def test_returns_500_if_unhandled_exception_occurs_in_the_handler():
@@ -179,7 +173,7 @@ def test_returns_500_if_unhandled_exception_occurs_in_the_handler():
 def test_handler_is_called_with_request_as_first_argument():
     endpoint = FakeEndpoint(ReadOnlyResource)
 
-    rest_verb = 'create'
+    rest_verb = 'rest_create'
     http_method = 'POST'
     pk = None
 
@@ -193,25 +187,25 @@ def test_handler_is_called_with_request_as_first_argument():
         assert _create.call_args[0][0] == request
 
 
-@pytest.mark.parametrize('rest_verb,http_method,pk', (
-    ('get', 'GET', 1234),
-    ('query', 'GET', None),
-    ('create', 'POST', None),
-    ('update', 'PUT', 1234),
-    ('delete', 'DELETE', 1234),
+@pytest.mark.parametrize('rest_method,http_method,pk', (
+    ('rest_get', 'GET', 1234),
+    ('rest_query', 'GET', None),
+    ('rest_create', 'POST', None),
+    ('rest_update', 'PUT', 1234),
+    ('rest_delete', 'DELETE', 1234),
 ))
-def test_attaches_keys_to_the_request(rest_verb, http_method, pk):
+def test_attaches_keys_to_the_request(rest_method, http_method, pk):
     endpoint = FakeEndpoint(ReadOnlyResource)
 
-    with patch.object(ReadOnlyResource, rest_verb) as _create:
-        _create.return_value = {}
+    with patch.object(ReadOnlyResource, rest_method) as _rest_method_fn:
+        _rest_method_fn.return_value = {}
 
         request = FakeRequest(rest_keys={'read_only_pk': pk}, data={})
 
         endpoint.call_rest_handler(http_method, request)
 
-        _create.assert_called_once()
-        req = _create.call_args[0][0]
+        _rest_method_fn.assert_called_once()
+        req = _rest_method_fn.call_args[0][0]
         assert hasattr(req, 'rest_keys')
         assert 'read_only_pk' in req.rest_keys
         assert req.rest_keys['read_only_pk'] == pk

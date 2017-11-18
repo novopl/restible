@@ -109,7 +109,7 @@ class RestEndpoint(object):
         if rest_verb is None:
             return RestResult(405, {}, None)
 
-        handler = getattr(self.resource, rest_verb, None)
+        handler = getattr(self.resource, 'rest_' + rest_verb, None)
         if handler is None or not callable(handler):
             return RestResult(405, {}, None)
 
