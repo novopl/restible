@@ -154,7 +154,7 @@ class RestEndpoint(object):
         )
 
     @classmethod
-    def determine_rest_verb(self, http_method, pk):
+    def determine_rest_verb(cls, http_method, pk):
         """ Return the REST operation associated with the given HTTP method.
 
         This is part of the `RestEndpoint` class because this way it becomes
@@ -184,7 +184,7 @@ class RestEndpoint(object):
             return None
 
     @classmethod
-    def build_handler_args(self, verb, request):
+    def build_handler_args(cls, verb, request):
         """ Build handler invocation arguments.
 
         The parameters extracted here can be directly passed to the
