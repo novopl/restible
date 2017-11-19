@@ -4,9 +4,13 @@ Django implementation of a `RestEndpoint`.
 """
 from __future__ import absolute_import, unicode_literals
 
+# stdlib imports
+import json
+
 # 3rd party imports
 from django.conf.urls import url
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
+from six import iteritems
 
 # local imports
 from .. import RestEndpoint
@@ -15,19 +19,37 @@ from .. import RestEndpoint
 class DjangoEndpoint(RestEndpoint):
     """ Endpoint implementation to use in django projects. """
     
-    def __call__(self, *args, **kw):
+    def dispatch(self, request, **keys):
         """ Django 'calls' views so this is what will be ran by django.
 
         This should cover the whole request lifecycle.
         """
-        return self.dispatch(*args, **kw)
+        request.rest_keys = keys
 
-    def is_http_response(self, result):
-        return isinstance(result, HttpResponse)
+        result = self.call_rest_handler(request.method, request)
 
-    def json_response(self, status, data=None):
-        data = data or {}
-        return JsonResponse(status=status, safe=False, data=data)
+        response = JsonResponse(
+            status=result.status,
+            safe=False,
+            data=result.data
+        )
+        for key, value in iteritems(result.headers):
+            response[key] = value
+
+        return response
+
+    @classmethod
+    def extract_request_data(cls, request):
+        try:
+            if request.body:
+                body = request.body.decode('utf-8')
+                return json.loads(body)
+            else:
+                return None
+        except:
+            raise ValueError("Invalid JSON body: '{}'".format(
+                request.body.decode('utf-8')
+            ))
 
     @property
     def urls(self):

@@ -17,14 +17,14 @@ def test_default_implementation_raises_NotImplemented():
 
     # Somehow using @parametrize and getattr will not be picked up by coverage.
     test_params = (
-        (res.query, dict(filters={})),
-        (res.query, dict(filters={})),
-        (res.get, dict()),
-        (res.create, dict(data={})),
-        (res.update, dict(data={})),
-        (res.delete, dict()),
-        (res.options, dict()),
-        (res.head, dict()),
+        (res.rest_query, dict(params={})),
+        (res.rest_query, dict(params={})),
+        (res.rest_get, dict(params={})),
+        (res.rest_create, dict(data={})),
+        (res.rest_update, dict(data={})),
+        (res.rest_delete, dict()),
+        (res.rest_options, dict()),
+        (res.rest_head, dict()),
     )
 
     for handler, args in test_params:

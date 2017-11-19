@@ -15,6 +15,11 @@ from restible.django import DjangoEndpoint
 from restible.core.routing import make_urls
 
 
+#####################
+#     Test data     #
+#####################
+
+
 class FakeResource1(RestResource):
     name = 'fake1'
 
@@ -33,18 +38,23 @@ urlpatterns = make_urls(DjangoEndpoint, [
 ])
 
 
+#####################
+#       Tests       #
+#####################
+
+
 @pytest.mark.django
 @pytest.mark.urls(__name__)
 @pytest.mark.parametrize('method,url,args,verb', (
-    ('GET', '/fake1/', {}, 'query'),
-    ('GET', '/fake1/123', {}, 'get'),
-    ('POST', '/fake1/', {}, 'create'),
-    ('PUT', '/fake1/123', {}, 'update'),
-    ('DELETE', '/fake1/123', {}, 'delete'),
-    ('HEAD', '/fake1/', {}, 'head'),
-    ('HEAD', '/fake1/123', {}, 'head'),
-    ('OPTIONS', '/fake1/', {}, 'options'),
-    ('OPTIONS', '/fake1/123', {}, 'options'),
+    ('GET', '/fake1/', {}, 'rest_query'),
+    ('GET', '/fake1/123', {}, 'rest_get'),
+    ('POST', '/fake1/', {}, 'rest_create'),
+    ('PUT', '/fake1/123', {}, 'rest_update'),
+    ('DELETE', '/fake1/123', {}, 'rest_delete'),
+    ('HEAD', '/fake1/', {}, 'rest_head'),
+    ('HEAD', '/fake1/123', {}, 'rest_head'),
+    ('OPTIONS', '/fake1/', {}, 'rest_options'),
+    ('OPTIONS', '/fake1/123', {}, 'rest_options'),
 ))
 def test_all_urls_are_resolved_to_proper_verbs(method, url, args, verb, client):
     with patch.object(FakeResource1, verb) as _handler1:
@@ -59,10 +69,10 @@ def test_all_urls_are_resolved_to_proper_verbs(method, url, args, verb, client):
 
 @pytest.mark.django
 @pytest.mark.urls(__name__)
-@patch.object(FakeResource1, 'get', Mock(return_value={}))
-@patch.object(FakeResource1, 'query', Mock(return_value={}))
-@patch.object(FakeResource2, 'get', Mock(return_value={}))
-@patch.object(FakeResource2, 'query', Mock(return_value={}))
+@patch.object(FakeResource1, 'rest_get', Mock(return_value={}))
+@patch.object(FakeResource1, 'rest_query', Mock(return_value={}))
+@patch.object(FakeResource2, 'rest_get', Mock(return_value={}))
+@patch.object(FakeResource2, 'rest_query', Mock(return_value={}))
 @pytest.mark.parametrize('url', (
     '/fake1/',
     '/fake1/123',
@@ -83,5 +93,5 @@ def test_can_pass_resource_directly():
     ])
 
     assert len(urlpatterns) == 2
-    assert urlpatterns[0].lookup_str.endswith('RestEndpoint.dispatch')
-    assert urlpatterns[1].lookup_str.endswith('RestEndpoint.dispatch')
+    assert 'DjangoEndpoint.dispatch' in urlpatterns[0].lookup_str
+    assert 'DjangoEndpoint.dispatch' in urlpatterns[1].lookup_str

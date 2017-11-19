@@ -35,35 +35,35 @@ class RestResource(object):
                 'underscores and cannot start with a digit'
             )
 
-    def query(self, request, filters):
+    def rest_query(self, request, params):
         """ GET list. """
         raise NotImplementedError("query() not implemented by this resource")
 
-    def get(self, request):
+    def rest_get(self, request, params):
         """ GET detail. """
         raise NotImplementedError("get() not implemented by this resource")
 
-    def create(self, request, data):
+    def rest_create(self, request, data):
         """ POST list. """
         raise NotImplementedError("create() not implemented by this resource")
 
-    def update(self, request, data):
+    def rest_update(self, request, data):
         """ PUT detail. """
         raise NotImplementedError("update() not implemented by this resource")
 
-    def delete(self, request):
+    def rest_delete(self, request):
         """ DELETE detail. """
         raise NotImplementedError("delete() not implemented by this resource")
 
-    def options(self, request):
+    def rest_options(self, request):
         """ OPTIONS list/detail. """
         raise NotImplementedError("options() not implemented by this resource")
 
-    def head(self, request):
+    def rest_head(self, request):
         """ OPTIONS list/detail. """
         raise NotImplementedError("options() not implemented by this resource")
 
-    def get_my_pk(self, request):
+    def get_pk(self, request):
         """ Read the current resource type PK from the request.
 
         :param HttpRequest request:

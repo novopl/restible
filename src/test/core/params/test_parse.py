@@ -6,7 +6,7 @@ from __future__ import absolute_import, unicode_literals
 import pytest
 
 # Project imports
-from restible.core.filters import extract
+from restible.core import params
 
 
 @pytest.mark.parametrize('data', (
@@ -20,6 +20,6 @@ from restible.core.filters import extract
     })
 ))
 def test_extracts_values_correctly(data):
-    filters = extract({str(n): str(v) for n, v in data.items()})
+    parsed = params.parse({str(n): str(v) for n, v in data.items()})
 
-    assert filters == data
+    assert parsed == data

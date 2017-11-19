@@ -17,16 +17,13 @@ class ReadOnlyResource(RestResource):
         super(ReadOnlyResource, self).__init__()
         self.options = True
 
-    def query(self, request, filters):
-        # Import here so the tests can run without django installed
-        from django.http import JsonResponse
-
-        return JsonResponse(status=200, safe=False, data=[
+    def rest_query(self, request, params):
+        return 200, [
             {'id': 123, 'name': 'test_resource'},
             {'id': 321, 'name': 'resource_test'},
-        ])
+        ]
 
-    def get(self, request):
+    def rest_get(self, request, params):
         return {
             'id': request.rest_keys['test_pk'],
             'name': 'test_resource'
@@ -38,6 +35,6 @@ def test_aliased_as_endpoint_call_operator(rf):
     endpoint = DjangoEndpoint(ReadOnlyResource)
     request = rf.get('/test')
 
-    response = endpoint(request)
+    response = endpoint.dispatch(request)
 
     assert response.status_code == 200
