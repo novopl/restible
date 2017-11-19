@@ -7,8 +7,15 @@ quite simple - we just extract the filters from GET query params.
 """
 from __future__ import absolute_import, unicode_literals
 
+# stdlib imports
+import re
+from datetime import datetime
 
-def extract(get_params):
+
+re_date = re.compile(r'\d{4}-\d{2}-\d{2}')
+
+
+def parse(get_params):
     """ Extract filters from request GET params.
 
     :param HttpRequest request:
@@ -30,9 +37,12 @@ def from_string(value):
     TODO: Add date and datetime support
     """
     try:
+        if re_date.match(value):
+            return datetime.strptime(value, '%Y-%m-%d').date()
         if value.isdigit():
             return int(value)
         else:
             return float(value)
     except ValueError:
+
         return value

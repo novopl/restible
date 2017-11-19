@@ -20,7 +20,7 @@ def test_returns_the_key_if_present():
         'fake_pk': 1
     })
 
-    pk = FakeResource().get_my_pk(request)
+    pk = FakeResource().get_pk(request)
 
     assert pk == 1
 
@@ -28,7 +28,7 @@ def test_returns_the_key_if_present():
 def test_returns_None_if_pk_is_missing():
     request = FakeRequest(rest_keys={})
 
-    pk = FakeResource().get_my_pk(request)
+    pk = FakeResource().get_pk(request)
 
     assert pk is None
 
@@ -36,6 +36,6 @@ def test_returns_None_if_pk_is_missing():
 def test_returns_None_if_request_does_not_have_rest_keys():
     request = {}
 
-    pk = FakeResource().get_my_pk(request)
+    pk = FakeResource().get_pk(request)
 
     assert pk is None
