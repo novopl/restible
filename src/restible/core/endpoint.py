@@ -103,7 +103,7 @@ class RestEndpoint(object):
             This method will expand those results with default and return a
             unified result tuple.
         """
-        my_pk = request.rest_keys.get(self.resource.name + '_pk')
+        my_pk = self.resource.get_my_pk(request)
 
         rest_verb = self.determine_rest_verb(method, my_pk)
         if rest_verb is None:
