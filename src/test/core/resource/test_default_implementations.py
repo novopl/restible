@@ -17,9 +17,9 @@ def test_default_implementation_raises_NotImplemented():
 
     # Somehow using @parametrize and getattr will not be picked up by coverage.
     test_params = (
-        (res.rest_query, dict(filters={})),
-        (res.rest_query, dict(filters={})),
-        (res.rest_get, dict()),
+        (res.rest_query, dict(params={})),
+        (res.rest_query, dict(params={})),
+        (res.rest_get, dict(params={})),
         (res.rest_create, dict(data={})),
         (res.rest_update, dict(data={})),
         (res.rest_delete, dict()),

@@ -19,7 +19,7 @@ from logging import getLogger
 
 # local imports
 from .resource import RestResource
-from . import filters
+from . import params
 
 
 L = getLogger(__name__)
@@ -181,6 +181,23 @@ class RestEndpoint(object):
         )
 
     @classmethod
+    def extract_request_query_string(cls, request):
+        """ Extract request params as a python dictionary.
+
+        This method is here to provide an easy way to implement new framework
+        support. The way the request params are handled is framework dependant
+        so each endpoint implementation for the given framework must provide
+        an implementation of this function.
+
+        :param Request request:
+            Underlying framework dependant request.
+        :return:
+            A python dict with ``{name: value}`` pairs for all request query
+            string params
+        """
+        return request.GET
+
+    @classmethod
     def build_handler_args(cls, verb, request):
         """ Build handler invocation arguments.
 
@@ -208,7 +225,8 @@ class RestEndpoint(object):
         if verb in ('create', 'update'):
             handler_args['data'] = cls.extract_request_data(request)
 
-        if verb in ('query',):
-            handler_args['filters'] = filters.extract(request.GET)
+        if verb in ('query', 'get'):
+            qs = cls.extract_request_query_string(request)
+            handler_args['params'] = params.parse(qs)
 
         return handler_args

@@ -35,11 +35,11 @@ class RestResource(object):
                 'underscores and cannot start with a digit'
             )
 
-    def rest_query(self, request, filters):
+    def rest_query(self, request, params):
         """ GET list. """
         raise NotImplementedError("query() not implemented by this resource")
 
-    def rest_get(self, request):
+    def rest_get(self, request, params):
         """ GET detail. """
         raise NotImplementedError("get() not implemented by this resource")
 

@@ -37,10 +37,10 @@ def test_works_for_query():
     args = FakeEndpoint.build_handler_args('query', request)
 
     assert 'pk' not in args
-    assert 'filters' in args
+    assert 'params' in args
 
 
-def test_extracts_filters_from_get_params_for_query():
+def test_extracts_params_from_query_string():
     request = FakeRequest(query={
         'filter1': 'value1',
         'filter2': '123',
@@ -50,16 +50,16 @@ def test_extracts_filters_from_get_params_for_query():
     args = FakeEndpoint.build_handler_args('query', request)
 
     assert 'pk' not in args
-    assert 'filters' in args
+    assert 'params' in args
 
-    filters = args['filters']
-    assert len(filters) == 3
-    assert 'filter1' in filters
-    assert 'filter2' in filters
-    assert 'filter3' in filters
-    assert filters['filter1'] == 'value1'
-    assert filters['filter2'] == 123
-    assert filters['filter3'] == 3.14159
+    params = args['params']
+    assert len(params) == 3
+    assert 'filter1' in params
+    assert 'filter2' in params
+    assert 'filter3' in params
+    assert params['filter1'] == 'value1'
+    assert params['filter2'] == 123
+    assert params['filter3'] == 3.14159
 
 
 def test_works_for_get():
@@ -67,7 +67,7 @@ def test_works_for_get():
 
     args = FakeEndpoint.build_handler_args('get', request)
 
-    assert args == {}
+    assert args == {'params': {}}
 
 
 def test_works_for_create():

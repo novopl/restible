@@ -17,13 +17,13 @@ class ReadOnlyResource(RestResource):
         super(ReadOnlyResource, self).__init__()
         self.options = True
 
-    def rest_query(self, request, filters):
+    def rest_query(self, request, params):
         return 200, [
             {'id': 123, 'name': 'test_resource'},
             {'id': 321, 'name': 'resource_test'},
         ]
 
-    def rest_get(self, request):
+    def rest_get(self, request, params):
         return {
             'id': request.rest_keys['test_pk'],
             'name': 'test_resource'
