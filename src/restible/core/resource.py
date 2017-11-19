@@ -63,7 +63,7 @@ class RestResource(object):
         """ OPTIONS list/detail. """
         raise NotImplementedError("options() not implemented by this resource")
 
-    def get_my_pk(self, request):
+    def get_pk(self, request):
         """ Read the current resource type PK from the request.
 
         :param HttpRequest request:
