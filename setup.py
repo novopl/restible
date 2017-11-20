@@ -6,9 +6,6 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 
-import pdb; pdb.set_trace()
-
-
 setup(
     name="restible",
     version=read('VERSION').strip(),
