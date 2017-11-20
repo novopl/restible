@@ -1,7 +1,6 @@
 coverage==4.2
 django==1.11.5
 Fabric3==1.12.post1
-fabutils>=0.0.20
 factory-boy==2.8.1
 mock==2.0.0
 pep8==1.7.0
