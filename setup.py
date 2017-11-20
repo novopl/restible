@@ -6,6 +6,9 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 
+import pdb; pdb.set_trace()
+
+
 setup(
     name="restible",
     version=read('VERSION').strip(),
@@ -17,11 +20,7 @@ setup(
     description="Python library to help building RESTfull APIs",
     long_description=read('README.rst'),
     package_dir={'restible': 'src/restible'},
-    packages=[
-        'restible',
-        'restible.core',
-        'restible.django',
-    ],
+    packages=find_packages('src', exclude=('test', 'test.*')),
     install_requires=[
         l.strip() for l in read('ops/requirements.txt').split() if '==' in l
     ],
