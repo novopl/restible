@@ -70,6 +70,7 @@ def merged(release='no'):
 
     This is to ease the repetitive cleanup of each merged branch.
     """
+    protected_branches = ('master', 'develop')
     target_branch = 'master' if conf.is_true(release) else 'develop'
     branch = git.current_branch()
 
@@ -84,8 +85,9 @@ def merged(release='no'):
     log.info("Pulling latest changes")
     local('git pull origin {}'.format(target_branch))
 
-    log.info("Deleting branch ^33{}".format(branch))
-    local('git branch -d {}'.format(branch))
+    if branch not in protected_branches:
+        log.info("Deleting branch ^33{}".format(branch))
+        local('git branch -d {}'.format(branch))
 
     log.info("Pruning")
     local('git fetch --prune origin')
