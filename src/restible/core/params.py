@@ -12,7 +12,10 @@ import re
 from datetime import datetime
 
 
+# YYYY-mm-dd                    2018-09-25
 re_date = re.compile(r'\d{4}-\d{2}-\d{2}')
+# YYYY-mm-ddTHH:MM:SS           2018-09-25T19:34:55
+re_datetime = re.compile(r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}\d{2}')
 
 
 def parse(get_params):
@@ -39,10 +42,12 @@ def from_string(value):
     try:
         if re_date.match(value):
             return datetime.strptime(value, '%Y-%m-%d').date()
+        elif re_datetime.match(value):
+            return datetime.strptime(value, '%Y-%m-%dT%H:%M:%S')
         if value.isdigit():
             return int(value)
         else:
             return float(value)
-    except ValueError:
 
+    except ValueError:
         return value
