@@ -57,7 +57,10 @@ def make_release(component='patch', exact=None):
     """
     with project.inside(quiet=True):
         git_status = local('git status --porcelain', capture=True).strip()
-        has_changes = len(git_status) > 0
+        changes = [
+            l for l in git_status.split(os.linesep) if not l.startswith('??')
+        ]
+        has_changes = len(changes) > 0
 
     if has_changes:
         log.info("Cannot release: there are uncommitted changes")
