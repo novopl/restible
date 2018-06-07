@@ -60,22 +60,22 @@ class RestEndpoint(object):
         else:
             return 200
 
-    def process_result(self, result, rest_verb):
+    def process_result(self, result, default_status):
         """ Unify the handler result into a stable format.
 
         The unified format is ``(status, headers, data)``.
 
         :param tuple|dict|list result:
             The result as returned from the handler
-        :param rest_verb:
-            The rest verb for this request
+        :param int default_status:
+            Default HTTP status to use (if result contains none).
         :return tuple(int, dict, dict):
             Tuple . The handlers can return data in
             the shortened forms, either ``(status, data)`` or just ``data``.
             This method will expand those results with default and return a
             unified result tuple.
         """
-        status = self.get_ok_status(rest_verb)
+        status = default_status
         headers = {}
         data = None
 
@@ -116,7 +116,7 @@ class RestEndpoint(object):
         try:
             handler_args = self.build_handler_args(rest_verb, request)
             result = handler(request, **handler_args)
-            return self.process_result(result, rest_verb)
+            return self.process_result(result, self.get_ok_status(rest_verb))
 
         except ValueError as ex:
             L.exception('Invalid REST invocation')
