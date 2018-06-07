@@ -5,6 +5,7 @@ Helper commands for releasing to pypi.
 from __future__ import absolute_import, unicode_literals
 
 # stdlib imports
+import os
 import sys
 from os.path import join
 
