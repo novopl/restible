@@ -12,7 +12,6 @@ from mock import Mock, patch
 # local imports
 from restible import RestResource
 from restible.django import DjangoEndpoint
-from restible.core.util import make_urls
 
 
 #####################
@@ -32,9 +31,9 @@ class CustomDjangoEndpoint(DjangoEndpoint):
     pass
 
 
-urlpatterns = make_urls(DjangoEndpoint, [
-    FakeResource1,
-    CustomDjangoEndpoint(FakeResource2),
+urlpatterns = DjangoEndpoint.make_urls([
+    ('/fake1', FakeResource1),
+    ('/fake2', CustomDjangoEndpoint(FakeResource2)),
 ])
 
 
@@ -46,14 +45,14 @@ urlpatterns = make_urls(DjangoEndpoint, [
 @pytest.mark.django
 @pytest.mark.urls(__name__)
 @pytest.mark.parametrize('method,url,args,verb', (
-    ('GET', '/fake1/', {}, 'rest_query'),
+    ('GET', '/fake1', {}, 'rest_query'),
     ('GET', '/fake1/123', {}, 'rest_get'),
-    ('POST', '/fake1/', {}, 'rest_create'),
+    ('POST', '/fake1', {}, 'rest_create'),
     ('PUT', '/fake1/123', {}, 'rest_update'),
     ('DELETE', '/fake1/123', {}, 'rest_delete'),
-    ('HEAD', '/fake1/', {}, 'rest_head'),
+    ('HEAD', '/fake1', {}, 'rest_head'),
     ('HEAD', '/fake1/123', {}, 'rest_head'),
-    ('OPTIONS', '/fake1/', {}, 'rest_options'),
+    ('OPTIONS', '/fake1', {}, 'rest_options'),
     ('OPTIONS', '/fake1/123', {}, 'rest_options'),
 ))
 def test_all_urls_are_resolved_to_proper_verbs(method, url, args, verb, client):
@@ -88,8 +87,8 @@ def test_combines_urls_from_multiple_endpoints(url, client):
 @pytest.mark.skipif(sys.version_info < (3, 0),
                     reason="Hacky solution doesn't work in python2")
 def test_can_pass_resource_directly():
-    urlpatterns = make_urls(DjangoEndpoint, [
-        FakeResource1,
+    urlpatterns = DjangoEndpoint.make_urls([
+        ('/fake1', FakeResource1)
     ])
 
     assert len(urlpatterns) == 2

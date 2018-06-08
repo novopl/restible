@@ -66,8 +66,11 @@ class DjangoEndpoint(RestEndpoint):
                 request.body.decode('utf-8')
             ))
 
-    @property
-    def urls(self):
+    @classmethod
+    def extract_request_query_string(cls, request):
+        return request.GET
+
+    def urls(self, base_url):
         """ Return all the URLs required by the endpoint.
 
         :return list<url>:
@@ -83,17 +86,63 @@ class DjangoEndpoint(RestEndpoint):
         # the resources are not at the same 'level' in the tree. This will
         # definitely fail if we have a recursive endpoint, but that might be
         # even worse.
+        if base_url.endswith('/'):
+            base_url = base_url[:-1]
+
+        if base_url.startswith('/'):
+            base_url = base_url[1:]
+
         name = self.resource.name
-        ret = [
-            url(
-                '{name}/(?P<{name}_pk>[^/]+)/?$'.format(name=name),
-                self.dispatch,
-                name='{name}-detail'.format(name=name)
-            ),
-            url(
-                '{name}/?$'.format(name=name),
-                self.dispatch,
-                name='{name}-list'.format(name=name)
-            ),
+        list_url = base_url
+        item_url = '{url}/(?P<{name}_pk>[^/]+)'.format(url=base_url, name=name)
+        routes = []
+
+        # actions
+        for action in self.resource.rest_actions():
+            meta = api_action.get_meta(action)
+            route_name = '{}-{}'.format(self.resource.name, meta.name),
+            action_url = '{url}/{action}'.format(
+                url=list_url if meta.generic else item_url,
+                action=meta.name
+            )
+
+            routes.append(
+                url(action_url, self.dispatch_action, name=route_name, kwargs={
+                    'name': meta.name,
+                    'generic': meta.generic,
+                })
+            )
+
+        routes += [
+            url(item_url, self.dispatch, name='{name}-item'.format(name=name)),
+            url(list_url, self.dispatch, name='{name}-list'.format(name=name)),
         ]
-        return ret
+
+        return routes
+
+    @classmethod
+    def make_urls(cls, routes):
+        """ Create a list of URLs handled by this endpoint. """
+        urlconf = []
+
+        for entry in routes:
+            endpoint = None
+            opts = {}
+
+            if len(entry) == 2:
+                url, res_cls = entry
+            else:
+                url, res_cls, opts = entry
+
+            if isinstance(res_cls, type) and issubclass(res_cls, RestResource):
+                endpoint = cls(res_cls, **opts)
+            elif isinstance(res_cls, RestEndpoint):
+                endpoint = res_cls
+            else:
+                raise RuntimeError("Invalid resource class for {}".format(
+                    res_cls.name
+                ))
+
+            urlconf += endpoint.urls(url)
+
+        return urlconf
