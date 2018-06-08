@@ -79,7 +79,7 @@ class ModelResource(RestResource):
 
         spec = Fieldspec(self.spec).restrict(Fieldspec(fields))
         ret = serialize(items, spec)
-        return ret
+        return 200, ret
 
     def rest_create(self, request, data):
         """ Create a new record. """
