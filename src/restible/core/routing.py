@@ -3,6 +3,7 @@
 Helpers for setting up mapping between URLs and resources.
 """
 from __future__ import absolute_import, unicode_literals
+from jsobj import jsobj
 
 
 class api_route(object):
