@@ -14,12 +14,12 @@ setup(
     license="MIT",
     keywords="restible REST restapi rest server restless",
     url="http://github.com/novopl/restible",
-    description="Python library to help building RESTfull APIs",
+    description="Python library to help building RESTful APIs",
     long_description=read('README.rst'),
     package_dir={'restible': 'src/restible'},
     packages=find_packages('src', exclude=('test', 'test.*')),
     install_requires=[
-        l.strip() for l in read('ops/requirements.txt').split() if '==' in l
+        l.strip() for l in read('requirements.txt').split() if '==' in l
     ],
     classifiers=[
         "Development Status :: 4 - Beta",
