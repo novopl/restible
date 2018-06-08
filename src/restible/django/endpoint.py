@@ -13,21 +13,36 @@ from django.http import JsonResponse
 from six import iteritems
 
 # local imports
-from .. import RestEndpoint
+from restible import api_action, RestEndpoint, RestResource
 
 
 class DjangoEndpoint(RestEndpoint):
     """ Endpoint implementation to use in django projects. """
-    
-    def dispatch(self, request, **keys):
+
+    def dispatch(self, request, **route_params):
         """ Django 'calls' views so this is what will be ran by django.
 
         This should cover the whole request lifecycle.
         """
-        request.rest_keys = keys
+        request.rest_keys = route_params
 
         result = self.call_rest_handler(request.method, request)
+        return self.response_from_result(result)
 
+    def dispatch_action(self, request, name, generic, **route_params):
+        """ Dispatch resource action. """
+        request.rest_keys = route_params
+
+        result = self.call_action_handler(request, name, generic)
+        return self.response_from_result(result)
+
+    def response_from_result(self, result):
+        """ Create django response from RestResult.
+
+        :param RestResult result:
+        :return JsonResponse:
+            Django response instance, ready to return from the view.
+        """
         response = JsonResponse(
             status=result.status,
             safe=False,

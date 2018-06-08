@@ -57,8 +57,8 @@ def make_urls(default_endpoint_cls, endpoints):
 
     for endpoint in endpoints:
         if isinstance(endpoint, type) and issubclass(endpoint, RestResource):
-            urls += default_endpoint_cls(endpoint).urls
+            urls += default_endpoint_cls(endpoint).urls()
         else:
-            urls += endpoint.urls
+            urls += endpoint.urls()
 
     return urls
