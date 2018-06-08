@@ -8,11 +8,12 @@ agnostic so it can be used both on AppEngine and regular django (possibly other
 frameworks as well..
 """
 from __future__ import absolute_import, unicode_literals
+
+# package interface
 from .core.endpoint import RestEndpoint
 from .core.resource import RestResource
 from .core.routing import api_action
 from .core.routing import api_route
-from .core.util import make_urls
 __all__ = [
     'api_action',
     'api_route',

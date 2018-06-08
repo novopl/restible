@@ -36,18 +36,19 @@ class api_action(object):
     """
     ACTION_ATTR = '__api_action__'
 
-    def __init__(self, name=None, generic=False, protected=True):
+    def __init__(self, name=None, generic=False, protected=True, methods=None):
         self.name = name
         self.generic = generic
         self.protected = protected
+        self.methods = [m.lower() for m in (methods or ['post'])]
 
     def __call__(self, fn):
         """ Decorator. """
         setattr(fn, self.ACTION_ATTR, jsobj({
             'name': self.name or fn.__name__,
             'generic': self.generic,
-            'method_name': fn.__name__,
             'protected': self.protected,
+            'methods': self.methods,
         }))
         return fn
 

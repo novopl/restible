@@ -19,6 +19,7 @@ from logging import getLogger
 
 # local imports
 from .resource import RestResource
+from .routing import api_action
 from . import params
 
 
@@ -34,11 +35,12 @@ class RestEndpoint(object):
 
     """
 
-    def __init__(self, res_cls):
+    def __init__(self, res_cls, protected=False):
         if self.is_resource(res_cls):
             raise ValueError('res_cls must be a subclass of RestResource')
 
         self.resource = res_cls()
+        self.protected = protected
 
     def is_resource(self, res_cls):
         """ Check if the given object is a resource class.
@@ -59,6 +61,19 @@ class RestEndpoint(object):
             return 204
         else:
             return 200
+
+    def authorize(self, request):
+        """ Authorize user from request.
+
+        By default it returns None, so no user. Treat it as unauthorized
+
+        :param request:
+            HTTP request.
+        :return:
+            A user instance (depending on the underlying storage/models) or None
+            if not authorized.
+        """
+        return None
 
     def process_result(self, result, default_status):
         """ Unify the handler result into a stable format.
@@ -105,6 +120,10 @@ class RestEndpoint(object):
         """
         my_pk = self.resource.get_pk(request)
 
+        request.user = self.authorize(request)
+        if self.protected and request.user is None:
+            return RestResult(401, {}, {'detail': "Not Authorized"})
+
         rest_verb = self.determine_rest_verb(method, my_pk)
         if rest_verb is None:
             return RestResult(405, {}, None)
@@ -130,6 +149,78 @@ class RestEndpoint(object):
             L.exception('Unhandled resource exception')
             L.error(ex)
             return RestResult(500, {}, {'detail': str(ex)})
+
+    def call_action_handler(self, method, request, name, is_generic):
+        """ Call an action on the bound resource.
+
+        :param request:
+            HTTP request that called the action.
+        :param str name:
+            The action name.
+        :param bool is_generic:
+            True if we should call a generic actions. Generic actions are
+            executed globally for the resource. Non-generic actions are called
+            on one specific resource instance.
+        :return RestResult:
+            RestResult tuple with the result of the REST call. This can be
+            easily converted to any underlying framework.
+        """
+        action = self.find_action(name, is_generic)
+        if action is None:
+            return RestResult(404, {}, {'detail': "{} has no action: {}".format(
+                self.resource.name, name
+            )})
+
+        meta = api_action.get_meta(action)
+        user = self.authorize(request)
+
+        if meta.protected and user is None:
+            return RestResult(401, {}, {'detail': "Not Authorized"})
+
+        if method.lower() not in meta.methods:
+            return RestResult(405, {}, {
+                'detail': "Action {}.{} does not support method {}".format(
+                    self.resource.__class__.__name__, meta.name, method.upper()
+                )
+            })
+
+        request.user = user
+        payload = self.extract_request_data(request)
+        qs = self.extract_request_query_string(request)
+        action_params = params.parse(qs)
+        result = action(request, action_params, payload)
+
+        return self.process_result(result, 200)
+
+    def find_action(self, name, generic):
+        """ Find API action by name and kind.
+
+        :param str name:
+            The action name.
+        :param bool is_generic:
+            True if we should call a generic actions. Generic actions are
+            executed globally for the resource. Non-generic actions are called
+            on one specific resource instance.
+        :return Function:
+            Action handler with it's associated metadata. THe metadata can
+            be accessed using ``api_action.get_meta(action)``
+        """
+        for action in self.resource.rest_actions():
+            meta = api_action.get_meta(action)
+
+            if meta.name == name and meta.generic == generic:
+                return action
+
+        return None
+
+    def call_action(self, request, action):
+        """ Call API action. """
+        payload = self.extract_request_data(request)
+        qs = self.extract_request_query_string(request)
+        action_params = params.parse(qs)
+
+        L.info("Calling action {}".format(action))
+        return action(request, action_params, payload)
 
     @classmethod
     def determine_rest_verb(cls, http_method, pk):
