@@ -5,7 +5,10 @@ REST resource base class.
 from __future__ import absolute_import, unicode_literals
 
 # stdlib imports
+import inspect
 import re
+
+from .routing import api_action
 
 
 class RestResourceBase(object):
@@ -79,15 +82,16 @@ class RestResourceBase(object):
 
 class RestResource(RestResourceBase):
     """ Base class for resources. """
-    @property
     def rest_actions(self):
         """ All actions defined on the resource. """
-        if not hasattr(self._actions):
+        ATTR = '_actions'
+
+        if not hasattr(self, ATTR):
             actions = []
             for _, method in inspect.getmembers(self, inspect.ismethod):
                 if api_action.is_action(method):
                     actions.append(method)
 
-            self._actions = actions
+            setattr(self, ATTR, actions)
 
-        return self._actions
+        return getattr(self, ATTR)
