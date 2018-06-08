@@ -2,9 +2,8 @@ machine:
   post:
     - pyenv install --skip-existing 2.7.12
     - pyenv install --skip-existing 3.4.5
-    - pyenv install --skip-existing 3.5.2
     - pyenv install --skip-existing 3.6.2
-    - pyenv global 2.7.12 3.4.5 3.5.2 3.6.2
+    - pyenv global 2.7.12 3.4.5 3.6.2
 
 
 dependencies:
@@ -12,7 +11,6 @@ dependencies:
     - /opt/circleci/python
     - ./.tox/py27
     - ./.tox/py34
-    - ./.tox/py35
     - ./.tox/py36
 
   override:
