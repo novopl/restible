@@ -3,6 +3,7 @@
 from __future__ import absolute_import, unicode_literals
 
 # stdlib imports
+import json
 from logging import getLogger
 from urllib.parse import urljoin
 
@@ -33,7 +34,7 @@ class FlaskEndpoint(RestEndpoint):
 
     def authorize(self, request):
         """ Authorize user from request. """
-        raise NotImplemented("Subclasses must implement .authorize()")
+        raise NotImplementedError("Subclasses must implement .authorize()")
 
     def dispatch(self, **params):
         """ Override webapp2 dispatcher. """
@@ -45,7 +46,7 @@ class FlaskEndpoint(RestEndpoint):
 
         result = self.call_rest_handler(request.method, request)
 
-        return result.data, result.status, result.headers
+        return json.dumps(result.data), result.status, result.headers
 
     def find_action(self, name, generic):
         """ Find action by name and type. """
@@ -97,7 +98,7 @@ class FlaskEndpoint(RestEndpoint):
         result = self.call_action(action, request.json)
         result = self.process_result(result, 200)
 
-        return result.data, result.status, result.headers
+        return json.dumps(result.data), result.status, result.headers
 
     @classmethod
     def init_app(cls, app, resources=None, routes=None):
@@ -117,7 +118,7 @@ class FlaskEndpoint(RestEndpoint):
             if not url.endswith('/'):
                 url += '/'
 
-            endpoint = FlaskEndpoint(res_cls, **opts)
+            endpoint = cls(res_cls, **opts)
             endpoint._register_routes(app, url)
 
             cls.endpoints.append(endpoint)

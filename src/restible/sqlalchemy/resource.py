@@ -59,6 +59,7 @@ class SqlAlchemyResource(ModelResource):
                     raise
 
         self._db.session.commit()
+        return item
 
     def delete_item(self, item):
         self._db.session.delete(item)
