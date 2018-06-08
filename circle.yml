@@ -16,7 +16,7 @@ dependencies:
     - ./.tox/py36
 
   override:
-    - pip install -r ops/requirements.txt -r ops/devrequirements.txt
+    - pip install -r requirements.txt -r ops/devrequirements.txt
     - tox --notest  # Install all the envs so they get cached
 
 
