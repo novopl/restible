@@ -20,10 +20,6 @@ L = getLogger(__name__)
 
 class FlaskEndpoint(RestEndpoint):
     """ Endpoint implementation to use in webapp2/AppEngine projects. """
-    def __init__(self, res_cls, protected=False):
-        super(FlaskEndpoint, self).__init__(res_cls)
-        self.protected = protected
-
     @classmethod
     def extract_request_data(cls, request):
         return request.json
@@ -32,73 +28,21 @@ class FlaskEndpoint(RestEndpoint):
     def extract_request_query_string(cls, request):
         return request.args
 
-    def authorize(self, request):
-        """ Authorize user from request. """
-        raise NotImplementedError("Subclasses must implement .authorize()")
-
-    def dispatch(self, **params):
+    def dispatch(self, **route_params):
         """ Override webapp2 dispatcher. """
-        request.rest_keys = params
+        request.rest_keys = route_params
 
-        request.user = self.authorize(request)
-
-        if not self.protected or request.user is not None:
-            result = self.call_rest_handler(request.method, request)
-            return json.dumps(result.data), result.status, result.headers
-        else:
-            return json.dumps({'detail': "Not authorized"}), 401
-
-    def dispatch_action(self, name, generic, **params):
-        """ Override webapp2 dispatcher. """
-        request.rest_keys = params
-
-        action = self.find_action(name, generic)
-        if action is None:
-            return json.dumps({
-                'detail': "action {} not found on {}".format(
-                    name, self.resource.name
-                )
-            }), 401
-
-        meta = api_action.get_meta(action)
-
-        request.user = self.authorize(request)
-        if meta.protected and request.user is None:
-            return json.dumps({"detail": "Not authorized"}), 401
-
-        result = self.call_action(action, request.json)
-        result = self.process_result(result, 200)
-
+        result = self.call_rest_handler(request.method, request)
         return json.dumps(result.data), result.status, result.headers
 
-    def find_action(self, name, generic):
-        """ Find action by name and type. """
-        for action in self.resource.rest_actions:
-            meta = api_action.get_meta(action)
+    def dispatch_action(self, name, generic, **route_params):
+        """ Override webapp2 dispatcher. """
+        request.rest_keys = route_params
 
-            if meta.name == name and meta.generic == generic:
-                return action
-
-        return None
-
-    def call_action(self, action, payload):
-        """ Call API action. """
-        action_params = {'payload': payload}
-        meta = api_action.get_meta(action)
-
-        if not meta.generic:
-            obj = self.resource.get_requested(request)
-
-            if obj is None:
-                pk = self.resource.get_pk(request)
-                return 404, {
-                    'detail': "{} #{} not found".format(self.resource.name, pk)
-                }
-
-            action_params['obj'] = obj
-
-        L.info("Calling action {}".format(action))
-        return action(**action_params)
+        result = self.call_action_handler(
+            request.method, request, name, generic
+        )
+        return json.dumps(result.data), result.status, result.headers
 
     @classmethod
     def init_app(cls, app, resources=None, routes=None):
@@ -126,7 +70,6 @@ class FlaskEndpoint(RestEndpoint):
         for url, route in routes:
             meta = api_route.get_meta(route)
             app.add_url_rule(url[:-1], view_func=route, **meta)
-            app.add_url_rule(url, view_func=route, **meta)
 
     def _register_routes(self, app, url):
         """ Register all routes for the current endpoint in the flask app. """
@@ -146,14 +89,12 @@ class FlaskEndpoint(RestEndpoint):
                     'generic': meta.generic,
                 },
                 view_func=self.dispatch_action,
-                methods=['post']
+                methods=meta.methods
             )
 
             base_url = url_list if meta.generic else url_item
-            url_action = urljoin(base_url, meta.name + '/')
+            url_action = urljoin(base_url, meta.name)
 
-            # Add without and with slash
-            app.add_url_rule(url_action[:-1], **action_route)
             app.add_url_rule(url_action, **action_route)
 
         item_route = dict(
@@ -167,10 +108,5 @@ class FlaskEndpoint(RestEndpoint):
             methods=['get', 'post']
         )
 
-        # Add without and with slash
         app.add_url_rule(url_item[:-1], **item_route)
-        app.add_url_rule(url_item, **item_route)
-
-        # Add without and with slash
         app.add_url_rule(url_list[:-1], **list_route)
-        app.add_url_rule(url_list, **list_route)

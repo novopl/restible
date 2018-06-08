@@ -11,7 +11,7 @@ import re
 from .routing import api_action
 
 
-class RestResourceBase(object):
+class RestResource(object):
     """ Represents the operations available on the given resource.
 
     This class should not handle HTTP directly. Rather than that there should
@@ -30,41 +30,24 @@ class RestResourceBase(object):
     def __init__(self):
         self._validate_name(self.name)
 
-    def _validate_name(self, name):
-        """ Validate the name is a valid resource name. """
-        if name is None or not self._NAME_RE.match(name):
-            raise ValueError(
-                'REST endpoint name contain only letters, digits and '
-                'underscores and cannot start with a digit'
-            )
+    def rest_actions(self):
+        """ Return all actions defined on the current resource.
 
-    def rest_query(self, request, params):
-        """ GET list. """
-        raise NotImplementedError("query() not implemented by this resource")
+        :return List[function]:
+            List of action handlers. To get the metadata for a given *action*
+            just use ``api_action.get_meta(action)``
+        """
+        ATTR = '_actions'
 
-    def rest_get(self, request, params):
-        """ GET detail. """
-        raise NotImplementedError("get() not implemented by this resource")
+        if not hasattr(self, ATTR):
+            actions = []
+            for _, method in inspect.getmembers(self, inspect.ismethod):
+                if api_action.is_action(method):
+                    actions.append(method)
 
-    def rest_create(self, request, data):
-        """ POST list. """
-        raise NotImplementedError("create() not implemented by this resource")
+            setattr(self, ATTR, actions)
 
-    def rest_update(self, request, data):
-        """ PUT detail. """
-        raise NotImplementedError("update() not implemented by this resource")
-
-    def rest_delete(self, request):
-        """ DELETE detail. """
-        raise NotImplementedError("delete() not implemented by this resource")
-
-    def rest_options(self, request):
-        """ OPTIONS list/detail. """
-        raise NotImplementedError("options() not implemented by this resource")
-
-    def rest_head(self, request):
-        """ OPTIONS list/detail. """
-        raise NotImplementedError("options() not implemented by this resource")
+        return getattr(self, ATTR)
 
     def get_pk(self, request):
         """ Read the current resource type PK from the request.
@@ -79,19 +62,69 @@ class RestResourceBase(object):
         if hasattr(request, 'rest_keys'):
             return request.rest_keys.get(self.name + '_pk')
 
+    def _validate_name(self, name):
+        """ Validate the name is a valid resource name. """
+        if name is None or not self._NAME_RE.match(name):
+            raise ValueError(
+                'REST endpoint name contain only letters, digits and '
+                'underscores and cannot start with a digit'
+            )
 
-class RestResource(RestResourceBase):
-    """ Base class for resources. """
-    def rest_actions(self):
-        """ All actions defined on the resource. """
-        ATTR = '_actions'
+    def get_requested(self, request):
+        """ Get an item associated with the request.
 
-        if not hasattr(self, ATTR):
-            actions = []
-            for _, method in inspect.getmembers(self, inspect.ismethod):
-                if api_action.is_action(method):
-                    actions.append(method)
+        This is used by all detail views/actions to get the item that the
+        request is concerned with (usually from the URL). This is an
+        implementation detail and is highly dependant on the underlying web
+        framework used.
 
-            setattr(self, ATTR, actions)
+        :param request:
+            HTTP request.
+        :return RestResource:
+            The item associated with the request.
+        """
+        raise NotImplementedError("{}.get_requested() not implemented".format(
+            self.__class__.__name__
+        ))
 
-        return getattr(self, ATTR)
+    def rest_query(self, request, params):
+        """ GET list. """
+        raise NotImplementedError(".rest_query() not implemented".format(
+            self.__class__.__name__
+        ))
+
+    def rest_get(self, request, params):
+        """ GET detail. """
+        raise NotImplementedError("{}.rest_get() not implemented".format(
+            self.__class__.__name__
+        ))
+
+    def rest_create(self, request, data):
+        """ POST list. """
+        raise NotImplementedError("{}.rest_create() not implemented".format(
+            self.__class__.__name__
+        ))
+
+    def rest_update(self, request, data):
+        """ PUT detail. """
+        raise NotImplementedError("{}.rest_update() not implemented".format(
+            self.__class__.__name__
+        ))
+
+    def rest_delete(self, request):
+        """ DELETE detail. """
+        raise NotImplementedError("{}.rest_delete() not implemented".format(
+            self.__class__.__name__
+        ))
+
+    def rest_options(self, request):
+        """ OPTIONS list/detail. """
+        raise NotImplementedError("{}.rest_options() not implemented".format(
+            self.__class__.__name__
+        ))
+
+    def rest_head(self, request):
+        """ OPTIONS list/detail. """
+        raise NotImplementedError("{}.rest_head() not implemented".format(
+            self.__class__.__name__
+        ))
