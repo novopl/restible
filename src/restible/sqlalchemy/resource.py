@@ -30,17 +30,30 @@ class SqlAlchemyResource(ModelResource):
     schema = {}
     read_only = []
     _public_props = None
+    _db_session = None
 
     @classmethod
-    def init_app(cls, db):
+    def init_session(cls, db):
         """ Initialize SQLAlchemy resources. """
-        cls._db = db
+        cls._db_session = db.session
+
+    @property
+    def db_session(self):
+        """ Property returning the current SQLAlchemy session.
+
+        Will try to get it from ``self.model.query.session`` as this is where
+        flask has it.
+        """
+        if self._db_session is None and hasattr(self.model, 'query'):
+            self._db_session = self.model.query.session
+
+        return self._db_session
 
     def create_item(self, values):
         """ Create new model item. """
         item = self.model(**values)
-        self._db.session.add(item)
-        self._db.session.commit()
+        self.db_session.add(item)
+        self.db_session.commit()
 
         return item
 
@@ -58,12 +71,12 @@ class SqlAlchemyResource(ModelResource):
                     L.exception("Failed to set attribute '{}'".format(name))
                     raise
 
-        self._db.session.commit()
+        self.db_session.commit()
         return item
 
     def delete_item(self, item):
-        self._db.session.delete(item)
-        self._db.session.commit()
+        self.db_session.delete(item)
+        self.db_session.commit()
 
     def deserialize(self, data):
         """ Convert JSON data into model field types.
