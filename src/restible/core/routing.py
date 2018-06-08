@@ -40,7 +40,7 @@ class api_action(object):
         self.name = name
         self.generic = generic
         self.protected = protected
-        self.methods = [m.lower() for m in methods] or ['post']
+        self.methods = [m.lower() for m in (methods or ['post'])]
 
     def __call__(self, fn):
         """ Decorator. """
