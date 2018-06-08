@@ -33,9 +33,9 @@ class SqlAlchemyResource(ModelResource):
     _db_session = None
 
     @classmethod
-    def init_session(cls, db):
+    def init_session(cls, db_session):
         """ Initialize SQLAlchemy resources. """
-        cls._db_session = db.session
+        cls._db_session = db_session
 
     @property
     def db_session(self):
@@ -44,10 +44,10 @@ class SqlAlchemyResource(ModelResource):
         Will try to get it from ``self.model.query.session`` as this is where
         flask has it.
         """
-        if self._db_session is None and hasattr(self.model, 'query'):
-            self._db_session = self.model.query.session
-
-        return self._db_session
+        if hasattr(self.model, 'query'):
+            return self.model.query.session
+        else:
+            return self._db_session
 
     def create_item(self, values):
         """ Create new model item. """
