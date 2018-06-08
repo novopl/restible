@@ -39,7 +39,7 @@ class FlaskEndpoint(RestEndpoint):
         """ Override webapp2 dispatcher. """
         request.rest_keys = params
 
-        request.user = self.authorize()
+        request.user = self.authorize(request)
         if self.protected and request.user is None:
             return {'detail': "Not authorized"}, 401
 
