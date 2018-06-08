@@ -44,10 +44,10 @@ class SqlAlchemyResource(ModelResource):
         Will try to get it from ``self.model.query.session`` as this is where
         flask has it.
         """
-        if self._db_session is None and hasattr(self.model, 'query'):
-            self._db_session = self.model.query.session
-
-        return self._db_session
+        if hasattr(self.model, 'query'):
+            return self.model.query.session
+        else:
+            return self._db_session
 
     def create_item(self, values):
         """ Create new model item. """
