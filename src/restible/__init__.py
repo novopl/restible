@@ -12,7 +12,7 @@ from .core.endpoint import RestEndpoint
 from .core.resource import RestResource
 from .core.routing import api_action
 from .core.routing import api_route
-from .core.routing import make_urls
+from .core.util import make_urls
 __all__ = [
     'api_action',
     'api_route',

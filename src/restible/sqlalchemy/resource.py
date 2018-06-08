@@ -9,9 +9,9 @@ from logging import getLogger
 
 # 3rd party imports
 from six import iteritems
+from serafin import Fieldspec
 
 # local imports
-from restible import Fieldspec
 from restible.core.model import ModelResource
 
 
