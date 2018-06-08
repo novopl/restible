@@ -8,7 +8,7 @@ from __future__ import absolute_import, unicode_literals
 import re
 
 
-class RestResource(object):
+class RestResourceBase(object):
     """ Represents the operations available on the given resource.
 
     This class should not handle HTTP directly. Rather than that there should
@@ -75,3 +75,19 @@ class RestResource(object):
         """
         if hasattr(request, 'rest_keys'):
             return request.rest_keys.get(self.name + '_pk')
+
+
+class RestResource(RestResourceBase):
+    """ Base class for resources. """
+    @property
+    def rest_actions(self):
+        """ All actions defined on the resource. """
+        if not hasattr(self._actions):
+            actions = []
+            for _, method in inspect.getmembers(self, inspect.ismethod):
+                if api_action.is_action(method):
+                    actions.append(method)
+
+            self._actions = actions
+
+        return self._actions
