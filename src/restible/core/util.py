@@ -5,6 +5,9 @@ from __future__ import absolute_import, unicode_literals
 # stdlib imports
 import inspect
 
+# local imports
+from restible.core.resource import RestResource
+
 
 def iter_public_props(obj, predicate=None):
     """ Iterate over public properties of an object.
@@ -41,3 +44,21 @@ def iter_public_props(obj, predicate=None):
                     yield name, value
             except AttributeError:
                 pass
+
+
+def make_urls(default_endpoint_cls, endpoints):
+    """
+
+    :param list<RestEndpoint> endpoints:
+    :return list<url>:
+
+    """
+    urls = []
+
+    for endpoint in endpoints:
+        if isinstance(endpoint, type) and issubclass(endpoint, RestResource):
+            urls += default_endpoint_cls(endpoint).urls
+        else:
+            urls += endpoint.urls
+
+    return urls

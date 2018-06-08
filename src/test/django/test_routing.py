@@ -12,7 +12,7 @@ from mock import Mock, patch
 # local imports
 from restible import RestResource
 from restible.django import DjangoEndpoint
-from restible.core.routing import make_urls
+from restible.core.util import make_urls
 
 
 #####################

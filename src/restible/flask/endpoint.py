@@ -135,7 +135,7 @@ class FlaskEndpoint(RestEndpoint):
         ))
 
         # actions
-        for action in self.resource.rest_actions:
+        for action in self.resource.rest_actions():
             meta = api_action.get_meta(action)
 
             action_route = dict(
