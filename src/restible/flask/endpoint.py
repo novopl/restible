@@ -39,7 +39,9 @@ class FlaskEndpoint(RestEndpoint):
         """ Override webapp2 dispatcher. """
         request.rest_keys = route_params
 
-        result = self.call_action_handler(request, name, generic)
+        result = self.call_action_handler(
+            request.method, request, name, generic
+        )
         return json.dumps(result.data), result.status, result.headers
 
     @classmethod
@@ -87,7 +89,7 @@ class FlaskEndpoint(RestEndpoint):
                     'generic': meta.generic,
                 },
                 view_func=self.dispatch_action,
-                methods=['post']
+                methods=meta.methods
             )
 
             base_url = url_list if meta.generic else url_item

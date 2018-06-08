@@ -150,7 +150,7 @@ class RestEndpoint(object):
             L.error(ex)
             return RestResult(500, {}, {'detail': str(ex)})
 
-    def call_action_handler(self, request, name, is_generic):
+    def call_action_handler(self, method, request, name, is_generic):
         """ Call an action on the bound resource.
 
         :param request:
@@ -177,8 +177,18 @@ class RestEndpoint(object):
         if meta.protected and user is None:
             return RestResult(401, {}, {'detail': "Not Authorized"})
 
+        if method.lower() not in meta.methods:
+            return RestResult(405, {}, {
+                'detail': "Action {}.{} does not support method {}".format(
+                    self.resource.__class__.__name__, meta.name, method.upper()
+                )
+            })
+
         request.user = user
-        result = self.call_action(request, action)
+        payload = self.extract_request_data(request)
+        qs = self.extract_request_query_string(request)
+        action_params = params.parse(qs)
+        result = action(request, action_params, payload)
 
         return self.process_result(result, 200)
 
