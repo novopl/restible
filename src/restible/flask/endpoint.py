@@ -41,10 +41,33 @@ class FlaskEndpoint(RestEndpoint):
         request.rest_keys = params
 
         request.user = self.authorize(request)
-        if self.protected and request.user is None:
-            return {'detail': "Not authorized"}, 401
 
-        result = self.call_rest_handler(request.method, request)
+        if not self.protected or request.user is not None:
+            result = self.call_rest_handler(request.method, request)
+            return json.dumps(result.data), result.status, result.headers
+        else:
+            return json.dumps({'detail': "Not authorized"}), 401
+
+    def dispatch_action(self, name, generic, **params):
+        """ Override webapp2 dispatcher. """
+        request.rest_keys = params
+
+        action = self.find_action(name, generic)
+        if action is None:
+            return json.dumps({
+                'detail': "action {} not found on {}".format(
+                    name, self.resource.name
+                )
+            }), 401
+
+        meta = api_action.get_meta(action)
+
+        request.user = self.authorize(request)
+        if meta.protected and request.user is None:
+            return json.dumps({"detail": "Not authorized"}), 401
+
+        result = self.call_action(action, request.json)
+        result = self.process_result(result, 200)
 
         return json.dumps(result.data), result.status, result.headers
 
@@ -76,29 +99,6 @@ class FlaskEndpoint(RestEndpoint):
 
         L.info("Calling action {}".format(action))
         return action(**action_params)
-
-    def dispatch_action(self, name, generic, **params):
-        """ Override webapp2 dispatcher. """
-        request.rest_keys = params
-
-        action = self.find_action(name, generic)
-        if action is None:
-            return {
-                'detail': "action {} not found on {}".format(
-                    name, self.resource.name
-                )
-            }, 401
-
-        meta = api_action.get_meta(action)
-
-        request.user = self.authorize(request)
-        if meta.protected and request.user is None:
-            return {"detail": "Not authorized"}, 401
-
-        result = self.call_action(action, request.json)
-        result = self.process_result(result, 200)
-
-        return json.dumps(result.data), result.status, result.headers
 
     @classmethod
     def init_app(cls, app, resources=None, routes=None):
