@@ -33,9 +33,9 @@ class SqlAlchemyResource(ModelResource):
     _db_session = None
 
     @classmethod
-    def init_session(cls, db):
+    def init_session(cls, db_session):
         """ Initialize SQLAlchemy resources. """
-        cls._db_session = db.session
+        cls._db_session = db_session
 
     @property
     def db_session(self):
