@@ -109,7 +109,9 @@ class SqlAlchemyResource(ModelResource):
     def get_requested(self, request):
         """ Get requested item. """
         pk = self.get_pk(request)
-        return self.get_queryset(request).get(pk)
+        return self.get_queryset(request).filter(
+            self.model.id == pk
+        ).one_or_none()
 
     def get_queryset(self, request):
         """ Extension point for one place to limit the data returned.
