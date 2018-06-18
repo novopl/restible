@@ -46,6 +46,6 @@ class DjangoResource(ModelResource):
         """ Get requested item. """
         pk = self.get_pk(request)
         try:
-            return self.model.objects.get(pk=pk)
+            return self.dbquery(request, {}).get(pk=pk)
         except self.model.DoesNotExist:
             return None

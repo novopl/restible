@@ -109,4 +109,4 @@ class SqlAlchemyResource(ModelResource):
     def get_requested(self, request):
         """ Get requested item. """
         pk = self.get_pk(request)
-        return self.model.query.get(pk)
+        return self.model.query.dbquery(request, {}).get(pk)
