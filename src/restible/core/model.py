@@ -19,6 +19,12 @@ L = getLogger(__name__)
 
 class ModelResource(RestResource):
     """ Base class for resources based on DB models. """
+
+    model = None
+    spec = Fieldspec('*')
+    schema = {}
+    read_only = []
+
     class AlreadyExists(RuntimeError):
         """ Raised when an object already exists. """
         pass

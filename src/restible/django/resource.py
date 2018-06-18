@@ -27,7 +27,7 @@ class DjangoResource(ModelResource):
     def delete_item(self, item):
         item.delete()
 
-    def dbquery(self, filters):
+    def dbquery(self, request, filters):
         return self.model.objects.filter(**filters)
 
     def deserialize(self, data):
@@ -46,6 +46,6 @@ class DjangoResource(ModelResource):
         """ Get requested item. """
         pk = self.get_pk(request)
         try:
-            return self.model.objects.get(pk=pk)
+            return self.dbquery(request, {}).get(pk=pk)
         except self.model.DoesNotExist:
             return None
