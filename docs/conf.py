@@ -29,9 +29,9 @@ extensions = [
     'sphinx.ext.imgmath',
     'sphinx.ext.viewcode',
 ]
-
-version = read('../VERSION').strip()
-release = read('../VERSION').strip()
+import restible
+version = restible.__version__
+release = restible.__version__
 doctest_test_doctest_blocks='default'
 templates_path = [repo_path('docs/_templates')]
 source_suffix = '.rst'
