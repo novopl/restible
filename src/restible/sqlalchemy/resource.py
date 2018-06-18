@@ -95,7 +95,7 @@ class SqlAlchemyResource(ModelResource):
         """ Coerce value to a model field compatible representation. """
         return value
 
-    def dbquery(self, filters):
+    def dbquery(self, request, filters):
         """ Return a model query with the given filters.
 
         The query can be further customised like any ndb query.

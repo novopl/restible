@@ -27,7 +27,7 @@ class DjangoResource(ModelResource):
     def delete_item(self, item):
         item.delete()
 
-    def dbquery(self, filters):
+    def dbquery(self, request, filters):
         return self.model.objects.filter(**filters)
 
     def deserialize(self, data):
