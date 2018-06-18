@@ -10,6 +10,7 @@ from logging import getLogger
 # 3rd party imports
 from six import iteritems
 from serafin import Fieldspec
+from sqlalchemy.exc import IntegrityError
 
 # local imports
 from restible.core.model import ModelResource
@@ -51,11 +52,15 @@ class SqlAlchemyResource(ModelResource):
 
     def create_item(self, values):
         """ Create new model item. """
-        item = self.model(**values)
-        self.db_session.add(item)
-        self.db_session.commit()
+        try:
+            item = self.model(**values)
 
-        return item
+            self.db_session.add(item)
+            self.db_session.commit()
+
+            return item
+        except IntegrityError:
+            raise ModelResource.AlreadyExists()
 
     def update_item(self, request, values):
         item = self.get_requested(request)
