@@ -12,7 +12,7 @@ from flask import request
 from restible import RestEndpoint
 
 # local imports
-from restible import api_action, api_route
+from restible import api_action, api_route, RawResponse
 
 
 L = getLogger(__name__)
@@ -28,12 +28,24 @@ class FlaskEndpoint(RestEndpoint):
     def extract_request_query_string(cls, request):
         return request.args
 
+    def response_from_result(self, result):
+        """ Create django response from RestResult.
+
+        :param RestResult result:
+        :return (body, status, headers):
+            (body, status, header) tuple.
+        """
+        if isinstance(result, RawResponse):
+            return result.response
+
+        return json.dumps(result.data), result.status, result.headers
+
     def dispatch(self, **route_params):
         """ Override webapp2 dispatcher. """
         request.rest_keys = route_params
 
         result = self.call_rest_handler(request.method, request)
-        return json.dumps(result.data), result.status, result.headers
+        return self.response_from_result(result)
 
     def dispatch_action(self, name, generic, **route_params):
         """ Override webapp2 dispatcher. """
@@ -42,7 +54,7 @@ class FlaskEndpoint(RestEndpoint):
         result = self.call_action_handler(
             request.method, request, name, generic
         )
-        return json.dumps(result.data), result.status, result.headers
+        return self.response_from_result(result)
 
     @classmethod
     def init_app(cls, app, resources=None, routes=None):
