@@ -10,6 +10,7 @@ conf.init({
     'SRC_DIR': 'src',
     'SRC_PATH': 'src/restible',
     'BUILD_DIR': '.build',
+    'VERSION_FILE': 'src/restible/__init__.py',
     'DJANGO_TEST_SETTINGS': 'test.django.settings',
     'DOC_SRC_PATHS': 'docs',
     'LINT_PATHS': [
