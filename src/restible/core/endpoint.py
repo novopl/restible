@@ -27,6 +27,15 @@ L = getLogger(__name__)
 RestResult = namedtuple('RestResult', 'status,headers,data')
 
 
+class RawResponse(object):
+    """ Wrapper around raw framework responses.
+
+    This exists so it can help distinguish
+    """
+    def __init__(self, response):
+        self.response = response
+
+
 class RestEndpoint(object):
     """ Abstract base class for all REST endpoints.
 
@@ -99,6 +108,10 @@ class RestEndpoint(object):
                 status, data = result
             elif len(result) == 3:
                 status, headers, data = result
+
+        elif isinstance(result, RawResponse):
+            return result
+
         else:
             data = result
 

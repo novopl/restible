@@ -12,7 +12,7 @@ import webapp2
 from six import iteritems
 
 # local imports
-from restible import RestEndpoint
+from restible import RestEndpoint, RawResponse
 
 
 class Webapp2Endpoint(webapp2.RequestHandler, RestEndpoint):
@@ -25,15 +25,25 @@ class Webapp2Endpoint(webapp2.RequestHandler, RestEndpoint):
     def extract_request_data(cls, request):
         return json.loads(request.body)
 
-    def dispatch(self):
-        """ Override webapp2 dispatcher. """
-        request = self.request
-        request.rest_keys = request.route_kwargs
+    def response_from_result(self, result):
+        """ Generate webapp2 response from  RestResult.
 
-        result = self.call_rest_handler(request.method, request)
+        :param RestResult result:
+            RestResult instance with the API call result.
+        """
+        if isinstance(result, RawResponse):
+            pass
 
         for name, value in iteritems(result.headers):
             self.response.headers[name] = value
 
         self.response.set_status(result.status)
         self.response.out.write(json.dumps(result.data))
+
+    def dispatch(self):
+        """ Override webapp2 dispatcher. """
+        request = self.request
+        request.rest_keys = request.route_kwargs
+
+        result = self.call_rest_handler(request.method, request)
+        return self.response_from_result(result)

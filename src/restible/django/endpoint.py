@@ -13,7 +13,7 @@ from django.http import JsonResponse
 from six import iteritems
 
 # local imports
-from restible import api_action, RestEndpoint, RestResource
+from restible import api_action, RestEndpoint, RestResource, RawResponse
 
 
 class DjangoEndpoint(RestEndpoint):
@@ -43,6 +43,9 @@ class DjangoEndpoint(RestEndpoint):
         :return JsonResponse:
             Django response instance, ready to return from the view.
         """
+        if isinstance(result, RawResponse):
+            return result.response
+
         response = JsonResponse(
             status=result.status,
             safe=False,
