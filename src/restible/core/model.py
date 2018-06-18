@@ -56,7 +56,7 @@ class ModelResource(RestResource):
         """ Coerce value to a model field compatible representation. """
         raise NotImplementedError("Must implement .get_field_value()")
 
-    def dbquery(self, filters):
+    def dbquery(self, request, filters):
         """ Return a model query with the given filters.
 
         The query can be further customised like any ndb query.
@@ -75,7 +75,7 @@ class ModelResource(RestResource):
         fields = params.pop('_fields', '*')
 
         filters = self.deserialize(params)
-        items = self.dbquery(filters)
+        items = self.dbquery(request, filters)
 
         spec = Fieldspec(self.spec).restrict(Fieldspec(fields))
         ret = serialize(items, spec)
