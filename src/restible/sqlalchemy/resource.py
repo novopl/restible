@@ -104,9 +104,24 @@ class SqlAlchemyResource(ModelResource):
             The query with the given filters already applied.
         """
         filters = [getattr(self.model, n) == v for n, v in iteritems(filters)]
-        return self.model.query.filter(*filters).all()
+        return self.get_queryset(request).filter(*filters).all()
 
     def get_requested(self, request):
         """ Get requested item. """
         pk = self.get_pk(request)
-        return self.model.query.dbquery(request, {}).get(pk)
+        return self.get_queryset(request).get(pk)
+
+    def get_queryset(self, request):
+        """ Extension point for one place to limit the data returned.
+
+        Both .dbquery() and .get_requested() use this function as the base
+        queryset. This means that if you need to restrict access to some db
+        entries, you can just overload this method.
+
+        :param request:
+            The request associated with the call. Not used by default, but can
+            be handy when overriding.
+        :return:
+            The SQLAlchemy resource.
+        """
+        return self.model.query
