@@ -29,6 +29,27 @@ class ModelResource(RestResource):
         """ Raised when an object already exists. """
         pass
 
+    class ValidationError(RuntimeError):
+        """ Raised by .validate() if it fails. """
+        def __init__(self, jsonschema_error, *args, **kw):
+            self.detail = jsonschema_error
+            super(ValidationError, self).__init__(str(jsonschema_error))
+
+    def validate(self, data, schema=None):
+        """ Validate the *data* according to the given *schema*.
+
+        :param Dict[str, Any] data:
+            A dictionary of data. Probably coming from the user in some way.
+        :param Dict[str, Any] schema:
+            JSONSchema describing the required data structure.
+        :raises ModelResource.ValidationError:
+            If the validation fails. No value is returned.
+        """
+        try:
+            validate(data, schema or self.schema)
+        except ValidationError as ex:
+            raise ModelResource.ValidationError(ex)
+
     @property
     def public_props(self):
         """ All public properties on the resource model. """
@@ -78,42 +99,53 @@ class ModelResource(RestResource):
 
     def rest_query(self, request, params):
         """ Query existing records as a list. """
-        fields = params.pop('_fields', '*')
+        try:
+            fields = params.pop('_fields', '*')
 
-        filters = self.deserialize(params)
-        items = self.dbquery(request, filters)
+            filters = self.deserialize(params)
+            items = self.dbquery(request, filters)
 
-        spec = Fieldspec(self.spec).restrict(Fieldspec(fields))
-        ret = serialize(items, spec)
-        return 200, ret
+            spec = Fieldspec(self.spec).restrict(Fieldspec(fields))
+            ret = serialize(items, spec)
+            return 200, ret
+
+        except NotImplementedError:
+            return 405, {'detail': 'Method not allowed'}
 
     def rest_create(self, request, data):
         """ Create a new record. """
         try:
-            validate(data, self.schema)
+            self.validate(data, self.schema)
 
             values = self.deserialize(data)
             item = self.create_item(values)
 
             return serialize(item, self.spec)
 
-        except ValidationError as ex:
+        except ModelResource.ValidationError as ex:
             return 400, {'detail': str(ex)}
 
         except ModelResource.AlreadyExists:
             return 400, {'detail': 'Already exists'}
 
+        except NotImplementedError:
+            return 405, {'detail': 'Method not allowed'}
+
     def rest_get(self, request, params):
         """ Get one record with the given id. """
-        fields = params.get('_fields', '*')
+        try:
+            fields = params.get('_fields', '*')
 
-        spec = Fieldspec(self.spec).restrict(Fieldspec(fields))
-        item = self.get_requested(request)
+            spec = Fieldspec(self.spec).restrict(Fieldspec(fields))
+            item = self.get_requested(request)
 
-        if item is not None:
-            return 200, serialize(item, spec)
-        else:
-            return 404, {'detail': "Not found"}
+            if item is not None:
+                return 200, serialize(item, spec)
+            else:
+                return 404, {'detail': "Not found"}
+
+        except NotImplementedError:
+            return 405, {'detail': 'Method not allowed'}
 
     def rest_update(self, request, data):
         """ Update existing item. """
@@ -124,7 +156,7 @@ class ModelResource(RestResource):
             del schema['required']
 
         try:
-            validate(data, schema)
+            self.validate(data, schema)
 
             values = self.deserialize(data)
             read_only = frozenset(self.read_only) | frozenset(self.public_props)
@@ -138,16 +170,23 @@ class ModelResource(RestResource):
             else:
                 return 404, {'detail': "Not Found"}
 
-        except ValidationError as ex:
+        except ModelResource.ValidationError as ex:
             return 400, {'detail': str(ex)}
+
+        except NotImplementedError:
+            return 405, {'detail': 'Method not allowed'}
 
     def rest_delete(self, request):
         """ DELETE detail. """
-        item = self.get_requested(request)
+        try:
+            item = self.get_requested(request)
 
-        if item is None:
-            return 404, {'detail': 'Item does not exist'}
+            if item is None:
+                return 404, {'detail': 'Item does not exist'}
 
-        self.delete_item(item)
+            self.delete_item(item)
 
-        return 204, {}
+            return 204, {}
+
+        except NotImplementedError:
+            return 405, {'detail': 'Method not allowed'}

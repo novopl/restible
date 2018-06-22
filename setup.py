@@ -32,7 +32,7 @@ setup(
     url="http://github.com/novopl/restible",
     description="Python library to help building RESTful APIs",
     long_description=read('README.rst'),
-    package_dir={'restible': 'src/restible'},
+    package_dir={'': 'src'},
     packages=find_packages('src', exclude=('test', 'test.*')),
     install_requires=[
         l.strip() for l in read('requirements.txt').split() if '==' in l
