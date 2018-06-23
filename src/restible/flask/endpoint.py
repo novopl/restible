@@ -71,20 +71,23 @@ class FlaskEndpoint(RestEndpoint):
             else:
                 url, res_cls, opts = entry
 
-            if not url.endswith('/'):
-                url += '/'
-
             endpoint = cls(res_cls, **opts)
             endpoint._register_routes(app, url)
 
             cls.endpoints.append(endpoint)
 
         for url, route in routes:
+            if url.endswith('/'):
+                url = url[:-1]
+
             meta = api_route.get_meta(route)
-            app.add_url_rule(url[:-1], view_func=route, **meta)
+            app.add_url_rule(url, view_func=route, **meta)
 
     def _register_routes(self, app, url):
         """ Register all routes for the current endpoint in the flask app. """
+        if not url.endswith('/'):
+            url += '/'
+
         url_list = url
         url_item = urljoin(url, '<{name}_pk>/'.format(
             name=self.resource.name
