@@ -10,7 +10,7 @@ from logging import getLogger
 # 3rd party imports
 from six import iteritems
 from serafin import Fieldspec
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 
 # local imports
 from restible.core.model import ModelResource
@@ -60,7 +60,11 @@ class SqlAlchemyResource(ModelResource):
 
             return item
         except IntegrityError:
+            self.db_session.rollback()
             raise ModelResource.AlreadyExists()
+        except SQLAlchemyError:
+            self.db_session.rollback()
+            raise
 
     def update_item(self, request, values):
         item = self.get_requested(request)
@@ -76,12 +80,21 @@ class SqlAlchemyResource(ModelResource):
                     L.exception("Failed to set attribute '{}'".format(name))
                     raise
 
-        self.db_session.commit()
+        try:
+            self.db_session.commit()
+        except SQLAlchemyError:
+            self.db_session.rollback()
+            raise
+
         return item
 
     def delete_item(self, item):
-        self.db_session.delete(item)
-        self.db_session.commit()
+        try:
+            self.db_session.delete(item)
+            self.db_session.commit()
+        except SQLAlchemyError:
+            self.db_session.rollback()
+            raise
 
     def deserialize(self, data):
         """ Convert JSON data into model field types.
