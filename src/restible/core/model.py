@@ -53,6 +53,19 @@ class ModelResource(RestResource):
         except ValidationError as ex:
             raise ModelResource.ValidationError(ex)
 
+    def serialize(self, item_or_items):
+        """ Serialize an item or items into a dict.
+
+        This will just call serafin.serialize using the model spec (defined
+        class wide in the model - '*' by default).
+
+        :param item_or_items:
+        :return Dict[Any, Any]:
+            A dict with python native content. Can be easily dumped to any
+            format like JSON or YAML.
+        """
+        return serialize(item_or_items, self.spec)
+
     def deserialize(self, data):
         """ Convert JSON data into model field types.
 
