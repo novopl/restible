@@ -11,8 +11,8 @@ from serafin import Fieldspec, serialize
 from six import iteritems
 
 # local imports
-from restible import RestResource
-from restible.core.util import iter_public_props
+from .resource import RestResource
+from .util import iter_public_props
 
 
 L = getLogger(__name__)
