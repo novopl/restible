@@ -96,18 +96,6 @@ class SqlAlchemyResource(ModelResource):
             self.db_session.rollback()
             raise
 
-    def deserialize(self, data):
-        """ Convert JSON data into model field types.
-
-        The value returned by this function can be used directly to create new
-        item and update existing ones.
-        """
-        return {n: self.get_field_value(n, v) for n, v in iteritems(data)}
-
-    def get_field_value(self, name, value):
-        """ Coerce value to a model field compatible representation. """
-        return value
-
     def dbquery(self, request, filters):
         """ Return a model query with the given filters.
 

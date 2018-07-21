@@ -8,10 +8,11 @@ from logging import getLogger
 # 3rd party imports
 from jsonschema import validate, ValidationError
 from serafin import Fieldspec, serialize
+from six import iteritems
 
 # local imports
-from restible import RestResource
-from restible.core.util import iter_public_props
+from .resource import RestResource
+from .util import iter_public_props
 
 
 L = getLogger(__name__)
@@ -31,9 +32,11 @@ class ModelResource(RestResource):
 
     class ValidationError(RuntimeError):
         """ Raised by .validate() if it fails. """
-        def __init__(self, jsonschema_error, *args, **kw):
+        def __init__(self, jsonschema_error):
             self.detail = jsonschema_error
-            super(ValidationError, self).__init__(str(jsonschema_error))
+            super(ModelResource.ValidationError, self).__init__(
+                str(jsonschema_error)
+            )
 
     def validate(self, data, schema=None):
         """ Validate the *data* according to the given *schema*.
@@ -49,6 +52,31 @@ class ModelResource(RestResource):
             validate(data, schema or self.schema)
         except ValidationError as ex:
             raise ModelResource.ValidationError(ex)
+
+    def serialize(self, item_or_items):
+        """ Serialize an item or items into a dict.
+
+        This will just call serafin.serialize using the model spec (defined
+        class wide in the model - '*' by default).
+
+        :param item_or_items:
+        :return Dict[Any, Any]:
+            A dict with python native content. Can be easily dumped to any
+            format like JSON or YAML.
+        """
+        return serialize(item_or_items, self.spec)
+
+    def deserialize(self, data):
+        """ Convert JSON data into model field types.
+
+        The value returned by this function can be used directly to create new
+        item and update existing ones.
+        """
+        return {n: self.get_field_value(n, v) for n, v in iteritems(data)}
+
+    def get_field_value(self, name, value):
+        """ Coerce value to a model field compatible representation. """
+        return value
 
     @property
     def public_props(self):
@@ -70,18 +98,6 @@ class ModelResource(RestResource):
     def delete_item(self, item):
         """ Update existing model item. """
         raise NotImplementedError("Must implement .delete_item()")
-
-    def deserialize(self, data):
-        """ Convert JSON data into model field types.
-
-        The value returned by this function can be used directly to create new
-        item and update existing ones.
-        """
-        raise NotImplementedError("Must implement .deserialize_item()")
-
-    def get_field_value(self, name, value):
-        """ Coerce value to a model field compatible representation. """
-        raise NotImplementedError("Must implement .get_field_value()")
 
     def dbquery(self, request, filters):
         """ Return a model query with the given filters.

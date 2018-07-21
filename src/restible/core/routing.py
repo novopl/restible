@@ -3,7 +3,32 @@
 Helpers for setting up mapping between URLs and resources.
 """
 from __future__ import absolute_import, unicode_literals
-from jsobj import jsobj
+
+# 3rd party imports
+import attr
+
+
+@attr.s
+class ActionMeta(object):
+    """ Action metadata.
+
+    When you have a action method ``Res.my_action`` you can access the metadata
+    with ``api_action.get_meta(Res.my_action)``.
+    """
+    name = attr.ib()
+    generic = attr.ib()
+    protected = attr.ib()
+    methods = attr.ib()
+
+
+@attr.s
+class RouteMeta(object):
+    """ Route metadata.
+
+    When you have a route function ``my_route`` you can access the metadata
+    with ``api_route.get_meta(my_route)``.
+    """
+    methods = attr.ib()
 
 
 class api_route(object):
@@ -14,9 +39,9 @@ class api_route(object):
     ROUTE_ATTR = '__api_route__'
 
     def __init__(self, methods=None):
-        self.meta = jsobj({
-            'methods': methods or ['post']
-        })
+        self.meta = RouteMeta(
+            methods=methods or ['post']
+        )
 
     def __call__(self, fn):
         """ Decorator. """
@@ -44,12 +69,12 @@ class api_action(object):
 
     def __call__(self, fn):
         """ Decorator. """
-        setattr(fn, self.ACTION_ATTR, jsobj({
-            'name': self.name or fn.__name__,
-            'generic': self.generic,
-            'protected': self.protected,
-            'methods': self.methods,
-        }))
+        setattr(fn, self.ACTION_ATTR, ActionMeta(
+            name=self.name or fn.__name__,
+            generic=self.generic,
+            protected=self.protected,
+            methods=self.methods,
+        ))
         return fn
 
     @classmethod
