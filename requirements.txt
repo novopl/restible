@@ -1,3 +1,2 @@
 jsonschema>=2.6.0
-novo-jsobj>=0.0.2
 serafin>=0.9.11
