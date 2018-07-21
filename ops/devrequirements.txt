@@ -1,8 +1,9 @@
 coverage==4.2
+detox==0.12
 django==1.11.5
 factory-boy==2.8.1
 mock==2.0.0
-peltak==0.10.10
+peltak>=0.13.2
 pep8==1.7.0
 pylint==1.7.4
 pytest==3.2.3
