@@ -32,9 +32,11 @@ class ModelResource(RestResource):
 
     class ValidationError(RuntimeError):
         """ Raised by .validate() if it fails. """
-        def __init__(self, jsonschema_error, *args, **kw):
+        def __init__(self, jsonschema_error):
             self.detail = jsonschema_error
-            super(ValidationError, self).__init__(str(jsonschema_error))
+            super(ModelResource.ValidationError, self).__init__(
+                str(jsonschema_error)
+            )
 
     def validate(self, data, schema=None):
         """ Validate the *data* according to the given *schema*.
