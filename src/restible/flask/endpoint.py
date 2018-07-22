@@ -81,7 +81,7 @@ class FlaskEndpoint(RestEndpoint):
                 url = url[:-1]
 
             meta = api_route.get_meta(route)
-            app.add_url_rule(url, view_func=route, **meta)
+            app.add_url_rule(url, view_func=route, methods=meta.methods)
 
     def _register_routes(self, app, url):
         """ Register all routes for the current endpoint in the flask app. """
