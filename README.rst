@@ -19,6 +19,10 @@ in some cases might break existing code. The patch version updates will have
 backwards compatible code.
 
 
+.. note::
+    The CircleCI builds can be found
+    `here <https://circleci.com/gh/novopl/restible>`_
+
 Installation
 ============
 
