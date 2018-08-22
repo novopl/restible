@@ -150,9 +150,9 @@ class ModelResource(RestResource):
     def rest_get(self, request, params):
         """ Get one record with the given id. """
         try:
-            fields = params.get('_fields', '*')
+            fields = Fieldspec(params.get('_fields', '*'))
 
-            spec = Fieldspec(self.spec).restrict(Fieldspec(fields))
+            spec = Fieldspec(self.spec).restrict(fields)
             item = self.get_requested(request)
 
             if item is not None:

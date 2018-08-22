@@ -6,7 +6,6 @@ from __future__ import absolute_import, unicode_literals
 
 # 3rd party imports
 from django.db.utils import IntegrityError
-from six import iteritems
 
 # local imports
 from restible.core.model import ModelResource
@@ -29,18 +28,6 @@ class DjangoResource(ModelResource):
 
     def dbquery(self, request, filters):
         return self.model.objects.filter(**filters)
-
-    def deserialize(self, data):
-        """ Convert JSON data into model field types.
-
-        The value returned by this function can be used directly to create new
-        instances and update existing ones.
-        """
-        return {n: self.get_field_value(n, v) for n, v in iteritems(data)}
-
-    def get_field_value(self, name, value):
-        """ Coerce value to a model field compatible representation. """
-        return value
 
     def get_requested(self, request):
         """ Get requested item. """
