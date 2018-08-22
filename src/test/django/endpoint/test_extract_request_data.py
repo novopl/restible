@@ -6,7 +6,7 @@ from __future__ import absolute_import, unicode_literals
 import pytest
 
 # local imports
-from restible.django import DjangoEndpoint
+from restible.integrations.django import DjangoEndpoint
 
 
 class FakeRequest(object):

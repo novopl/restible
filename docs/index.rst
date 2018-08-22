@@ -9,7 +9,6 @@ Reference
     :maxdepth: 2
 
     ref/restible/index
-    ref/commands/index
 
 .. include:: ../README.rst
     :start-after: readme_inclusion_marker
