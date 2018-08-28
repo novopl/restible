@@ -44,7 +44,7 @@ jobs:
       - run: peltak release upload pypi
       - run: rm ~/.pypirc
       - run: peltak release tag
-      - run: "git push origin v$(peltak version show --porcelain)"
+      - run: "git push origin v$(peltak version --porcelain)"
 
 
 workflows:

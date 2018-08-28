@@ -33,7 +33,12 @@ class DjangoEndpoint(RestEndpoint):
         """ Dispatch resource action. """
         request.rest_keys = route_params
 
-        result = self.call_action_handler(request, name, generic)
+        result = self.call_action_handler(
+            request.method,
+            request,
+            name,
+            generic
+        )
         return self.response_from_result(result)
 
     def response_from_result(self, result):
