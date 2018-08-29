@@ -126,7 +126,7 @@ class ModelResource(RestResource):
             return 200, ret
 
         except NotImplementedError:
-            return 405, {'detail': 'Method not allowed'}
+            return 404, {'detail': 'Not Found'}
 
     def rest_create(self, request, data):
         """ Create a new record. """
@@ -145,7 +145,7 @@ class ModelResource(RestResource):
             return 400, {'detail': 'Already exists'}
 
         except NotImplementedError:
-            return 405, {'detail': 'Method not allowed'}
+            return 404, {'detail': 'Not Found'}
 
     def rest_get(self, request, params):
         """ Get one record with the given id. """
@@ -161,7 +161,7 @@ class ModelResource(RestResource):
                 return 404, {'detail': "Not found"}
 
         except NotImplementedError:
-            return 405, {'detail': 'Method not allowed'}
+            return 404, {'detail': 'Not Found'}
 
     def rest_update(self, request, data):
         """ Update existing item. """
@@ -190,7 +190,7 @@ class ModelResource(RestResource):
             return 400, {'detail': str(ex)}
 
         except NotImplementedError:
-            return 405, {'detail': 'Method not allowed'}
+            return 404, {'detail': 'Not Found'}
 
     def rest_delete(self, request):
         """ DELETE detail. """
@@ -205,4 +205,4 @@ class ModelResource(RestResource):
             return 204, {}
 
         except NotImplementedError:
-            return 405, {'detail': 'Method not allowed'}
+            return 404, {'detail': 'Not Found'}
