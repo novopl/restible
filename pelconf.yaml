@@ -1,0 +1,37 @@
+pelconf_version: '1'
+src_dir: src
+src_path: src/restible
+build_dir: .build
+version_file: src/restible/__init__.py
+django_test_settings: 'test.django.settings'
+
+commands:
+  - peltak.commands.docs
+  - peltak.commands.git
+  - peltak.commands.lint
+  - peltak.commands.release
+  - peltak.commands.test
+  - peltak.commands.version
+
+
+lint:
+  paths:
+    - src/restible
+    - src/test
+
+
+docs:
+  path: docs
+  reference:
+    - src/restible
+
+
+test:
+  types:
+    default:
+      paths:
+        - src/test
+    no_django:
+      mark: 'not django'
+      paths:
+        - src/test
