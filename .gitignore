@@ -15,6 +15,7 @@ igor/util
 *sw[po]
 cache.sqlite
 .cache
+.DS_Store
 
 ################
 # Secret files #
@@ -59,6 +60,7 @@ data/
 # Reserved local files #
 ########################
 tmp
+/local
 
 ###########################
 # 3rd party configuration #

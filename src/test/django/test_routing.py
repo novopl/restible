@@ -84,6 +84,7 @@ def test_combines_urls_from_multiple_endpoints(url, client):
     assert r.status_code < 300
 
 
+@pytest.mark.django
 @pytest.mark.skipif(sys.version_info < (3, 0),
                     reason="Hacky solution doesn't work in python2")
 def test_can_pass_resource_directly():
