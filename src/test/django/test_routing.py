@@ -33,7 +33,7 @@ class CustomDjangoEndpoint(DjangoEndpoint):
 
 urlpatterns = DjangoEndpoint.make_urls([
     ('/fake1', FakeResource1),
-    ('/fake2', CustomDjangoEndpoint(FakeResource2)),
+    ('/fake2', CustomDjangoEndpoint(res_cls=FakeResource2)),
 ])
 
 

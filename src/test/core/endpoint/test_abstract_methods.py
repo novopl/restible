@@ -17,7 +17,7 @@ class FakeResource(RestResource):
     ('extract_request_data', {'request': None}),
 ))
 def test_abstract_methods_raise_NotImplementedError(method_name, args):
-    endpoint = RestEndpoint(FakeResource)
+    endpoint = RestEndpoint(res_cls=FakeResource)
 
     with pytest.raises(NotImplementedError):
         method = getattr(endpoint, method_name)

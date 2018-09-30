@@ -13,12 +13,12 @@ class InvalidFakeResource(object):
     pass
 
 
-@pytest.mark.parametrize('resource', (
+@pytest.mark.parametrize('res_cls', (
     None,                   # Not given
-    InvalidFakeResource,  # Not a RestResource subclass
+    InvalidFakeResource,    # Not a RestResource subclass
     10,                     # Not a RestResource subclass
     'some_string'           # Not a RestResource subclass
 ))
-def test_raises_ValueError_if_resource_is_not_a_valid_resource(resource):
+def test_raises_ValueError_if_resource_is_not_a_valid_resource(res_cls):
     with pytest.raises(ValueError):
-        RestEndpoint(resource)
+        RestEndpoint(res_cls=res_cls)

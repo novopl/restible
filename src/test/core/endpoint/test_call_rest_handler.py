@@ -76,7 +76,7 @@ class ReadOnlyResource(RestResource):
 
 
 def test_returns_200_if_everything_is_ok():
-    endpoint = FakeEndpoint(ReadOnlyResource)
+    endpoint = FakeEndpoint(res_cls=ReadOnlyResource)
 
     result = endpoint.call_rest_handler('GET', FakeRequest())
 
@@ -91,7 +91,7 @@ def test_returns_200_if_everything_is_ok():
 def test_return_405_if_no_rest_verb_is_matched(http_method, pk):
     # This test should not break on JSON decode error (empty body)
     # because .dispatch() should fail earlier.
-    endpoint = FakeEndpoint(ReadOnlyResource)
+    endpoint = FakeEndpoint(res_cls=ReadOnlyResource)
     request = FakeRequest(rest_keys={'read_only_pk': pk})
 
     result = endpoint.call_rest_handler(http_method, request)
@@ -100,7 +100,7 @@ def test_return_405_if_no_rest_verb_is_matched(http_method, pk):
 
 
 def test_return_405_if_handler_method_is_not_implemented():
-    endpoint = FakeEndpoint(ReadOnlyResource)
+    endpoint = FakeEndpoint(res_cls=ReadOnlyResource)
     request = FakeRequest(content_type='application/json', data={})
 
     result = endpoint.call_rest_handler('POST', request)
@@ -109,7 +109,7 @@ def test_return_405_if_handler_method_is_not_implemented():
 
 
 def test_return_405_if_handler_method_is_not_callable():
-    endpoint = FakeEndpoint(ReadOnlyResource)
+    endpoint = FakeEndpoint(res_cls=ReadOnlyResource)
     request = FakeRequest(rest_keys={'read_only_pk': 123})
 
     result = endpoint.call_rest_handler('OPTIONS', request)
@@ -118,7 +118,7 @@ def test_return_405_if_handler_method_is_not_callable():
 
 
 def test_fills_in_the_defaults_if_only_data_is_returned_from_handler():
-    endpoint = FakeEndpoint(ReadOnlyResource)
+    endpoint = FakeEndpoint(res_cls=ReadOnlyResource)
 
     with patch.object(ReadOnlyResource, 'rest_get') as _get:
         _get.return_value = {'msg': 'hello'}
@@ -132,7 +132,7 @@ def test_fills_in_the_defaults_if_only_data_is_returned_from_handler():
 
 
 def test_fills_in_the_defaults_if_only_status_and_data_is_returned():
-    endpoint = FakeEndpoint(ReadOnlyResource)
+    endpoint = FakeEndpoint(res_cls=ReadOnlyResource)
 
     with patch.object(ReadOnlyResource, 'rest_get') as _get:
         _get.return_value = (418, {'msg': 'hello'})
@@ -146,7 +146,7 @@ def test_fills_in_the_defaults_if_only_status_and_data_is_returned():
 
 
 def test_returns_everything_if_the_handler_returns_full_result():
-    endpoint = FakeEndpoint(ReadOnlyResource)
+    endpoint = FakeEndpoint(res_cls=ReadOnlyResource)
 
     with patch.object(ReadOnlyResource, 'rest_get') as _get:
         _get.return_value = (418, {'X-Hdr': 'value'}, {'msg': 'hello'})
@@ -163,7 +163,7 @@ def test_returns_everything_if_the_handler_returns_full_result():
     side_effect=RuntimeError('Test handling exceptions in resource handlers')
 ))
 def test_returns_500_if_unhandled_exception_occurs_in_the_handler():
-    endpoint = FakeEndpoint(ReadOnlyResource)
+    endpoint = FakeEndpoint(res_cls=ReadOnlyResource)
 
     result = endpoint.call_rest_handler('HEAD', FakeRequest())
 
@@ -171,7 +171,7 @@ def test_returns_500_if_unhandled_exception_occurs_in_the_handler():
 
 
 def test_handler_is_called_with_request_as_first_argument():
-    endpoint = FakeEndpoint(ReadOnlyResource)
+    endpoint = FakeEndpoint(res_cls=ReadOnlyResource)
 
     rest_verb = 'rest_create'
     http_method = 'POST'
@@ -195,7 +195,7 @@ def test_handler_is_called_with_request_as_first_argument():
     ('rest_delete', 'DELETE', 1234),
 ))
 def test_attaches_keys_to_the_request(rest_method, http_method, pk):
-    endpoint = FakeEndpoint(ReadOnlyResource)
+    endpoint = FakeEndpoint(res_cls=ReadOnlyResource)
 
     with patch.object(ReadOnlyResource, rest_method) as _rest_method_fn:
         _rest_method_fn.return_value = {}

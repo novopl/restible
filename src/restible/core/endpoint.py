@@ -42,13 +42,38 @@ class RestEndpoint(object):
     The endpoint responsibility is to provide a bridge between HTTP and
     `RestResource`.  The latter should never directly deal with HTTP.
 
+
+    :param RestResource resource:
+        `RestResource` instance. This supersedes whatever is passed in
+        `res_cls`.
+    :param type res_cls:
+        Class derived from `RestResource`. If `resource` is not passed
+        directly you can also specify the resource class. It will be used
+        to instantiate the resource when the endpoint is created.
+    :param bool protected:
+        If set to *True*, all CRUD operations on the endpoint will require
+        authorization.
     """
 
-    def __init__(self, res_cls, protected=False):
-        if self.is_resource(res_cls):
-            raise ValueError('res_cls must be a subclass of RestResource')
+    def __init__(self, resource=None, res_cls=None, protected=False):
+        resource = resource or getattr(self, 'resource', None)
+        res_cls = res_cls or getattr(self, 'res_cls', None)
 
-        self.resource = res_cls()
+        if resource is not None and isinstance(resource, RestResource):
+            self.resource = resource
+        elif (
+                res_cls is not None and
+                isinstance(res_cls, type) and
+                issubclass(res_cls, RestResource)
+        ):
+            self.resource = res_cls()
+        else:
+            raise ValueError(
+                "You must specify the resource either as a static variable "
+                "resource or res_cls or through corresponding constructor "
+                "args"
+            )
+
         self.protected = protected
 
     def is_resource(self, res_cls):
