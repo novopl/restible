@@ -10,9 +10,28 @@ jobs:
           key: deps-rev1-{{ checksum "requirements.txt" }}
       - restore_cache:
           key: tox-rev3-{{ checksum "requirements.txt" }}-{{ checksum "ops/devrequirements.txt" }}
-      - run: pip install -r requirements.txt
-      - run: python setup.py develop
-      - run: tox
+
+      - run:
+          name: Setup dependencies
+          command: |
+            which pip
+            which python
+            pip install -r requirements.txt
+            pip install -r ops/devrequirements.txt
+            peltak --help
+
+      - run:
+          name: Lint
+          command: peltak lint
+
+      - run:
+          name: Test
+          command: tox
+
+      - run:
+          name: Generate Docs
+          command: peltak docs
+
       - save_cache:
           key: deps-rev1-{{ checksum "requirements.txt" }}
           paths:
@@ -22,7 +41,6 @@ jobs:
           key: tox-rev3-{{ checksum "requirements.txt" }}-{{ checksum "ops/devrequirements.txt" }}
           paths:
           - .tox
-      - run: peltak docs
       - store_test_results:
           path: .build
       - store_artifacts:
