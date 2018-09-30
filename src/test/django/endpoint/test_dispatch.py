@@ -32,7 +32,7 @@ class ReadOnlyResource(RestResource):
 
 @pytest.mark.django
 def test_aliased_as_endpoint_call_operator(rf):
-    endpoint = DjangoEndpoint(ReadOnlyResource)
+    endpoint = DjangoEndpoint(res_cls=ReadOnlyResource)
     request = rf.get('/test')
 
     response = endpoint.dispatch(request)

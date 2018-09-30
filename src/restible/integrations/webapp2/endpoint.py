@@ -8,14 +8,22 @@ from __future__ import absolute_import, unicode_literals
 import json
 
 # 3rd party imports
-import webapp2
+try:
+    import webapp2
+    from webapp2 import RequestHandler
+except SyntaxError:
+    # Happens on python3, just fake it so it compiles
+    class RequestHandler(object):
+        """ Fake webapp2.RequestHandler. """
+        pass
+
 from six import iteritems
 
 # local imports
 from restible import RestEndpoint, RawResponse
 
 
-class Webapp2Endpoint(webapp2.RequestHandler, RestEndpoint):
+class Webapp2Endpoint(RequestHandler, RestEndpoint):
     """ Endpoint implementation to use in webapp2/AppEngine projects. """
     def __init__(self, *args, **kw):
         webapp2.RequestHandler.__init__(self, *args, **kw)

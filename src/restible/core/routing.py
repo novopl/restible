@@ -40,7 +40,7 @@ class api_route(object):
 
     def __init__(self, methods=None):
         self.meta = RouteMeta(
-            methods=methods or ['post']
+            method=[m.lower() for m in (methods or ['post'])]
         )
 
     def __call__(self, fn):
@@ -74,6 +74,7 @@ class api_action(object):
             generic=self.generic,
             protected=self.protected,
             methods=self.methods,
+            action=fn,
         ))
         return fn
 

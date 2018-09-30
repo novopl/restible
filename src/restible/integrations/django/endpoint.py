@@ -143,7 +143,7 @@ class DjangoEndpoint(RestEndpoint):
                 url, res_cls, opts = entry
 
             if isinstance(res_cls, type) and issubclass(res_cls, RestResource):
-                endpoint = cls(res_cls, **opts)
+                endpoint = cls(res_cls=res_cls, **opts)
             elif isinstance(res_cls, RestEndpoint):
                 endpoint = res_cls
             else:

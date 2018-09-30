@@ -2,13 +2,13 @@
 restible documentation
 ######################
 
-Reference
-=========
+Table of Contents
+=================
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
 
-    ref/restible/index
+    Code Reference <ref/restible/index>
 
 .. include:: ../README.rst
     :start-after: readme_inclusion_marker
