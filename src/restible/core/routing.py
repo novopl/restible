@@ -19,6 +19,7 @@ class ActionMeta(object):
     generic = attr.ib()
     protected = attr.ib()
     methods = attr.ib()
+    action = attr.ib()
 
 
 @attr.s
@@ -40,7 +41,7 @@ class api_route(object):
 
     def __init__(self, methods=None):
         self.meta = RouteMeta(
-            method=[m.lower() for m in (methods or ['post'])]
+            methods=[m.lower() for m in (methods or ['post'])]
         )
 
     def __call__(self, fn):
