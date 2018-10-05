@@ -10,7 +10,7 @@ import json
 # 3rd party imports
 from django.conf.urls import url
 from django.http import JsonResponse
-from six import iteritems
+from six import iteritems       # pylint: disable=wrong-import-order
 
 # local imports
 from restible import api_action, RestEndpoint, RestResource, RawResponse
