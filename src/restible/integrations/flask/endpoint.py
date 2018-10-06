@@ -71,7 +71,7 @@ class FlaskEndpoint(RestEndpoint):
             else:
                 url, res_cls, opts = entry
 
-            endpoint = cls(res_cls, **opts)
+            endpoint = cls(res_cls=res_cls, **opts)
             endpoint._register_routes(app, url)
 
             cls.endpoints.append(endpoint)
