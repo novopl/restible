@@ -28,27 +28,30 @@ jobs:
           name: Test
           command: tox
 
+      - save_cache:
+          key: tox-rev3-{{ checksum "requirements.txt" }}-{{ checksum "ops/devrequirements.txt" }}
+          paths:
+          - .tox
+
       - run:
-          name: Generate Docs
-          command: peltak docs
+          name: Build Documentation
+          command: |
+            peltak docs --recreate --run-doctests
+            mv docs/html docs/peltak-docs
+            cd docs && zip -r ../.build/peltak-docs.zip peltak-docs
 
       - save_cache:
           key: deps-rev1-{{ checksum "requirements.txt" }}
           paths:
           - /usr/local/bin
           - /usr/local/lib/python3.6/site-packages
-      - save_cache:
-          key: tox-rev3-{{ checksum "requirements.txt" }}-{{ checksum "ops/devrequirements.txt" }}
-          paths:
-          - .tox
       - store_test_results:
           path: .build
       - store_artifacts:
           path: .build/coverage/
           destination: coverage
       - store_artifacts:
-          path: docs/html
-          destination: docs
+          path: .build/peltak-docs.zip
 
   release:
     docker:

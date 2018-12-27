@@ -26,6 +26,7 @@ env
 .tox
 /dist
 /docs/html/
+/docs/doctest/
 /docs/ref
 
 
