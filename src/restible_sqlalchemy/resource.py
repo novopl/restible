@@ -13,7 +13,7 @@ from serafin import Fieldspec
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 
 # local imports
-from restible.core.model import ModelResource
+from restible.model import ModelResource
 
 
 L = getLogger(__name__)

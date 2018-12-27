@@ -6,7 +6,7 @@ from __future__ import absolute_import, unicode_literals
 import pytest
 
 # Project imports
-from restible.core import params
+from restible import params
 
 
 @pytest.mark.parametrize('data', (
