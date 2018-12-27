@@ -11,7 +11,7 @@ from mock import Mock, patch
 
 # local imports
 from restible import RestResource
-from restible.integrations.django import DjangoEndpoint
+from restible_django import DjangoEndpoint
 
 
 #####################

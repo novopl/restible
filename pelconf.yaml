@@ -9,9 +9,14 @@ commands:
   - peltak.commands.docs
   - peltak.commands.git
   - peltak.commands.lint
-  - peltak.commands.release
   - peltak.commands.test
   - peltak.commands.version
+  - peltak.extra.gitflow
+
+clean:
+  exclude:
+    - '.tox'
+    - 'env'
 
 
 lint:
