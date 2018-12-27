@@ -10,13 +10,13 @@ frameworks as well..
 from __future__ import absolute_import, unicode_literals
 
 # package interface
-from .core.endpoint import RestEndpoint, RawResponse
-from .core.model import ModelResource
-from .core.resource import RestResource
-from .core.routing import api_action
-from .core.routing import api_route
+from .endpoint import RestEndpoint, RawResponse
+from .model import ModelResource
+from .resource import RestResource
+from .routing import api_action
+from .routing import api_route
 
-__version__ = '0.4.1'
+__version__ = '0.5'
 
 __all__ = [
     'api_action',

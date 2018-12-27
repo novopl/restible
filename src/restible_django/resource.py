@@ -8,7 +8,7 @@ from __future__ import absolute_import, unicode_literals
 from django.db.utils import IntegrityError
 
 # local imports
-from restible.core.model import ModelResource
+from restible.model import ModelResource
 
 
 class DjangoResource(ModelResource):

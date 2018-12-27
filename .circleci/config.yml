@@ -17,6 +17,7 @@ jobs:
             which pip
             which python
             pip install -r requirements.txt
+            pip install -r ops/devrequirements.txt
             peltak --help
 
       - run:
@@ -27,27 +28,30 @@ jobs:
           name: Test
           command: tox
 
+      - save_cache:
+          key: tox-rev3-{{ checksum "requirements.txt" }}-{{ checksum "ops/devrequirements.txt" }}
+          paths:
+          - .tox
+
       - run:
-          name: Generate Docs
-          command: peltak docs
+          name: Build Documentation
+          command: |
+            peltak docs --recreate --run-doctests
+            mv docs/html docs/peltak-docs
+            cd docs && zip -r ../.build/peltak-docs.zip peltak-docs
 
       - save_cache:
           key: deps-rev1-{{ checksum "requirements.txt" }}
           paths:
           - /usr/local/bin
           - /usr/local/lib/python3.6/site-packages
-      - save_cache:
-          key: tox-rev3-{{ checksum "requirements.txt" }}-{{ checksum "ops/devrequirements.txt" }}
-          paths:
-          - .tox
       - store_test_results:
           path: .build
       - store_artifacts:
           path: .build/coverage/
           destination: coverage
       - store_artifacts:
-          path: docs/html
-          destination: docs
+          path: .build/peltak-docs.zip
 
   release:
     docker:
@@ -57,8 +61,8 @@ jobs:
       - restore_cache:
           key: deps-rev1-{{ checksum "requirements.txt" }}
       - run: python setup.py develop
-      - run: peltak release gen-pypirc
-      - run: peltak release upload pypi
+      - run: peltak pypi configure
+      - run: peltak pypi upload
       - run: rm ~/.pypirc
       - run: peltak release tag
       - run: "git push origin v$(peltak version --porcelain)"

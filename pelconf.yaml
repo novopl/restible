@@ -3,15 +3,21 @@ src_dir: src
 src_path: src/restible
 build_dir: .build
 version_file: src/restible/__init__.py
-django_test_settings: 'test.django.settings'
+django_test_settings: 'test.restible_django.settings'
 
 commands:
   - peltak.commands.docs
   - peltak.commands.git
   - peltak.commands.lint
-  - peltak.commands.release
   - peltak.commands.test
   - peltak.commands.version
+  - peltak.extra.gitflow
+  - peltak.extra.pypi
+
+clean:
+  exclude:
+    - '.tox'
+    - 'env'
 
 
 lint:

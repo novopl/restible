@@ -12,7 +12,7 @@ from serafin import Fieldspec
 from six import iteritems
 
 # local imports
-from restible.core.model import ModelResource
+from restible.model import ModelResource
 
 
 L = getLogger(__name__)

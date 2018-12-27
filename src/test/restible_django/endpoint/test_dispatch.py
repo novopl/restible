@@ -7,7 +7,7 @@ import pytest
 
 # Project imports
 from restible import RestResource
-from restible.integrations.django import DjangoEndpoint
+from restible_django import DjangoEndpoint
 
 
 class ReadOnlyResource(RestResource):
