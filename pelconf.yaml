@@ -12,6 +12,7 @@ commands:
   - peltak.commands.test
   - peltak.commands.version
   - peltak.extra.gitflow
+  - peltak.extra.pypi
 
 clean:
   exclude:
