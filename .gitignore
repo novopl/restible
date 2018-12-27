@@ -2,12 +2,6 @@
 # Work in progress #
 ####################
 
-######################
-# Symlinks for tests #
-######################
-igor/*.py
-igor/util
-
 ##############
 # Temp files #
 ##############
@@ -16,11 +10,6 @@ igor/util
 cache.sqlite
 .cache
 .DS_Store
-
-################
-# Secret files #
-################
-config_secret.py
 
 ################
 # Python files #
@@ -35,8 +24,7 @@ __pycache__
 env
 .build
 .tox
-frontend/dist
-frontend/node_modules
+/dist
 /docs/html/
 /docs/ref
 
@@ -44,7 +32,6 @@ frontend/node_modules
 ##############
 # Data files #
 ##############
-data/
 *.db
 *.sqlite3
 *.ipynb
