@@ -17,6 +17,7 @@ jobs:
             which pip
             which python
             pip install -r requirements.txt
+            pip install -r ops/devrequirements.txt
             peltak --help
 
       - run:
