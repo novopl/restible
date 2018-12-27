@@ -16,7 +16,7 @@ from .resource import RestResource
 from .routing import api_action
 from .routing import api_route
 
-__version__ = '0.4.1'
+__version__ = '0.5'
 
 __all__ = [
     'api_action',
