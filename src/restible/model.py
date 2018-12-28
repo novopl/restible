@@ -6,7 +6,7 @@ from __future__ import absolute_import, unicode_literals
 from logging import getLogger
 
 # 3rd party imports
-from jsonschema import validate, ValidationError
+import jsonschema
 from serafin import Fieldspec, serialize
 from six import iteritems
 
@@ -49,8 +49,8 @@ class ModelResource(RestResource):
             If the validation fails. No value is returned.
         """
         try:
-            validate(data, schema or self.schema)
-        except ValidationError as ex:
+            jsonschema.validate(data, schema or self.schema)
+        except jsonschema.ValidationError as ex:
             raise ModelResource.ValidationError(ex)
 
     def serialize(self, item_or_items, spec=None):
@@ -84,7 +84,7 @@ class ModelResource(RestResource):
     @property
     def public_props(self):
         """ All public properties on the resource model. """
-        if self._public_props is None:
+        if not hasattr(self, '_public_props'):
             self._public_props = [
                 name for name, _ in iter_public_props(self.model)
             ]
@@ -161,7 +161,7 @@ class ModelResource(RestResource):
             if item is not None:
                 return 200, self.serialize(item, spec)
             else:
-                return 404, {'detail': "Not found"}
+                return 404, {'detail': "Not Found"}
 
         except NotImplementedError:
             return 404, {'detail': 'Not Found'}
@@ -201,7 +201,7 @@ class ModelResource(RestResource):
             item = self.get_requested(request)
 
             if item is None:
-                return 404, {'detail': 'Item does not exist'}
+                return 404, {'detail': 'Not Found'}
 
             self.delete_item(item)
 

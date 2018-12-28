@@ -1,4 +1,5 @@
 pelconf_version: '1'
+
 src_dir: src
 src_path: src/restible
 build_dir: .build
@@ -37,7 +38,11 @@ test:
     default:
       paths:
         - src/test
-    no_django:
-      mark: 'not django'
+
+    core:
       paths:
-        - src/test
+        - src/test/restible
+
+    django:
+      paths:
+        - src/test/restible_django
