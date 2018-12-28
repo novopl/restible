@@ -53,7 +53,7 @@ class ModelResource(RestResource):
         except ValidationError as ex:
             raise ModelResource.ValidationError(ex)
 
-    def serialize(self, item_or_items):
+    def serialize(self, item_or_items, spec=None):
         """ Serialize an item or items into a dict.
 
         This will just call serafin.serialize using the model spec (defined
@@ -64,7 +64,10 @@ class ModelResource(RestResource):
             A dict with python native content. Can be easily dumped to any
             format like JSON or YAML.
         """
-        return serialize(item_or_items, self.spec)
+        if spec is None:
+            spec = self.spec
+
+        return serialize(item_or_items, spec)
 
     def deserialize(self, data):
         """ Convert JSON data into model field types.
@@ -122,7 +125,7 @@ class ModelResource(RestResource):
             items = self.dbquery(request, filters)
 
             spec = Fieldspec(self.spec).restrict(Fieldspec(fields))
-            ret = serialize(items, spec)
+            ret = self.serialize(items, spec)
             return 200, ret
 
         except NotImplementedError:
@@ -136,7 +139,7 @@ class ModelResource(RestResource):
             values = self.deserialize(data)
             item = self.create_item(values)
 
-            return serialize(item, self.spec)
+            return self.serialize(item)
 
         except ModelResource.ValidationError as ex:
             return 400, {'detail': str(ex)}
@@ -156,7 +159,7 @@ class ModelResource(RestResource):
             item = self.get_requested(request)
 
             if item is not None:
-                return 200, serialize(item, spec)
+                return 200, self.serialize(item, spec)
             else:
                 return 404, {'detail': "Not found"}
 
@@ -182,7 +185,7 @@ class ModelResource(RestResource):
             item = self.update_item(request, values)
 
             if item is not None:
-                return 200, serialize(item, self.spec)
+                return 200, self.serialize(item)
             else:
                 return 404, {'detail': "Not Found"}
 
