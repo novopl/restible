@@ -35,8 +35,10 @@ setup(
     package_dir={'': 'src'},
     packages=find_packages('src', exclude=('test', 'test.*')),
     install_requires=[
-        l.strip() for l in read('requirements.txt').split()
-        if l.strip() and not l.lstrip().startswith('#')
+        'attrs>=17.0.0',
+        'jsonschema~=2.6.0',
+        'serafin>=0.11.0',
+        'six>=1.0.0',
     ],
     classifiers=[
         "Development Status :: 4 - Beta",
