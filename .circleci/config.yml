@@ -60,22 +60,23 @@ jobs:
       - checkout
       - restore_cache:
           key: deps-rev1-{{ checksum "requirements.txt" }}
-      - run:
-        name: Setup
-        command: python setup.py develop
 
       - run:
-        name: Upload to pypi
-        command: |
-          peltak pypi configure
-          peltak pypi upload
-          rm ~/.pypirc
+          name: Setup
+          command: python setup.py develop
 
       - run:
-        name: Create release tag
-        command: |
-          peltak release tag -m "$(peltak changelog)"
-          git push origin v$(peltak version --porcelain)
+          name: Upload to pypi
+          command: |
+            peltak pypi configure
+            peltak pypi upload
+            rm ~/.pypirc
+
+      - run:
+          name: Create release tag
+          command: |
+            peltak release tag -m "$(peltak changelog)"
+            git push origin v$(peltak version --porcelain)
 
 
 workflows:
