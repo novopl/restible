@@ -19,7 +19,7 @@ from logging import getLogger
 
 # local imports
 from .resource import RestResource
-from .routing import api_action
+from .actions import api_action
 from . import params
 
 
