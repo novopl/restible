@@ -9,15 +9,19 @@ across different frameworks. The main motivation was that the framework used
 is often dictated by requirements and I wanted to have a concise way of writing
 API endpoints no matter the underlying framework.
 
-**WARNING: Pre release state**: The library is not ready for general public. The
-core has a pretty good test coverage but the integrations with frameworks don't.
-A large part of the code is documented through docstrings but the general
-purpose docs are not written yet nor are any tutorials. The project versioning
-is also a bit random at this point, but will follow semantic versioning from now
-on. Until 1.0 the minor version bumps will have changes to the interface that
-in some cases might break existing code. The patch version updates will have
-backwards compatible code.
+.. note::
+The project follows the semantic versioning scheme: Until 1.0 the minor
 
+        * The *patch* versions only include bugfixes and changes that do not
+          modify the existing interface. You can safely update a patch version
+          without worrying it will break your code.
+        * The *minor* versions will contain changes to the interface. With a
+          single version update your code will most likely work or might require
+          small adjustments. The more minor versions you update at once the
+          bigger the chance that something will brake.
+        * The *major* versions are reserved for significant refactorings and
+          architecture changes. This should not happen very often so the major
+          version should not change much.
 
 .. note::
     The CircleCI builds can be found
@@ -34,8 +38,13 @@ Installation
 Contributing
 ============
 
-Setting up development repo
----------------------------
+.. note::
+    The library has a pretty good test coverage but not yet at 100%. A large
+    part of the code is documented through docstrings but the general purpose
+    docs are not written yet nor are any tutorials.
+
+Cloning and setting up the development repo
+-------------------------------------------
 
 .. code-block:: shell
 
