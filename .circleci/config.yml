@@ -7,18 +7,19 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: deps-rev1-{{ checksum "requirements.txt" }}
+          key: deps-rev1-{{ checksum "setup.py" }}
       - restore_cache:
-          key: tox-rev3-{{ checksum "requirements.txt" }}-{{ checksum "ops/devrequirements.txt" }}
+          key: tox-rev3-{{ checksum "setup.py" }}-{{ checksum "ops/devrequirements.txt" }}
 
       - run:
           name: Setup dependencies
           command: |
             which pip
             which python
-            pip install -r requirements.txt
             pip install -r ops/devrequirements.txt
+            pip install .
             peltak --help
+            pylint --version
 
       - run:
           name: Lint
@@ -29,7 +30,7 @@ jobs:
           command: tox
 
       - save_cache:
-          key: tox-rev3-{{ checksum "requirements.txt" }}-{{ checksum "ops/devrequirements.txt" }}
+          key: tox-rev3-{{ checksum "setup.py" }}-{{ checksum "ops/devrequirements.txt" }}
           paths:
           - .tox
 
@@ -41,7 +42,7 @@ jobs:
             cd docs && zip -r ../.build/peltak-docs.zip peltak-docs
 
       - save_cache:
-          key: deps-rev1-{{ checksum "requirements.txt" }}
+          key: deps-rev1-{{ checksum "setup.py" }}
           paths:
           - /usr/local/bin
           - /usr/local/lib/python3.6/site-packages
@@ -59,7 +60,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: deps-rev1-{{ checksum "requirements.txt" }}
+          key: deps-rev1-{{ checksum "setup.py" }}
 
       - run:
           name: Setup

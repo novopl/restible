@@ -36,6 +36,9 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 
+# For dev environment or CI runs, install this package using `pip install .`
+# For god knows why, if you install with python setup.py install or develop
+# pylint will treat six as a local package and complain about import order o_O
 setup(
     name="restible",
     version=read_version(),
