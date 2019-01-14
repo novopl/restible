@@ -40,7 +40,7 @@ def test_returns_all_properties():
     res = FakeRes()
 
     assert len(res.public_props) == 2
-    assert res.public_props == ['prop1', 'prop2']
+    assert set(res.public_props) == {'prop1', 'prop2'}
 
 
 # Used only in type hint comments. Will be removed together with py2 support
