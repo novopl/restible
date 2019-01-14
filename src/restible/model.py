@@ -6,7 +6,7 @@ from __future__ import absolute_import, unicode_literals
 from logging import getLogger
 
 # 3rd party imports
-from jsonschema import validate, ValidationError
+import jsonschema
 from serafin import Fieldspec, serialize
 from six import iteritems
 
@@ -49,11 +49,11 @@ class ModelResource(RestResource):
             If the validation fails. No value is returned.
         """
         try:
-            validate(data, schema or self.schema)
-        except ValidationError as ex:
+            jsonschema.validate(data, schema or self.schema)
+        except jsonschema.ValidationError as ex:
             raise ModelResource.ValidationError(ex)
 
-    def serialize(self, item_or_items):
+    def serialize(self, item_or_items, spec=None):
         """ Serialize an item or items into a dict.
 
         This will just call serafin.serialize using the model spec (defined
@@ -64,7 +64,10 @@ class ModelResource(RestResource):
             A dict with python native content. Can be easily dumped to any
             format like JSON or YAML.
         """
-        return serialize(item_or_items, self.spec)
+        if spec is None:
+            spec = self.spec
+
+        return serialize(item_or_items, spec)
 
     def deserialize(self, data):
         """ Convert JSON data into model field types.
@@ -81,7 +84,7 @@ class ModelResource(RestResource):
     @property
     def public_props(self):
         """ All public properties on the resource model. """
-        if self._public_props is None:
+        if not hasattr(self, '_public_props'):
             self._public_props = [
                 name for name, _ in iter_public_props(self.model)
             ]
@@ -99,7 +102,7 @@ class ModelResource(RestResource):
         """ Update existing model item. """
         raise NotImplementedError("Must implement .delete_item()")
 
-    def dbquery(self, request, filters):
+    def query_items(self, request, filters):
         """ Return a model query with the given filters.
 
         The query can be further customised like any ndb query.
@@ -107,11 +110,24 @@ class ModelResource(RestResource):
         :return google.appengine.ext.ndb.Query:
             The query with the given filters already applied.
         """
-        raise NotImplementedError("Must implement .dbquery()")
+        raise NotImplementedError("Must implement .query_items()")
 
-    def get_requested(self, request):
-        """ Get requested item. """
-        raise NotImplementedError("Must implement .get_requested()")
+    def get_item(self, request):
+        """ Get an item associated with the request.
+
+        This is used by all detail views/actions to get the item that the
+        request is concerned with (usually from the URL). This is an
+        implementation detail and is highly dependant on the underlying web
+        framework used.
+
+        :param request:
+            HTTP request.
+        :return RestResource:
+            The item associated with the request.
+        """
+        raise NotImplementedError("{}.get_item() not implemented".format(
+            self.__class__.__name__
+        ))
 
     def rest_query(self, request, params):
         """ Query existing records as a list. """
@@ -119,10 +135,10 @@ class ModelResource(RestResource):
             fields = params.pop('_fields', '*')
 
             filters = self.deserialize(params)
-            items = self.dbquery(request, filters)
+            items = self.query_items(request, filters)
 
             spec = Fieldspec(self.spec).restrict(Fieldspec(fields))
-            ret = serialize(items, spec)
+            ret = self.serialize(items, spec)
             return 200, ret
 
         except NotImplementedError:
@@ -136,7 +152,7 @@ class ModelResource(RestResource):
             values = self.deserialize(data)
             item = self.create_item(values)
 
-            return serialize(item, self.spec)
+            return self.serialize(item)
 
         except ModelResource.ValidationError as ex:
             return 400, {'detail': str(ex)}
@@ -156,9 +172,9 @@ class ModelResource(RestResource):
             item = self.get_requested(request)
 
             if item is not None:
-                return 200, serialize(item, spec)
+                return 200, self.serialize(item, spec)
             else:
-                return 404, {'detail': "Not found"}
+                return 404, {'detail': "Not Found"}
 
         except NotImplementedError:
             return 404, {'detail': 'Not Found'}
@@ -182,7 +198,7 @@ class ModelResource(RestResource):
             item = self.update_item(request, values)
 
             if item is not None:
-                return 200, serialize(item, self.spec)
+                return 200, self.serialize(item)
             else:
                 return 404, {'detail': "Not Found"}
 
@@ -198,7 +214,7 @@ class ModelResource(RestResource):
             item = self.get_requested(request)
 
             if item is None:
-                return 404, {'detail': 'Item does not exist'}
+                return 404, {'detail': 'Not Found'}
 
             self.delete_item(item)
 

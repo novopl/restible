@@ -8,7 +8,7 @@ from __future__ import absolute_import, unicode_literals
 import inspect
 import re
 
-from .routing import api_action
+from .actions import api_action
 
 
 class RestResource(object):

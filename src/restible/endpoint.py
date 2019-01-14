@@ -19,7 +19,7 @@ from logging import getLogger
 
 # local imports
 from .resource import RestResource
-from .routing import api_action
+from .actions import api_action
 from . import params
 
 
@@ -114,7 +114,7 @@ class RestEndpoint(object):
 
         The unified format is ``(status, headers, data)``.
 
-        :param tuple|dict|list result:
+        :param tuple|dict|list|RawResponse result:
             The result as returned from the handler
         :param int default_status:
             Default HTTP status to use (if result contains none).
@@ -133,6 +133,8 @@ class RestEndpoint(object):
                 status, data = result
             elif len(result) == 3:
                 status, headers, data = result
+            else:
+                raise ValueError("REST result has too many items")
 
         elif isinstance(result, RawResponse):
             return result

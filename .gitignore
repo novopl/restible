@@ -58,3 +58,4 @@ tmp
 .idea
 .directory
 .coverage
+.pytest_cache
