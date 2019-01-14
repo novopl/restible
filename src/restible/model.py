@@ -102,7 +102,7 @@ class ModelResource(RestResource):
         """ Update existing model item. """
         raise NotImplementedError("Must implement .delete_item()")
 
-    def dbquery(self, request, filters):
+    def query_items(self, request, filters):
         """ Return a model query with the given filters.
 
         The query can be further customised like any ndb query.
@@ -110,11 +110,24 @@ class ModelResource(RestResource):
         :return google.appengine.ext.ndb.Query:
             The query with the given filters already applied.
         """
-        raise NotImplementedError("Must implement .dbquery()")
+        raise NotImplementedError("Must implement .query_items()")
 
-    def get_requested(self, request):
-        """ Get requested item. """
-        raise NotImplementedError("Must implement .get_requested()")
+    def get_item(self, request):
+        """ Get an item associated with the request.
+
+        This is used by all detail views/actions to get the item that the
+        request is concerned with (usually from the URL). This is an
+        implementation detail and is highly dependant on the underlying web
+        framework used.
+
+        :param request:
+            HTTP request.
+        :return RestResource:
+            The item associated with the request.
+        """
+        raise NotImplementedError("{}.get_item() not implemented".format(
+            self.__class__.__name__
+        ))
 
     def rest_query(self, request, params):
         """ Query existing records as a list. """
@@ -122,7 +135,7 @@ class ModelResource(RestResource):
             fields = params.pop('_fields', '*')
 
             filters = self.deserialize(params)
-            items = self.dbquery(request, filters)
+            items = self.query_items(request, filters)
 
             spec = Fieldspec(self.spec).restrict(Fieldspec(fields))
             ret = self.serialize(items, spec)

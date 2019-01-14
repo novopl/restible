@@ -23,16 +23,16 @@ class FakeRes(ModelResource):
     }
 
 
-def test_uses_ModelResource_dbquery():
+def test_uses_ModelResource_query_items():
     res = FakeRes()
-    res.dbquery = Mock(return_value=[
+    res.query_items = Mock(return_value=[
         {'name': 'instance1'},
         {'name': 'instance2'},
     ])
 
     result = res.rest_query(None, {})
 
-    res.dbquery.assert_called_once()
+    res.query_items.assert_called_once()
 
     assert result[0] == 200
     assert result[1] == [
@@ -41,7 +41,7 @@ def test_uses_ModelResource_dbquery():
     ]
 
 
-def test_returns_404_if_the_resource_does_not_implement_dbquery():
+def test_returns_404_if_the_resource_does_not_implement_query_items():
     res = FakeRes()
 
     req_data = {'name': 'fake request data'}
