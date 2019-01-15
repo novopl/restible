@@ -8,8 +8,6 @@ jobs:
       - checkout
       - restore_cache:
           key: deps-rev1-{{ checksum "setup.py" }}
-      - restore_cache:
-          key: tox-rev3-{{ checksum "setup.py" }}-{{ checksum "ops/devrequirements.txt" }}
 
       - run:
           name: Setup dependencies
@@ -25,12 +23,15 @@ jobs:
           name: Lint
           command: peltak lint
 
+      - restore_cache:
+          key: tox-rev4-{{ checksum "setup.py" }}-{{ checksum "ops/devrequirements.txt" }}
+
       - run:
           name: Test
           command: tox
 
       - save_cache:
-          key: tox-rev3-{{ checksum "setup.py" }}-{{ checksum "ops/devrequirements.txt" }}
+          key: tox-rev4-{{ checksum "setup.py" }}-{{ checksum "ops/devrequirements.txt" }}
           paths:
           - .tox
 
