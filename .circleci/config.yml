@@ -53,7 +53,8 @@ jobs:
           path: .build/coverage/
           destination: coverage
       - store_artifacts:
-          path: .build/peltak-docs.zip
+          path: .build/restible-docs.zip
+          destination: restible-docs.zip
 
   release:
     docker:
