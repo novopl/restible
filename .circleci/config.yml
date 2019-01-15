@@ -14,8 +14,8 @@ jobs:
           command: |
             which pip
             which python
-            pip install -r ops/devrequirements.txt
             pip install .
+            pip install -r ops/devrequirements.txt
             peltak --help
             pylint --version
 
@@ -39,8 +39,8 @@ jobs:
           name: Build Documentation
           command: |
             peltak docs --recreate --run-doctests
-            mv docs/html docs/peltak-docs
-            cd docs && zip -r ../.build/peltak-docs.zip peltak-docs
+            mv docs/html docs/restible-docs
+            cd docs && zip -r ../.build/restible-docs.zip restible-docs
 
       - save_cache:
           key: deps-rev1-{{ checksum "setup.py" }}
