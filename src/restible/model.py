@@ -183,7 +183,7 @@ class ModelResource(RestResource):
             fields = Fieldspec(params.get('_fields', '*'))
 
             spec = Fieldspec(self.spec).restrict(fields)
-            item = self.get_requested(request)
+            item = self.get_item(request)
 
             if item is not None:
                 return 200, self.serialize(item, spec)
