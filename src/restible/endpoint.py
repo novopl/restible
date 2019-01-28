@@ -31,6 +31,9 @@ from __future__ import absolute_import, unicode_literals
 from collections import namedtuple
 from logging import getLogger
 
+# 3rd party imports
+import jsonschema
+
 # local imports
 from .resource import RestResource
 from .actions import api_action
@@ -215,11 +218,12 @@ class RestEndpoint(object):
             True if we should call a generic actions. Generic actions are
             executed globally for the resource. Non-generic actions are called
             on one specific resource instance.
+
         :return RestResult:
             RestResult tuple with the result of the REST call. This can be
             easily converted to any underlying framework.
         """
-        action = self.find_action(name, is_generic)
+        action = self.find_action(name, is_generic, method)
         if action is None:
             return RestResult(404, {}, {'detail': "{} has no action: {}".format(
                 self.resource.name, name
@@ -242,11 +246,18 @@ class RestEndpoint(object):
         payload = self.extract_request_data(request)
         qs = self.extract_request_query_string(request)
         action_params = params.parse(qs)
+
+        if meta.schema is not None:
+            try:
+                jsonschema.validate(payload, meta.schema)
+            except jsonschema.ValidationError as ex:
+                return RestResult(400, {}, {'detail': str(ex)})
+
         result = action(request, action_params, payload)
 
         return self.process_result(result, 200)
 
-    def find_action(self, name, generic):
+    def find_action(self, name, generic, method='post'):
         """ Find API action by name and kind.
 
         :param str name:
@@ -259,22 +270,19 @@ class RestEndpoint(object):
             Action handler with it's associated metadata. THe metadata can
             be accessed using ``api_action.get_meta(action)``
         """
+        method = method.lower()
+
         for action in self.resource.rest_actions():
             meta = api_action.get_meta(action)
 
-            if meta.name == name and meta.generic == generic:
+            if (
+                    meta.name == name and
+                    meta.generic == generic and
+                    method in meta.methods
+            ):
                 return action
 
         return None
-
-    def call_action(self, request, action):
-        """ Call API action. """
-        payload = self.extract_request_data(request)
-        qs = self.extract_request_query_string(request)
-        action_params = params.parse(qs)
-
-        L.info("Calling action {}".format(action))
-        return action(request, action_params, payload)
 
     @classmethod
     def determine_rest_verb(cls, http_method, pk):
