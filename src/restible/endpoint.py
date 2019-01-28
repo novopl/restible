@@ -31,6 +31,9 @@ from __future__ import absolute_import, unicode_literals
 from collections import namedtuple
 from logging import getLogger
 
+# 3rd party imports
+import jsonschema
+
 # local imports
 from .resource import RestResource
 from .actions import api_action
@@ -243,6 +246,13 @@ class RestEndpoint(object):
         payload = self.extract_request_data(request)
         qs = self.extract_request_query_string(request)
         action_params = params.parse(qs)
+
+        if meta.schema is not None:
+            try:
+                jsonschema.validate(payload, meta.schema)
+            except jsonschema.ValidationError as ex:
+                return RestResult(400, {}, {'detail': str(ex)})
+
         result = action(request, action_params, payload)
 
         return self.process_result(result, 200)

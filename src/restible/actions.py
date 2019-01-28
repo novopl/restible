@@ -32,6 +32,7 @@ class ActionMeta(object):
     protected = attr.ib()
     methods = attr.ib()
     action = attr.ib()
+    schema = attr.ib()
 
 
 class api_action(object):
@@ -41,10 +42,12 @@ class api_action(object):
     """
     ACTION_ATTR = '__api_action__'
 
-    def __init__(self, name=None, generic=False, protected=True, methods=None):
+    def __init__(self, name=None, generic=False, protected=True, methods=None,
+                 schema=None):
         self.name = name
         self.generic = generic
         self.protected = protected
+        self.schema = schema
         self.methods = [m.lower() for m in (methods or ['post'])]
 
     def __call__(self, fn):
@@ -54,6 +57,7 @@ class api_action(object):
             generic=self.generic,
             protected=self.protected,
             methods=self.methods,
+            schema=self.schema,
             action=fn,
         ))
         return fn
