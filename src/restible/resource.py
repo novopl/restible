@@ -21,6 +21,7 @@ from __future__ import absolute_import, unicode_literals
 # stdlib imports
 import inspect
 import re
+from typing import Text
 
 from .actions import api_action
 
@@ -84,22 +85,37 @@ class RestResource(object):
                 'underscores and cannot start with a digit'
             )
 
-    def get_requested(self, request):
-        """ Get an item associated with the request.
+    def implements(self, rest_verb):
+        # type: (Text) -> bool
+        """ Check whether this resource implements a given REST verb.
 
-        This is used by all detail views/actions to get the item that the
-        request is concerned with (usually from the URL). This is an
-        implementation detail and is highly dependant on the underlying web
-        framework used.
+        Args:
+            rest_verb (str):
+                The REST verb you want to check. Possible values are *create*,
+                *query*, *get*, *update* and *delete*.
 
-        :param request:
-            HTTP request.
-        :return RestResource:
-            The item associated with the request.
+        Returns:
+            bool: **True** if the given REST verb is implemented, **False**
+                otherwise.
         """
-        raise NotImplementedError("{}.get_requested() not implemented".format(
-            self.__class__.__name__
-        ))
+        test = {
+            'create': lambda: self.rest_create(None, {}),
+            'query': lambda: self.rest_query(None, {}),
+            'get': lambda: self.rest_get(None, {}),
+            'update': lambda: self.rest_update(None, {}),
+            'delete': lambda: self.rest_delete(None),
+        }.get(rest_verb)
+
+        if test:
+            try:
+                test()
+                return True
+            except NotImplementedError:
+                return False
+            except:
+                return True
+        else:
+            return False
 
     def rest_query(self, request, params):
         """ GET list. """
@@ -142,3 +158,7 @@ class RestResource(object):
         raise NotImplementedError("{}.rest_head() not implemented".format(
             self.__class__.__name__
         ))
+
+
+# Used only in type hint comments
+del Text

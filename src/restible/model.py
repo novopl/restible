@@ -18,6 +18,7 @@ from __future__ import absolute_import, unicode_literals
 
 # stdlib imports
 from logging import getLogger
+from typing import Text
 
 # 3rd party imports
 import jsonschema
@@ -94,6 +95,38 @@ class ModelResource(RestResource):
     def get_field_value(self, name, value):
         """ Coerce value to a model field compatible representation. """
         return value
+
+    def implements(self, rest_verb):
+        # type: (Text) -> bool
+        """ Check whether this model resource implements a given REST verb.
+
+        Args:
+            rest_verb (str):
+                The REST verb you want to check. Possible values are *create*,
+                *query*, *get*, *update* and *delete*.
+
+        Returns:
+            bool: **True** if the given REST verb is implemented, **False**
+                otherwise.
+        """
+        test = {
+            'create': lambda: self.create_item({}),
+            'query': lambda: self.query_items(None, {}),
+            'get': lambda: self.get_item(None),
+            'update': lambda: self.update_item(None, {}),
+            'delete': lambda: self.delete_item({}),
+        }.get(rest_verb)
+
+        if test:
+            try:
+                test()
+                return True
+            except NotImplementedError:
+                return False
+            except:
+                return True
+        else:
+            return False
 
     @property
     def public_props(self):
@@ -225,7 +258,7 @@ class ModelResource(RestResource):
     def rest_delete(self, request):
         """ DELETE detail. """
         try:
-            item = self.get_requested(request)
+            item = self.get_item(request)
 
             if item is None:
                 return 404, {'detail': 'Not Found'}
@@ -236,3 +269,7 @@ class ModelResource(RestResource):
 
         except NotImplementedError:
             return 404, {'detail': 'Not Found'}
+
+
+# Used only in type hint comments
+del Text
