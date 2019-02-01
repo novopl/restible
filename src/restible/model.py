@@ -18,6 +18,7 @@ from __future__ import absolute_import, unicode_literals
 
 # stdlib imports
 from logging import getLogger
+from typing import Text
 
 # 3rd party imports
 import jsonschema
@@ -225,7 +226,7 @@ class ModelResource(RestResource):
     def rest_delete(self, request):
         """ DELETE detail. """
         try:
-            item = self.get_requested(request)
+            item = self.get_item(request)
 
             if item is None:
                 return 404, {'detail': 'Not Found'}
@@ -236,3 +237,7 @@ class ModelResource(RestResource):
 
         except NotImplementedError:
             return 404, {'detail': 'Not Found'}
+
+
+# Used only in type hint comments
+del Text

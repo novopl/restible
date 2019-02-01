@@ -25,7 +25,7 @@ class FakeRes(ModelResource):
 
 def test_uses_ModelResource_delete_item():
     res = FakeRes()
-    res.get_requested = Mock()
+    res.get_item = Mock()
     res.delete_item = Mock()
 
     result = res.rest_delete(None)
@@ -36,9 +36,9 @@ def test_uses_ModelResource_delete_item():
     assert result[1] == {}
 
 
-def test_returns_404_if_get_requested_returns_None():
+def test_returns_404_if_get_get_item_returns_None():
     res = FakeRes()
-    res.get_requested = Mock(return_value=None)
+    res.get_item = Mock(return_value=None)
 
     result = res.rest_delete(None)
 
@@ -48,7 +48,7 @@ def test_returns_404_if_get_requested_returns_None():
 
 def test_returns_404_if_the_resource_does_not_implement_delete_item():
     res = FakeRes()
-    res.get_requested = Mock()
+    res.get_item = Mock()
 
     result = res.rest_delete(None)
 

@@ -21,6 +21,7 @@ from __future__ import absolute_import, unicode_literals
 # stdlib imports
 import inspect
 import re
+from typing import Text
 
 from .actions import api_action
 
@@ -84,22 +85,6 @@ class RestResource(object):
                 'underscores and cannot start with a digit'
             )
 
-    def get_requested(self, request):
-        """ Get an item associated with the request.
-
-        This is used by all detail views/actions to get the item that the
-        request is concerned with (usually from the URL). This is an
-        implementation detail and is highly dependant on the underlying web
-        framework used.
-
-        :param request:
-            HTTP request.
-        :return RestResource:
-            The item associated with the request.
-        """
-        raise NotImplementedError("{}.get_requested() not implemented".format(
-            self.__class__.__name__
-        ))
 
     def rest_query(self, request, params):
         """ GET list. """
@@ -142,3 +127,7 @@ class RestResource(object):
         raise NotImplementedError("{}.rest_head() not implemented".format(
             self.__class__.__name__
         ))
+
+
+# Used only in type hint comments
+del Text
