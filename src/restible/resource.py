@@ -85,6 +85,37 @@ class RestResource(object):
                 'underscores and cannot start with a digit'
             )
 
+    def implements(self, rest_verb):
+        # type: (Text) -> bool
+        """ Check whether this resource implements a given REST verb.
+
+        Args:
+            rest_verb (str):
+                The REST verb you want to check. Possible values are *create*,
+                *query*, *get*, *update* and *delete*.
+
+        Returns:
+            bool: **True** if the given REST verb is implemented, **False**
+                otherwise.
+        """
+        test = {
+            'create': lambda: self.rest_create(None, {}),
+            'query': lambda: self.rest_query(None, {}),
+            'get': lambda: self.rest_get(None, {}),
+            'update': lambda: self.rest_update(None, {}),
+            'delete': lambda: self.rest_delete(None),
+        }.get(rest_verb)
+
+        if test:
+            try:
+                test()
+                return True
+            except NotImplementedError:
+                return False
+            except:
+                return True
+        else:
+            return False
 
     def rest_query(self, request, params):
         """ GET list. """

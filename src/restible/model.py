@@ -96,6 +96,38 @@ class ModelResource(RestResource):
         """ Coerce value to a model field compatible representation. """
         return value
 
+    def implements(self, rest_verb):
+        # type: (Text) -> bool
+        """ Check whether this model resource implements a given REST verb.
+
+        Args:
+            rest_verb (str):
+                The REST verb you want to check. Possible values are *create*,
+                *query*, *get*, *update* and *delete*.
+
+        Returns:
+            bool: **True** if the given REST verb is implemented, **False**
+                otherwise.
+        """
+        test = {
+            'create': lambda: self.create_item({}),
+            'query': lambda: self.query_items(None, {}),
+            'get': lambda: self.get_item(None),
+            'update': lambda: self.update_item(None, {}),
+            'delete': lambda: self.delete_item({}),
+        }.get(rest_verb)
+
+        if test:
+            try:
+                test()
+                return True
+            except NotImplementedError:
+                return False
+            except:
+                return True
+        else:
+            return False
+
     @property
     def public_props(self):
         """ All public properties on the resource model. """
