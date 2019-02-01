@@ -30,7 +30,7 @@ from .resource import RestResource
 from .actions import api_action
 from .routing import api_route
 
-__version__ = '0.7'
+__version__ = '0.8'
 
 __all__ = [
     'api_action',
