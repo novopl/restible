@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=missing-docstring
 from __future__ import absolute_import, unicode_literals
-# pylint: disable=missing-docstring
 
 # 3rd party imports
 import pytest
