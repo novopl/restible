@@ -75,7 +75,13 @@ class RestResource(object):
             extracted from ``.rest_keys`` based on the resource name.
         """
         if hasattr(request, 'rest_keys'):
-            return request.rest_keys.get(self.name + '_pk')
+
+            if hasattr(self, 'route_param'):
+                route_param = self.route_param['name']
+            else:
+                route_param = self.name + '_pk'
+
+            return request.rest_keys.get(route_param)
 
     def _validate_name(self, name):
         """ Validate the name is a valid resource name. """
