@@ -300,12 +300,12 @@ class RestEndpoint(object):
             of the method on `RestResource` that will be called by the endpoint.
         """
         if http_method == 'GET':
-            return 'query' if pk is None else 'get'
-        elif http_method == 'POST' and pk is None:
+            return 'query' if not pk else 'get'
+        elif http_method == 'POST' and not pk:
             return 'create'
-        elif http_method == 'PUT' and pk is not None:
+        elif http_method == 'PUT' and pk:
             return 'update'
-        elif http_method == 'DELETE' and pk is not None:
+        elif http_method == 'DELETE' and pk:
             return 'delete'
         elif http_method == 'OPTIONS':
             return 'options'
