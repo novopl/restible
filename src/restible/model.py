@@ -110,11 +110,11 @@ class ModelResource(RestResource):
                 otherwise.
         """
         test = {
-            'create': lambda: self.create_item({}),
+            'create': lambda: self.create_item(None, {}),
             'query': lambda: self.query_items(None, {}),
             'get': lambda: self.get_item(None),
             'update': lambda: self.update_item(None, {}),
-            'delete': lambda: self.delete_item({}),
+            'delete': lambda: self.delete_item(None, {}),
         }.get(rest_verb)
 
         if test:
@@ -137,7 +137,7 @@ class ModelResource(RestResource):
             ]
         return self._public_props
 
-    def create_item(self, values):
+    def create_item(self, request, values):
         """ Create new model item. """
         raise NotImplementedError("Must implement .create_item()")
 
@@ -145,8 +145,8 @@ class ModelResource(RestResource):
         """ Update existing model item. """
         raise NotImplementedError("Must implement .update_item()")
 
-    def delete_item(self, item):
-        """ Update existing model item. """
+    def delete_item(self, request, item):
+        """ Delete model instance. """
         raise NotImplementedError("Must implement .delete_item()")
 
     def query_items(self, request, filters):
@@ -197,7 +197,7 @@ class ModelResource(RestResource):
             self.validate(data, self.schema)
 
             values = self.deserialize(data)
-            item = self.create_item(values)
+            item = self.create_item(request, values)
 
             return self.serialize(item)
 
@@ -263,7 +263,7 @@ class ModelResource(RestResource):
             if item is None:
                 return 404, {'detail': 'Not Found'}
 
-            self.delete_item(item)
+            self.delete_item(request, item)
 
             return 204, {}
 
