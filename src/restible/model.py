@@ -23,7 +23,6 @@ from typing import Text
 # 3rd party imports
 import jsonschema
 from serafin import Fieldspec, serialize
-from six import iteritems
 
 # local imports
 from .resource import RestResource
@@ -90,11 +89,7 @@ class ModelResource(RestResource):
         The value returned by this function can be used directly to create new
         item and update existing ones.
         """
-        return {n: self.get_field_value(n, v) for n, v in iteritems(data)}
-
-    def get_field_value(self, name, value):
-        """ Coerce value to a model field compatible representation. """
-        return value
+        return data
 
     def implements(self, rest_verb):
         # type: (Text) -> bool
