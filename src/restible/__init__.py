@@ -25,6 +25,11 @@ from __future__ import absolute_import, unicode_literals
 
 # package interface
 from .endpoint import RestEndpoint, RawResponse
+from .exc import Error
+from .exc import BadRequest
+from .exc import NotAllowed
+from .exc import NotAuthorized
+from .exc import NotFound
 from .model import ModelResource
 from .resource import RestResource
 from .actions import api_action
