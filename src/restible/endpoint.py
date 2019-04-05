@@ -38,6 +38,7 @@ import jsonschema
 from .resource import RestResource
 from .actions import api_action
 from . import params
+from . import exc
 
 
 L = getLogger(__name__)
@@ -194,6 +195,9 @@ class RestEndpoint(object):
             result = handler(request, **handler_args)
             return self.process_result(result, self.get_ok_status(rest_verb))
 
+        except exc.Error as ex:
+            return RestResult(ex.status, {}, {'detail': ex.detail})
+
         except ValueError as ex:
             L.exception('Invalid REST invocation')
             L.error(ex)
@@ -253,9 +257,20 @@ class RestEndpoint(object):
             except jsonschema.ValidationError as ex:
                 return RestResult(400, {}, {'detail': str(ex)})
 
-        result = action(request, action_params, payload)
+        try:
+            result = action(request, action_params, payload)
+            return self.process_result(result, 200)
 
-        return self.process_result(result, 200)
+        except exc.Error as ex:
+            return RestResult(ex.status, {}, {'detail': ex.detail})
+
+        except NotImplementedError as ex:
+            return RestResult(405, {}, {'detail': str(ex)})
+
+        except Exception as ex:
+            L.exception('Unhandled resource exception')
+            L.error(ex)
+            return RestResult(500, {}, {'detail': str(ex)})
 
     def find_action(self, name, generic, method='post'):
         """ Find API action by name and kind.
