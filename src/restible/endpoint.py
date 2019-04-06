@@ -37,7 +37,7 @@ import jsonschema
 # local imports
 from .resource import RestResource
 from .actions import api_action
-from . import params
+from . import url_params
 from . import exc
 
 
@@ -190,9 +190,12 @@ class RestEndpoint(object):
         if handler is None or not callable(handler):
             return RestResult(405, {}, None)
 
+        qs = self.extract_request_query_string(request)
+        params = url_params.parse(qs)
+        payload = self.extract_request_data(request)
+
         try:
-            handler_args = self.build_handler_args(rest_verb, request)
-            result = handler(request, **handler_args)
+            result = handler(request, params, payload)
             return self.process_result(result, self.get_ok_status(rest_verb))
 
         except exc.Error as ex:
@@ -247,9 +250,9 @@ class RestEndpoint(object):
             })
 
         request.user = user
-        payload = self.extract_request_data(request)
         qs = self.extract_request_query_string(request)
-        action_params = params.parse(qs)
+        params = url_params.parse(qs)
+        payload = self.extract_request_data(request)
 
         if meta.schema is not None:
             try:
@@ -258,7 +261,7 @@ class RestEndpoint(object):
                 return RestResult(400, {}, {'detail': str(ex)})
 
         try:
-            result = action(request, action_params, payload)
+            result = action(request, params, payload)
             return self.process_result(result, 200)
 
         except exc.Error as ex:
@@ -364,37 +367,3 @@ class RestEndpoint(object):
             string params
         """
         return request.GET
-
-    @classmethod
-    def build_handler_args(cls, verb, request):
-        """ Build handler invocation arguments.
-
-        The parameters extracted here can be directly passed to the
-        `RestResource` handler method for the given REST *verb*.
-
-        This is part of the `RestEndpoint` class because this way it becomes
-        customisable by subclasses.
-
-        :param str|unicode verb:
-            REST verb/action. This is what the `RestResource` classes abstract.
-            Can be one of ``get/query/create/update/delete/options/head``.
-        :param HttpRequest request:
-            An HTTP request the handler will serve. Handler args are extracted
-            from it here.
-        :param None|int|str|unicode pk:
-            The primary key of a resource that will be modified by request or
-            ``None`` if the request is to list handlers. This is most likely
-            extracted from the URL template and that's why it's not passed as
-            part of the request.
-        :return dict:
-        """
-        handler_args = {}
-
-        if verb in ('create', 'update'):
-            handler_args['data'] = cls.extract_request_data(request)
-
-        if verb in ('query', 'get'):
-            qs = cls.extract_request_query_string(request)
-            handler_args['params'] = params.parse(qs)
-
-        return handler_args

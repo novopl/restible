@@ -15,18 +15,17 @@ def test_default_implementation_raises_NotImplemented():
 
     res = FakeResource()
 
-    # Somehow using @parametrize and getattr will not be picked up by coverage.
-    test_params = (
-        (res.rest_query, dict(params={})),
-        (res.rest_query, dict(params={})),
-        (res.rest_get, dict(params={})),
-        (res.rest_create, dict(data={})),
-        (res.rest_update, dict(data={})),
-        (res.rest_delete, dict()),
-        (res.rest_options, dict()),
-        (res.rest_head, dict()),
+    rest_handlers = (
+        res.rest_query,
+        res.rest_query,
+        res.rest_get,
+        res.rest_create,
+        res.rest_update,
+        res.rest_delete,
+        res.rest_options,
+        res.rest_head,
     )
 
-    for handler, args in test_params:
+    for handler in rest_handlers:
         with pytest.raises(NotImplementedError):
-            handler(request=None, **args)
+            handler(request=None, params={}, payload={})

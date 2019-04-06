@@ -29,7 +29,7 @@ def test_uses_ModelResource_create_item():
     res.create_item = Mock(return_value={'fake': 'instance'})
 
     req_data = {'name': 'fake request data'}
-    data = res.rest_create(None, req_data)
+    data = res.rest_create(None, {}, req_data)
 
     res.create_item.assert_called_once()
     assert data == {'fake': 'instance'}
@@ -44,7 +44,7 @@ def test_returns_400_if_data_is_not_valid(req_data):
     res = FakeRes()
     res.create_item = Mock(return_value={'fake': 'instance'})
 
-    result = res.rest_create(None, req_data)
+    result = res.rest_create(None, {}, req_data)
 
     assert result[0] == 400
     assert 'detail' in result[1]
@@ -55,7 +55,7 @@ def test_returns_400_if_instance_already_exists():
     res.create_item = Mock(side_effect=ModelResource.AlreadyExists)
 
     req_data = {'name': 'fake request data'}
-    result = res.rest_create(None, req_data)
+    result = res.rest_create(None, {}, req_data)
 
     assert result[0] == 400
     assert result[1]['detail'] == 'Already exists'
@@ -65,7 +65,7 @@ def test_returns_404_if_the_resource_does_not_implement_create_item():
     res = FakeRes()
 
     req_data = {'name': 'fake request data'}
-    result = res.rest_create(None, req_data)
+    result = res.rest_create(None, {}, req_data)
 
     assert result[0] == 404
     assert result[1]['detail'] == 'Not Found'

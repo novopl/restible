@@ -37,8 +37,8 @@ class FakeResponse(object):
             'status': 'status_code'
         }
 
-        if 'data' in kw:
-            kw['content'] = json.dumps(kw['data']).encode('utf-8')
+        if 'payload' in kw:
+            kw['content'] = json.dumps(kw['payload']).encode('utf-8')
 
         for name, value in kw.items():
             setattr(self, attr_map.get(name, name), value)
@@ -47,7 +47,7 @@ class FakeResponse(object):
 class FakeEndpoint(RestEndpoint):
     @classmethod
     def extract_request_data(cls, request):
-        return request.data
+        return getattr(request, 'payload', None)
 
 
 class ReadOnlyResource(RestResource):
@@ -101,7 +101,7 @@ def test_return_405_if_no_rest_verb_is_matched(http_method, pk):
 
 def test_return_405_if_handler_method_is_not_implemented():
     endpoint = FakeEndpoint(res_cls=ReadOnlyResource)
-    request = FakeRequest(content_type='application/json', data={})
+    request = FakeRequest(content_type='application/json', payload={})
 
     result = endpoint.call_rest_handler('POST', request)
 

@@ -27,7 +27,7 @@ def test_uses_ModelResource_get_requested():
     res = FakeRes()
     res.get_item = Mock(return_value={'name': 'instance'})
 
-    result = res.rest_get(None, {})
+    result = res.rest_get(None, {}, {})
 
     res.get_item.assert_called_once()
 
@@ -39,7 +39,7 @@ def test_returns_404_if_get_requested_returns_None():
     res = FakeRes()
     res.get_item = Mock(return_value=None)
 
-    result = res.rest_get(None, {})
+    result = res.rest_get(None, {}, {})
 
     res.get_item.assert_called_once()
 
@@ -50,7 +50,7 @@ def test_returns_404_if_get_requested_returns_None():
 def test_returns_404_if_the_resource_does_not_implement_get_requested():
     res = FakeRes()
 
-    result = res.rest_get(None, {})
+    result = res.rest_get(None, {}, {})
 
     assert result[0] == 404
     assert result[1]['detail'] == 'Not Found'

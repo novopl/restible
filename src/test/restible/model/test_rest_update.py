@@ -28,7 +28,7 @@ def test_uses_ModelResource_update_item():
     res.update_item = Mock(return_value={'name': 'instance1', 'value': 'hello'})
 
     req_data = {'name': 'fake1', 'value': 'fake'}
-    result = res.rest_update(None, req_data)
+    result = res.rest_update(None, {}, req_data)
 
     res.update_item.assert_called_once()
 
@@ -46,7 +46,7 @@ def test_allows_missing_values_even_if_they_are_required(req_data):
     res.schema['required'] = ['name']
     res.update_item = Mock(return_value={'name': 'a', 'value': 'b'})
 
-    result = res.rest_update(None, req_data)
+    result = res.rest_update(None, {}, req_data)
 
     assert result[0] == 200
 
@@ -59,7 +59,7 @@ def test_returns_400_if_data_is_not_valid(req_data):
     res = FakeRes()
     res.update_item = Mock(return_value={'name': 'a', 'value': 'b'})
 
-    result = res.rest_update(None, req_data)
+    result = res.rest_update(None, {}, req_data)
 
     assert result[0] == 400
     assert 'detail' in result[1]
@@ -69,7 +69,7 @@ def test_returns_404_if_update_item_returns_None():
     res = FakeRes()
     res.update_item = Mock(return_value=None)
 
-    result = res.rest_update(None, {})
+    result = res.rest_update(None, {}, {})
 
     res.update_item.assert_called_once()
 
@@ -80,7 +80,7 @@ def test_returns_404_if_update_item_returns_None():
 def test_returns_404_if_the_resource_does_not_implement_update_item():
     res = FakeRes()
 
-    result = res.rest_update(None, {})
+    result = res.rest_update(None, {}, {})
 
     assert result[0] == 404
     assert result[1]['detail'] == 'Not Found'
