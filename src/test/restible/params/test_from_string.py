@@ -7,7 +7,7 @@ import pytest
 from six import string_types
 
 # project imports
-from restible.params import from_string
+from restible.url_params import from_string
 
 
 @pytest.mark.parametrize('value,expected_type', (

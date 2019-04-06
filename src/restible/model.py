@@ -105,11 +105,11 @@ class ModelResource(RestResource):
                 otherwise.
         """
         test = {
-            'create': lambda: self.create_item(None, {}),
-            'query': lambda: self.query_items(None, {}),
-            'get': lambda: self.get_item(None),
-            'update': lambda: self.update_item(None, {}),
-            'delete': lambda: self.delete_item(None, {}),
+            'create': lambda: self.create_item(None, {}, {}),
+            'query': lambda: self.query_items(None, {}, {}),
+            'get': lambda: self.get_item(None, {}, {}),
+            'update': lambda: self.update_item(None, {}, {}),
+            'delete': lambda: self.delete_item(None, {}, {}),
         }.get(rest_verb)
 
         if test:
@@ -123,6 +123,13 @@ class ModelResource(RestResource):
         else:
             return False
 
+    def item_for_request(self, request):
+        """ Create new model item. """
+        del request     # Unused here
+        raise NotImplementedError(
+            "All resources must  implement .item_for_request()"
+        )
+
     @property
     def public_props(self):
         """ All public properties on the resource model. """
@@ -132,19 +139,19 @@ class ModelResource(RestResource):
             ]
         return self._public_props
 
-    def create_item(self, request, values):
+    def create_item(self, request, params, payload):
         """ Create new model item. """
         raise NotImplementedError("Must implement .create_item()")
 
-    def update_item(self, request, values):
+    def update_item(self, request, params, payload):
         """ Update existing model item. """
         raise NotImplementedError("Must implement .update_item()")
 
-    def delete_item(self, request, item):
+    def delete_item(self, request, params, payload):
         """ Delete model instance. """
         raise NotImplementedError("Must implement .delete_item()")
 
-    def query_items(self, request, filters):
+    def query_items(self, request, params, payload):
         """ Return a model query with the given filters.
 
         The query can be further customised like any ndb query.
@@ -154,7 +161,7 @@ class ModelResource(RestResource):
         """
         raise NotImplementedError("Must implement .query_items()")
 
-    def get_item(self, request):
+    def get_item(self, request, params, payload):
         """ Get an item associated with the request.
 
         This is used by all detail views/actions to get the item that the
@@ -171,13 +178,13 @@ class ModelResource(RestResource):
             self.__class__.__name__
         ))
 
-    def rest_query(self, request, params):
+    def rest_query(self, request, params, payload):
         """ Query existing records as a list. """
         try:
             fields = params.pop('_fields', '*')
 
             filters = self.deserialize(params)
-            items = self.query_items(request, filters)
+            items = self.query_items(request, filters, payload)
 
             spec = Fieldspec(self.spec).restrict(Fieldspec(fields))
             ret = self.serialize(items, spec)
@@ -186,13 +193,13 @@ class ModelResource(RestResource):
         except NotImplementedError:
             return 404, {'detail': 'Not Found'}
 
-    def rest_create(self, request, data):
+    def rest_create(self, request, params, payload):
         """ Create a new record. """
         try:
-            self.validate(data, self.schema)
+            self.validate(payload, self.schema)
 
-            values = self.deserialize(data)
-            item = self.create_item(request, values)
+            values = self.deserialize(payload)
+            item = self.create_item(request, params, values)
 
             return self.serialize(item)
 
@@ -205,13 +212,13 @@ class ModelResource(RestResource):
         except NotImplementedError:
             return 404, {'detail': 'Not Found'}
 
-    def rest_get(self, request, params):
+    def rest_get(self, request, params, payload):
         """ Get one record with the given id. """
         try:
             fields = Fieldspec(params.get('_fields', '*'))
 
             spec = Fieldspec(self.spec).restrict(fields)
-            item = self.get_item(request)
+            item = self.get_item(request, params, payload)
 
             if item is not None:
                 return 200, self.serialize(item, spec)
@@ -221,7 +228,7 @@ class ModelResource(RestResource):
         except NotImplementedError:
             return 404, {'detail': 'Not Found'}
 
-    def rest_update(self, request, data):
+    def rest_update(self, request, params, payload):
         """ Update existing item. """
         schema = {}
         schema.update(self.schema)
@@ -230,14 +237,14 @@ class ModelResource(RestResource):
             del schema['required']
 
         try:
-            self.validate(data, schema)
+            self.validate(payload, schema)
 
-            values = self.deserialize(data)
+            values = self.deserialize(payload)
             read_only = frozenset(self.read_only) | frozenset(self.public_props)
             for name in read_only:
                 values.pop(name, None)
 
-            item = self.update_item(request, values)
+            item = self.update_item(request, params, values)
 
             if item is not None:
                 return 200, self.serialize(item)
@@ -250,15 +257,10 @@ class ModelResource(RestResource):
         except NotImplementedError:
             return 404, {'detail': 'Not Found'}
 
-    def rest_delete(self, request):
+    def rest_delete(self, request, params, payload):
         """ DELETE detail. """
         try:
-            item = self.get_item(request)
-
-            if item is None:
-                return 404, {'detail': 'Not Found'}
-
-            self.delete_item(request, item)
+            self.delete_item(request, params, payload)
 
             return 204, {}
 

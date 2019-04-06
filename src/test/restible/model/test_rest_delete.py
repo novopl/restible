@@ -28,7 +28,7 @@ def test_uses_ModelResource_delete_item():
     res.get_item = Mock()
     res.delete_item = Mock()
 
-    result = res.rest_delete(None)
+    result = res.rest_delete(None, {}, {})
 
     res.delete_item.assert_called_once()
 
@@ -40,7 +40,7 @@ def test_returns_404_if_get_get_item_returns_None():
     res = FakeRes()
     res.get_item = Mock(return_value=None)
 
-    result = res.rest_delete(None)
+    result = res.rest_delete(None, {}, {})
 
     assert result[0] == 404
     assert result[1]['detail'] == 'Not Found'
@@ -50,7 +50,7 @@ def test_returns_404_if_the_resource_does_not_implement_delete_item():
     res = FakeRes()
     res.get_item = Mock()
 
-    result = res.rest_delete(None)
+    result = res.rest_delete(None, {}, {})
 
     assert result[0] == 404
     assert result[1]['detail'] == 'Not Found'

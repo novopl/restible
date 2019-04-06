@@ -30,7 +30,7 @@ def test_uses_ModelResource_query_items():
         {'name': 'instance2'},
     ])
 
-    result = res.rest_query(None, {})
+    result = res.rest_query(None, {}, {})
 
     res.query_items.assert_called_once()
 
@@ -44,8 +44,7 @@ def test_uses_ModelResource_query_items():
 def test_returns_404_if_the_resource_does_not_implement_query_items():
     res = FakeRes()
 
-    req_data = {'name': 'fake request data'}
-    result = res.rest_query(None, req_data)
+    result = res.rest_query(None, {}, {})
 
     assert result[0] == 404
     assert result[1]['detail'] == 'Not Found'

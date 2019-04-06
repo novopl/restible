@@ -198,43 +198,43 @@ class RestResource(object):
         else:
             return False
 
-    def rest_query(self, request, params):
+    def rest_query(self, request, params, payload):
         """ GET list. """
         raise NotImplementedError(".rest_query() not implemented".format(
             self.__class__.__name__
         ))
 
-    def rest_get(self, request, params):
+    def rest_get(self, request, params, payload):
         """ GET detail. """
         raise NotImplementedError("{}.rest_get() not implemented".format(
             self.__class__.__name__
         ))
 
-    def rest_create(self, request, data):
+    def rest_create(self, request, params, payload):
         """ POST list. """
         raise NotImplementedError("{}.rest_create() not implemented".format(
             self.__class__.__name__
         ))
 
-    def rest_update(self, request, data):
+    def rest_update(self, request, params, payload):
         """ PUT detail. """
         raise NotImplementedError("{}.rest_update() not implemented".format(
             self.__class__.__name__
         ))
 
-    def rest_delete(self, request):
+    def rest_delete(self, request, params, payload):
         """ DELETE detail. """
         raise NotImplementedError("{}.rest_delete() not implemented".format(
             self.__class__.__name__
         ))
 
-    def rest_options(self, request):
+    def rest_options(self, request, params, payload):
         """ OPTIONS list/detail. """
         raise NotImplementedError("{}.rest_options() not implemented".format(
             self.__class__.__name__
         ))
 
-    def rest_head(self, request):
+    def rest_head(self, request, params, payload):
         """ OPTIONS list/detail. """
         raise NotImplementedError("{}.rest_head() not implemented".format(
             self.__class__.__name__
