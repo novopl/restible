@@ -240,7 +240,9 @@ class ModelResource(RestResource):
             self.validate(payload, schema)
 
             values = self.deserialize(payload)
-            read_only = frozenset(self.read_only) | frozenset(self.public_props)
+            read_only = (
+                frozenset(self.read_only or []) | frozenset(self.public_props or [])
+            )
             for name in read_only:
                 values.pop(name, None)
 

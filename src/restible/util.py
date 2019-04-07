@@ -18,9 +18,79 @@ from __future__ import absolute_import, unicode_literals
 
 # stdlib imports
 import inspect
+from typing import Any, Dict, Text
 
 # 3rd party import
+import attr
 from six import iteritems     # pylint: disable=wrong-import-order
+
+
+@attr.s
+class QsFilter(object):
+    """ A halper class for parsing query string into db filters. """
+    name = attr.ib(type=str)
+    op = attr.ib(type=str)
+    op_fn = attr.ib(type=str)
+    value = attr.ib(type=Any)
+
+    @classmethod
+    def build(cls, op_map, param_name, param_value):
+        # type: (Dict[Text, Text], Text, Any) -> QsFilter
+        """
+
+        Args:
+            op_map (dict[str, str]):
+                Operator map. This maps the query string op to a method that
+                will implement this operator on the model.
+            param_name (str):
+                The field name as passed in the query string parameter.
+            param_value (Any):
+                The filter value as passed in the query string parameter.
+
+        Returns:
+            QsFilter:
+                A `QsFilter` instance that can be then called on model class to
+                generate the actual query filter.
+
+        Example:
+
+            >>> from restible.util import QsFilter
+            >>> # ?name=John&age__gt=18
+            >>> params = {'name': 'John', 'age__gt': 18}
+            >>> OP_MAP = {
+            ...     'eq': '__eq__',
+            ...     'ne': '__ne__',
+            ...     'lt': '__lt__',
+            ...     'gt': '__gt__',
+            ...     'le': '__le__',
+            ...     'ge': '__ge__',
+            ...     'in': 'in_',
+            ... }
+            >>>
+            >>> filters = [
+            ...     QsFilter.build(OP_MAP, k, v) for k, v in params.items()
+            ... ]
+
+        """
+        parts = param_name.rsplit('__', 1)
+        if len(parts) == 2:
+            name, op = parts
+        else:
+            op = 'eq'
+            name = parts[0]
+
+        rv = cls(name=name, op=op, op_fn=op_map.get(op), value=param_value)
+
+        if not rv.op_fn:
+            msg = "Invalid OP: {0.op} in '{0.name} {0.op} {0.value}'"
+            raise ValueError(msg.format(rv))
+
+        return rv
+
+    def __call__(self, model_cls):
+        field = getattr(model_cls, self.name)
+        op_method = getattr(field, self.op_fn)
+        return op_method(self.value)
 
 
 def iter_public_props(obj, predicate=None):
@@ -92,3 +162,7 @@ def update_from_values(obj, values):
     """
     for name, value in iteritems(values):
         setattr(obj, name, value)
+
+
+# Used only in type hint comments
+del Dict, Text

@@ -30,6 +30,7 @@ from __future__ import absolute_import, unicode_literals
 # stdlib imports
 from collections import namedtuple
 from logging import getLogger
+from typing import List, Text
 
 # 3rd party imports
 import jsonschema
@@ -367,3 +368,7 @@ class RestEndpoint(object):
             string params
         """
         return request.GET
+
+
+# Used only in type hint comments
+del List, Text
