@@ -1,0 +1,7 @@
+
+================
+``restible.exc``
+================
+
+.. automodule:: restible.exc
+    :members:

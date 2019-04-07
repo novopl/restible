@@ -1,0 +1,7 @@
+
+====================
+``restible.routing``
+====================
+
+.. automodule:: restible.routing
+    :members:

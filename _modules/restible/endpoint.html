@@ -1,0 +1,580 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>restible.endpoint &mdash; restible 0.11.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> restible
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.11.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../ref/restible/index.html">Code Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">restible</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>restible.endpoint</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for restible.endpoint</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># Copyright 2017-2019 Mateusz Klos</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1"># http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+<span class="c1">#</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Rest endpoint base implementation.</span>
+
+<span class="sd">Endpoints take care of interacting with HTTP. They for a bridge between HTTP</span>
+<span class="sd">requests/responses and the REST resources. They should never be implemented</span>
+<span class="sd">manually and ideally most apps should not need to subclass those but instead</span>
+<span class="sd">implement all of their logic in the `RestResource` subclasses.</span>
+
+<span class="sd">The code here is just an abstract base that holds the code common to all</span>
+<span class="sd">endpoints. It is not self sufficient, but only minor web-framework dependent</span>
+<span class="sd">code is left for the subclasses.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">unicode_literals</span>
+
+<span class="c1"># stdlib imports</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">namedtuple</span>
+<span class="kn">from</span> <span class="nn">logging</span> <span class="k">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Text</span>
+
+<span class="c1"># 3rd party imports</span>
+<span class="kn">import</span> <span class="nn">jsonschema</span>
+
+<span class="c1"># local imports</span>
+<span class="kn">from</span> <span class="nn">.resource</span> <span class="k">import</span> <span class="n">RestResource</span>
+<span class="kn">from</span> <span class="nn">.actions</span> <span class="k">import</span> <span class="n">api_action</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">url_params</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">exc</span>
+
+
+<span class="n">L</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">RestResult</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;RestResult&#39;</span><span class="p">,</span> <span class="s1">&#39;status,headers,data&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="RawResponse"><a class="viewcode-back" href="../../ref/restible/endpoint.html#restible.endpoint.RawResponse">[docs]</a><span class="k">class</span> <span class="nc">RawResponse</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Wrapper around raw framework responses.</span>
+
+<span class="sd">    This exists so it can help distinguish</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">response</span> <span class="o">=</span> <span class="n">response</span></div>
+
+
+<div class="viewcode-block" id="RestEndpoint"><a class="viewcode-back" href="../../ref/restible/endpoint.html#restible.endpoint.RestEndpoint">[docs]</a><span class="k">class</span> <span class="nc">RestEndpoint</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Abstract base class for all REST endpoints.</span>
+
+<span class="sd">    The endpoint responsibility is to provide a bridge between HTTP and</span>
+<span class="sd">    `RestResource`.  The latter should never directly deal with HTTP.</span>
+
+
+<span class="sd">    :param RestResource resource:</span>
+<span class="sd">        `RestResource` instance. This supersedes whatever is passed in</span>
+<span class="sd">        `res_cls`.</span>
+<span class="sd">    :param type res_cls:</span>
+<span class="sd">        Class derived from `RestResource`. If `resource` is not passed</span>
+<span class="sd">        directly you can also specify the resource class. It will be used</span>
+<span class="sd">        to instantiate the resource when the endpoint is created.</span>
+<span class="sd">    :param bool protected:</span>
+<span class="sd">        If set to *True*, all CRUD operations on the endpoint will require</span>
+<span class="sd">        authorization.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">res_cls</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">protected</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">resource</span> <span class="o">=</span> <span class="n">resource</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;resource&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">res_cls</span> <span class="o">=</span> <span class="n">res_cls</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;res_cls&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">resource</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resource</span><span class="p">,</span> <span class="n">RestResource</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">resource</span> <span class="o">=</span> <span class="n">resource</span>
+        <span class="k">elif</span> <span class="p">(</span>
+                <span class="n">res_cls</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span>
+                <span class="nb">isinstance</span><span class="p">(</span><span class="n">res_cls</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span> <span class="ow">and</span>
+                <span class="nb">issubclass</span><span class="p">(</span><span class="n">res_cls</span><span class="p">,</span> <span class="n">RestResource</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">resource</span> <span class="o">=</span> <span class="n">res_cls</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;You must specify the resource either as a static variable &quot;</span>
+                <span class="s2">&quot;resource or res_cls or through corresponding constructor &quot;</span>
+                <span class="s2">&quot;args&quot;</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">protected</span> <span class="o">=</span> <span class="n">protected</span>
+
+<div class="viewcode-block" id="RestEndpoint.is_resource"><a class="viewcode-back" href="../../ref/restible/endpoint.html#restible.endpoint.RestEndpoint.is_resource">[docs]</a>    <span class="k">def</span> <span class="nf">is_resource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res_cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Check if the given object is a resource class.</span>
+
+<span class="sd">        :param type res_cls:</span>
+<span class="sd">            Object to test.</span>
+<span class="sd">        :return bool:</span>
+<span class="sd">            **True** if *res_cls* is a resource class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">res_cls</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span> <span class="ow">and</span>
+                    <span class="nb">issubclass</span><span class="p">(</span><span class="n">res_cls</span><span class="p">,</span> <span class="n">RestResource</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="RestEndpoint.get_ok_status"><a class="viewcode-back" href="../../ref/restible/endpoint.html#restible.endpoint.RestEndpoint.get_ok_status">[docs]</a>    <span class="k">def</span> <span class="nf">get_ok_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verb</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get a valid ok status code for a given rest verb. &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">verb</span> <span class="o">==</span> <span class="s1">&#39;create&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">201</span>
+        <span class="k">elif</span> <span class="n">verb</span> <span class="o">==</span> <span class="s1">&#39;delete&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">204</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">200</span></div>
+
+<div class="viewcode-block" id="RestEndpoint.authorize"><a class="viewcode-back" href="../../ref/restible/endpoint.html#restible.endpoint.RestEndpoint.authorize">[docs]</a>    <span class="k">def</span> <span class="nf">authorize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Authorize user from request.</span>
+
+<span class="sd">        By default it returns None, so no user. Treat it as unauthorized</span>
+
+<span class="sd">        :param request:</span>
+<span class="sd">            HTTP request.</span>
+<span class="sd">        :return:</span>
+<span class="sd">            A user instance (depending on the underlying storage/models) or None</span>
+<span class="sd">            if not authorized.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="RestEndpoint.process_result"><a class="viewcode-back" href="../../ref/restible/endpoint.html#restible.endpoint.RestEndpoint.process_result">[docs]</a>    <span class="k">def</span> <span class="nf">process_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">default_status</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Unify the handler result into a stable format.</span>
+
+<span class="sd">        The unified format is ``(status, headers, data)``.</span>
+
+<span class="sd">        :param tuple|dict|list|RawResponse result:</span>
+<span class="sd">            The result as returned from the handler</span>
+<span class="sd">        :param int default_status:</span>
+<span class="sd">            Default HTTP status to use (if result contains none).</span>
+<span class="sd">        :return tuple(int, dict, dict):</span>
+<span class="sd">            Tuple . The handlers can return data in</span>
+<span class="sd">            the shortened forms, either ``(status, data)`` or just ``data``.</span>
+<span class="sd">            This method will expand those results with default and return a</span>
+<span class="sd">            unified result tuple.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="n">default_status</span>
+        <span class="n">headers</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">status</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">result</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="n">status</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">result</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;REST result has too many items&quot;</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">RawResponse</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">result</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">result</span>
+
+        <span class="k">return</span> <span class="n">RestResult</span><span class="p">(</span><span class="n">status</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RestEndpoint.call_rest_handler"><a class="viewcode-back" href="../../ref/restible/endpoint.html#restible.endpoint.RestEndpoint.call_rest_handler">[docs]</a>    <span class="k">def</span> <span class="nf">call_rest_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param str method:</span>
+<span class="sd">            HTTP method. Must be uppercase</span>
+<span class="sd">        :param request:</span>
+<span class="sd">            HTTP request. It is assumed the request object hast the following</span>
+<span class="sd">            members: ``rest_keys``,</span>
+<span class="sd">        :return tuple(int, dict, dict):</span>
+<span class="sd">            Tuple ``(status, headers, data)``. The handlers can return data in</span>
+<span class="sd">            the shortened forms, either ``(status, data)`` or just ``data``.</span>
+<span class="sd">            This method will expand those results with default and return a</span>
+<span class="sd">            unified result tuple.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">my_pk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">resource</span><span class="o">.</span><span class="n">get_pk</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+
+        <span class="n">request</span><span class="o">.</span><span class="n">user</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">authorize</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">protected</span> <span class="ow">and</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">RestResult</span><span class="p">(</span><span class="mi">401</span><span class="p">,</span> <span class="p">{},</span> <span class="p">{</span><span class="s1">&#39;detail&#39;</span><span class="p">:</span> <span class="s2">&quot;Not Authorized&quot;</span><span class="p">})</span>
+
+        <span class="n">rest_verb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">determine_rest_verb</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">my_pk</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">rest_verb</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">RestResult</span><span class="p">(</span><span class="mi">405</span><span class="p">,</span> <span class="p">{},</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="n">handler</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resource</span><span class="p">,</span> <span class="s1">&#39;rest_&#39;</span> <span class="o">+</span> <span class="n">rest_verb</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">handler</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">handler</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">RestResult</span><span class="p">(</span><span class="mi">405</span><span class="p">,</span> <span class="p">{},</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="n">qs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_request_query_string</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="n">url_params</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">qs</span><span class="p">)</span>
+        <span class="n">payload</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_request_data</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">handler</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">payload</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_result</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ok_status</span><span class="p">(</span><span class="n">rest_verb</span><span class="p">))</span>
+
+        <span class="k">except</span> <span class="n">exc</span><span class="o">.</span><span class="n">Error</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">RestResult</span><span class="p">(</span><span class="n">ex</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="p">{},</span> <span class="p">{</span><span class="s1">&#39;detail&#39;</span><span class="p">:</span> <span class="n">ex</span><span class="o">.</span><span class="n">detail</span><span class="p">})</span>
+
+        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+            <span class="n">L</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;Invalid REST invocation&#39;</span><span class="p">)</span>
+            <span class="n">L</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">RestResult</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="p">{},</span> <span class="p">{</span><span class="s1">&#39;detail&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">ex</span><span class="p">)})</span>
+
+        <span class="k">except</span> <span class="ne">NotImplementedError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">RestResult</span><span class="p">(</span><span class="mi">405</span><span class="p">,</span> <span class="p">{},</span> <span class="p">{</span><span class="s1">&#39;detail&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">ex</span><span class="p">)})</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+            <span class="n">L</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;Unhandled resource exception&#39;</span><span class="p">)</span>
+            <span class="n">L</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">RestResult</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="p">{},</span> <span class="p">{</span><span class="s1">&#39;detail&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">ex</span><span class="p">)})</span></div>
+
+<div class="viewcode-block" id="RestEndpoint.call_action_handler"><a class="viewcode-back" href="../../ref/restible/endpoint.html#restible.endpoint.RestEndpoint.call_action_handler">[docs]</a>    <span class="k">def</span> <span class="nf">call_action_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">is_generic</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Call an action on the bound resource.</span>
+
+<span class="sd">        :param request:</span>
+<span class="sd">            HTTP request that called the action.</span>
+<span class="sd">        :param str name:</span>
+<span class="sd">            The action name.</span>
+<span class="sd">        :param bool is_generic:</span>
+<span class="sd">            True if we should call a generic actions. Generic actions are</span>
+<span class="sd">            executed globally for the resource. Non-generic actions are called</span>
+<span class="sd">            on one specific resource instance.</span>
+
+<span class="sd">        :return RestResult:</span>
+<span class="sd">            RestResult tuple with the result of the REST call. This can be</span>
+<span class="sd">            easily converted to any underlying framework.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">action</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_action</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">is_generic</span><span class="p">,</span> <span class="n">method</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">action</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">RestResult</span><span class="p">(</span><span class="mi">404</span><span class="p">,</span> <span class="p">{},</span> <span class="p">{</span><span class="s1">&#39;detail&#39;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> has no action: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">resource</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">name</span>
+            <span class="p">)})</span>
+
+        <span class="n">meta</span> <span class="o">=</span> <span class="n">api_action</span><span class="o">.</span><span class="n">get_meta</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">authorize</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">meta</span><span class="o">.</span><span class="n">protected</span> <span class="ow">and</span> <span class="n">user</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">RestResult</span><span class="p">(</span><span class="mi">401</span><span class="p">,</span> <span class="p">{},</span> <span class="p">{</span><span class="s1">&#39;detail&#39;</span><span class="p">:</span> <span class="s2">&quot;Not Authorized&quot;</span><span class="p">})</span>
+
+        <span class="k">if</span> <span class="n">method</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">meta</span><span class="o">.</span><span class="n">methods</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">RestResult</span><span class="p">(</span><span class="mi">405</span><span class="p">,</span> <span class="p">{},</span> <span class="p">{</span>
+                <span class="s1">&#39;detail&#39;</span><span class="p">:</span> <span class="s2">&quot;Action </span><span class="si">{}</span><span class="s2">.</span><span class="si">{}</span><span class="s2"> does not support method </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">resource</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">meta</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">method</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+                <span class="p">)</span>
+            <span class="p">})</span>
+
+        <span class="n">request</span><span class="o">.</span><span class="n">user</span> <span class="o">=</span> <span class="n">user</span>
+        <span class="n">qs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_request_query_string</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="n">url_params</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">qs</span><span class="p">)</span>
+        <span class="n">payload</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_request_data</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">meta</span><span class="o">.</span><span class="n">schema</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">jsonschema</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="n">meta</span><span class="o">.</span><span class="n">schema</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">jsonschema</span><span class="o">.</span><span class="n">ValidationError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">RestResult</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="p">{},</span> <span class="p">{</span><span class="s1">&#39;detail&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">ex</span><span class="p">)})</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">action</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">payload</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_result</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="n">exc</span><span class="o">.</span><span class="n">Error</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">RestResult</span><span class="p">(</span><span class="n">ex</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="p">{},</span> <span class="p">{</span><span class="s1">&#39;detail&#39;</span><span class="p">:</span> <span class="n">ex</span><span class="o">.</span><span class="n">detail</span><span class="p">})</span>
+
+        <span class="k">except</span> <span class="ne">NotImplementedError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">RestResult</span><span class="p">(</span><span class="mi">405</span><span class="p">,</span> <span class="p">{},</span> <span class="p">{</span><span class="s1">&#39;detail&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">ex</span><span class="p">)})</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+            <span class="n">L</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;Unhandled resource exception&#39;</span><span class="p">)</span>
+            <span class="n">L</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">RestResult</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="p">{},</span> <span class="p">{</span><span class="s1">&#39;detail&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">ex</span><span class="p">)})</span></div>
+
+<div class="viewcode-block" id="RestEndpoint.find_action"><a class="viewcode-back" href="../../ref/restible/endpoint.html#restible.endpoint.RestEndpoint.find_action">[docs]</a>    <span class="k">def</span> <span class="nf">find_action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">generic</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;post&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Find API action by name and kind.</span>
+
+<span class="sd">        :param str name:</span>
+<span class="sd">            The action name.</span>
+<span class="sd">        :param bool is_generic:</span>
+<span class="sd">            True if we should call a generic actions. Generic actions are</span>
+<span class="sd">            executed globally for the resource. Non-generic actions are called</span>
+<span class="sd">            on one specific resource instance.</span>
+<span class="sd">        :return Function:</span>
+<span class="sd">            Action handler with it&#39;s associated metadata. THe metadata can</span>
+<span class="sd">            be accessed using ``api_action.get_meta(action)``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">action</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">resource</span><span class="o">.</span><span class="n">rest_actions</span><span class="p">():</span>
+            <span class="n">meta</span> <span class="o">=</span> <span class="n">api_action</span><span class="o">.</span><span class="n">get_meta</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="p">(</span>
+                    <span class="n">meta</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">name</span> <span class="ow">and</span>
+                    <span class="n">meta</span><span class="o">.</span><span class="n">generic</span> <span class="o">==</span> <span class="n">generic</span> <span class="ow">and</span>
+                    <span class="n">method</span> <span class="ow">in</span> <span class="n">meta</span><span class="o">.</span><span class="n">methods</span>
+            <span class="p">):</span>
+                <span class="k">return</span> <span class="n">action</span>
+
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="RestEndpoint.determine_rest_verb"><a class="viewcode-back" href="../../ref/restible/endpoint.html#restible.endpoint.RestEndpoint.determine_rest_verb">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">determine_rest_verb</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">http_method</span><span class="p">,</span> <span class="n">pk</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return the REST operation associated with the given HTTP method.</span>
+
+<span class="sd">        This is part of the `RestEndpoint` class because this way it becomes</span>
+<span class="sd">        customisable by subclasses.</span>
+
+<span class="sd">        :param str|unicode http_method:</span>
+<span class="sd">            The HTTP method used for the request.</span>
+<span class="sd">        :param str|int pk:</span>
+<span class="sd">            The primary key extracted from the URL template.</span>
+<span class="sd">        :return str|unicode:</span>
+<span class="sd">            The REST verb associated with that request. This is also the name</span>
+<span class="sd">            of the method on `RestResource` that will be called by the endpoint.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">http_method</span> <span class="o">==</span> <span class="s1">&#39;GET&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;query&#39;</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">pk</span> <span class="k">else</span> <span class="s1">&#39;get&#39;</span>
+        <span class="k">elif</span> <span class="n">http_method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">pk</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;create&#39;</span>
+        <span class="k">elif</span> <span class="n">http_method</span> <span class="o">==</span> <span class="s1">&#39;PUT&#39;</span> <span class="ow">and</span> <span class="n">pk</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;update&#39;</span>
+        <span class="k">elif</span> <span class="n">http_method</span> <span class="o">==</span> <span class="s1">&#39;DELETE&#39;</span> <span class="ow">and</span> <span class="n">pk</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;delete&#39;</span>
+        <span class="k">elif</span> <span class="n">http_method</span> <span class="o">==</span> <span class="s1">&#39;OPTIONS&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;options&#39;</span>
+        <span class="k">elif</span> <span class="n">http_method</span> <span class="o">==</span> <span class="s1">&#39;HEAD&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;head&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="RestEndpoint.extract_request_data"><a class="viewcode-back" href="../../ref/restible/endpoint.html#restible.endpoint.RestEndpoint.extract_request_data">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">extract_request_data</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Extract request data as a python data structure</span>
+
+<span class="sd">        This method is here to provide an easy way to implement new framework</span>
+<span class="sd">        support. The way the request data is handled is framework dependant</span>
+<span class="sd">        so each endpoint implementation for the given framework must provide</span>
+<span class="sd">        and implementation of this function.</span>
+
+<span class="sd">        :param Request request:</span>
+<span class="sd">            Underlying framework dependant request.</span>
+<span class="sd">        :return:</span>
+<span class="sd">            A python data structure (dict,list,string, primitive type) that is</span>
+<span class="sd">            the request data extract from the underlying</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+            <span class="s2">&quot;RestEndpoint sublasses must implement .extract_request_data()&quot;</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="RestEndpoint.extract_request_query_string"><a class="viewcode-back" href="../../ref/restible/endpoint.html#restible.endpoint.RestEndpoint.extract_request_query_string">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">extract_request_query_string</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Extract request params as a python dictionary.</span>
+
+<span class="sd">        This method is here to provide an easy way to implement new framework</span>
+<span class="sd">        support. The way the request params are handled is framework dependant</span>
+<span class="sd">        so each endpoint implementation for the given framework must provide</span>
+<span class="sd">        an implementation of this function.</span>
+
+<span class="sd">        :param Request request:</span>
+<span class="sd">            Underlying framework dependant request.</span>
+<span class="sd">        :return:</span>
+<span class="sd">            A python dict with ``{name: value}`` pairs for all request query</span>
+<span class="sd">            string params</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">GET</span></div></div>
+
+
+<span class="c1"># Used only in type hint comments</span>
+<span class="k">del</span> <span class="n">List</span><span class="p">,</span> <span class="n">Text</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016-2017, Mateusz &#39;novo&#39; Klos.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.11.1',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/language_data.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

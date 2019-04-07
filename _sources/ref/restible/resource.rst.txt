@@ -1,0 +1,7 @@
+
+=====================
+``restible.resource``
+=====================
+
+.. automodule:: restible.resource
+    :members:

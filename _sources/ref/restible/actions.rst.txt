@@ -1,0 +1,7 @@
+
+====================
+``restible.actions``
+====================
+
+.. automodule:: restible.actions
+    :members:

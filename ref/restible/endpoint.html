@@ -1,0 +1,505 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>restible.endpoint &mdash; restible 0.11.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="restible.exc" href="exc.html" />
+    <link rel="prev" title="restible.model" href="model.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> restible
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.11.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Code Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="util.html"><code class="docutils literal notranslate"><span class="pre">restible.util</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="actions.html"><code class="docutils literal notranslate"><span class="pre">restible.actions</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="resource.html"><code class="docutils literal notranslate"><span class="pre">restible.resource</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.html"><code class="docutils literal notranslate"><span class="pre">restible.model</span></code></a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">restible.endpoint</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="exc.html"><code class="docutils literal notranslate"><span class="pre">restible.exc</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="routing.html"><code class="docutils literal notranslate"><span class="pre">restible.routing</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="url_params.html"><code class="docutils literal notranslate"><span class="pre">restible.url_params</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">restible</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html"><code class="docutils literal notranslate"><span class="pre">restible</span></code></a> &raquo;</li>
+        
+      <li><code class="docutils literal notranslate"><span class="pre">restible.endpoint</span></code></li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/ref/restible/endpoint.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-restible.endpoint">
+<span id="restible-endpoint"></span><h1><code class="docutils literal notranslate"><span class="pre">restible.endpoint</span></code><a class="headerlink" href="#module-restible.endpoint" title="Permalink to this headline">¶</a></h1>
+<p>Rest endpoint base implementation.</p>
+<p>Endpoints take care of interacting with HTTP. They for a bridge between HTTP
+requests/responses and the REST resources. They should never be implemented
+manually and ideally most apps should not need to subclass those but instead
+implement all of their logic in the <cite>RestResource</cite> subclasses.</p>
+<p>The code here is just an abstract base that holds the code common to all
+endpoints. It is not self sufficient, but only minor web-framework dependent
+code is left for the subclasses.</p>
+<dl class="class">
+<dt id="restible.endpoint.RawResponse">
+<em class="property">class </em><code class="descclassname">restible.endpoint.</code><code class="descname">RawResponse</code><span class="sig-paren">(</span><em>response</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/restible/endpoint.html#RawResponse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#restible.endpoint.RawResponse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper around raw framework responses.</p>
+<p>This exists so it can help distinguish</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="restible.endpoint.RestEndpoint">
+<em class="property">class </em><code class="descclassname">restible.endpoint.</code><code class="descname">RestEndpoint</code><span class="sig-paren">(</span><em>resource=None</em>, <em>res_cls=None</em>, <em>protected=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/restible/endpoint.html#RestEndpoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#restible.endpoint.RestEndpoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract base class for all REST endpoints.</p>
+<p>The endpoint responsibility is to provide a bridge between HTTP and
+<cite>RestResource</cite>.  The latter should never directly deal with HTTP.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>resource</strong> (<a class="reference internal" href="resource.html#restible.resource.RestResource" title="restible.resource.RestResource"><em>RestResource</em></a>) – <cite>RestResource</cite> instance. This supersedes whatever is passed in
+<cite>res_cls</cite>.</li>
+<li><strong>res_cls</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.7)"><em>type</em></a>) – Class derived from <cite>RestResource</cite>. If <cite>resource</cite> is not passed
+directly you can also specify the resource class. It will be used
+to instantiate the resource when the endpoint is created.</li>
+<li><strong>protected</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – If set to <em>True</em>, all CRUD operations on the endpoint will require
+authorization.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="restible.endpoint.RestEndpoint.authorize">
+<code class="descname">authorize</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/restible/endpoint.html#RestEndpoint.authorize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#restible.endpoint.RestEndpoint.authorize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Authorize user from request.</p>
+<p>By default it returns None, so no user. Treat it as unauthorized</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>request</strong> – HTTP request.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A user instance (depending on the underlying storage/models) or None
+if not authorized.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="restible.endpoint.RestEndpoint.call_action_handler">
+<code class="descname">call_action_handler</code><span class="sig-paren">(</span><em>method</em>, <em>request</em>, <em>name</em>, <em>is_generic</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/restible/endpoint.html#RestEndpoint.call_action_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#restible.endpoint.RestEndpoint.call_action_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call an action on the bound resource.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>request</strong> – HTTP request that called the action.</li>
+<li><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – The action name.</li>
+<li><strong>is_generic</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – True if we should call a generic actions. Generic actions are
+executed globally for the resource. Non-generic actions are called
+on one specific resource instance.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return RestResult:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><p class="first last">RestResult tuple with the result of the REST call. This can be
+easily converted to any underlying framework.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="restible.endpoint.RestEndpoint.call_rest_handler">
+<code class="descname">call_rest_handler</code><span class="sig-paren">(</span><em>method</em>, <em>request</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/restible/endpoint.html#RestEndpoint.call_rest_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#restible.endpoint.RestEndpoint.call_rest_handler" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – HTTP method. Must be uppercase</li>
+<li><strong>request</strong> – HTTP request. It is assumed the request object hast the following
+members: <code class="docutils literal notranslate"><span class="pre">rest_keys</span></code>,</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return tuple(int, dict, dict):</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><p class="first last">Tuple <code class="docutils literal notranslate"><span class="pre">(status,</span> <span class="pre">headers,</span> <span class="pre">data)</span></code>. The handlers can return data in
+the shortened forms, either <code class="docutils literal notranslate"><span class="pre">(status,</span> <span class="pre">data)</span></code> or just <code class="docutils literal notranslate"><span class="pre">data</span></code>.
+This method will expand those results with default and return a
+unified result tuple.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="restible.endpoint.RestEndpoint.determine_rest_verb">
+<em class="property">classmethod </em><code class="descname">determine_rest_verb</code><span class="sig-paren">(</span><em>http_method</em>, <em>pk</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/restible/endpoint.html#RestEndpoint.determine_rest_verb"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#restible.endpoint.RestEndpoint.determine_rest_verb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the REST operation associated with the given HTTP method.</p>
+<p>This is part of the <cite>RestEndpoint</cite> class because this way it becomes
+customisable by subclasses.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>http_method</strong> (<em>str|unicode</em>) – The HTTP method used for the request.</li>
+<li><strong>pk</strong> (<em>str|int</em>) – The primary key extracted from the URL template.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return str|unicode:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><p class="first last">The REST verb associated with that request. This is also the name
+of the method on <cite>RestResource</cite> that will be called by the endpoint.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="restible.endpoint.RestEndpoint.extract_request_data">
+<em class="property">classmethod </em><code class="descname">extract_request_data</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/restible/endpoint.html#RestEndpoint.extract_request_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#restible.endpoint.RestEndpoint.extract_request_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract request data as a python data structure</p>
+<p>This method is here to provide an easy way to implement new framework
+support. The way the request data is handled is framework dependant
+so each endpoint implementation for the given framework must provide
+and implementation of this function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>request</strong> (<em>Request</em>) – Underlying framework dependant request.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A python data structure (dict,list,string, primitive type) that is
+the request data extract from the underlying</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="restible.endpoint.RestEndpoint.extract_request_query_string">
+<em class="property">classmethod </em><code class="descname">extract_request_query_string</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/restible/endpoint.html#RestEndpoint.extract_request_query_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#restible.endpoint.RestEndpoint.extract_request_query_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract request params as a python dictionary.</p>
+<p>This method is here to provide an easy way to implement new framework
+support. The way the request params are handled is framework dependant
+so each endpoint implementation for the given framework must provide
+an implementation of this function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>request</strong> (<em>Request</em>) – Underlying framework dependant request.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A python dict with <code class="docutils literal notranslate"><span class="pre">{name:</span> <span class="pre">value}</span></code> pairs for all request query
+string params</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="restible.endpoint.RestEndpoint.find_action">
+<code class="descname">find_action</code><span class="sig-paren">(</span><em>name</em>, <em>generic</em>, <em>method='post'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/restible/endpoint.html#RestEndpoint.find_action"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#restible.endpoint.RestEndpoint.find_action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find API action by name and kind.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – The action name.</li>
+<li><strong>is_generic</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – True if we should call a generic actions. Generic actions are
+executed globally for the resource. Non-generic actions are called
+on one specific resource instance.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return Function:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><p class="first last">Action handler with it’s associated metadata. THe metadata can
+be accessed using <code class="docutils literal notranslate"><span class="pre">api_action.get_meta(action)</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="restible.endpoint.RestEndpoint.get_ok_status">
+<code class="descname">get_ok_status</code><span class="sig-paren">(</span><em>verb</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/restible/endpoint.html#RestEndpoint.get_ok_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#restible.endpoint.RestEndpoint.get_ok_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a valid ok status code for a given rest verb.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="restible.endpoint.RestEndpoint.is_resource">
+<code class="descname">is_resource</code><span class="sig-paren">(</span><em>res_cls</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/restible/endpoint.html#RestEndpoint.is_resource"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#restible.endpoint.RestEndpoint.is_resource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the given object is a resource class.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>res_cls</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.7)"><em>type</em></a>) – Object to test.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return bool:</th><td class="field-body"><strong>True</strong> if <em>res_cls</em> is a resource class.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="restible.endpoint.RestEndpoint.process_result">
+<code class="descname">process_result</code><span class="sig-paren">(</span><em>result</em>, <em>default_status</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/restible/endpoint.html#RestEndpoint.process_result"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#restible.endpoint.RestEndpoint.process_result" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unify the handler result into a stable format.</p>
+<p>The unified format is <code class="docutils literal notranslate"><span class="pre">(status,</span> <span class="pre">headers,</span> <span class="pre">data)</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>result</strong> (<em>tuple|dict|list|RawResponse</em>) – The result as returned from the handler</li>
+<li><strong>default_status</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Default HTTP status to use (if result contains none).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return tuple(int, dict, dict):</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><p class="first last">Tuple . The handlers can return data in
+the shortened forms, either <code class="docutils literal notranslate"><span class="pre">(status,</span> <span class="pre">data)</span></code> or just <code class="docutils literal notranslate"><span class="pre">data</span></code>.
+This method will expand those results with default and return a
+unified result tuple.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="restible.endpoint.RestResult">
+<em class="property">class </em><code class="descclassname">restible.endpoint.</code><code class="descname">RestResult</code><span class="sig-paren">(</span><em>status</em>, <em>headers</em>, <em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#restible.endpoint.RestResult" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="restible.endpoint.RestResult.data">
+<code class="descname">data</code><a class="headerlink" href="#restible.endpoint.RestResult.data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="restible.endpoint.RestResult.headers">
+<code class="descname">headers</code><a class="headerlink" href="#restible.endpoint.RestResult.headers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="restible.endpoint.RestResult.status">
+<code class="descname">status</code><a class="headerlink" href="#restible.endpoint.RestResult.status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="exc.html" class="btn btn-neutral float-right" title="restible.exc" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="model.html" class="btn btn-neutral" title="restible.model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016-2017, Mateusz &#39;novo&#39; Klos.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.11.1',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/language_data.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

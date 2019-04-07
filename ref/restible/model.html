@@ -1,0 +1,419 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>restible.model &mdash; restible 0.11.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="restible.endpoint" href="endpoint.html" />
+    <link rel="prev" title="restible.resource" href="resource.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> restible
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.11.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Code Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="util.html"><code class="docutils literal notranslate"><span class="pre">restible.util</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="actions.html"><code class="docutils literal notranslate"><span class="pre">restible.actions</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="resource.html"><code class="docutils literal notranslate"><span class="pre">restible.resource</span></code></a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">restible.model</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="endpoint.html"><code class="docutils literal notranslate"><span class="pre">restible.endpoint</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="exc.html"><code class="docutils literal notranslate"><span class="pre">restible.exc</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="routing.html"><code class="docutils literal notranslate"><span class="pre">restible.routing</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="url_params.html"><code class="docutils literal notranslate"><span class="pre">restible.url_params</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">restible</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html"><code class="docutils literal notranslate"><span class="pre">restible</span></code></a> &raquo;</li>
+        
+      <li><code class="docutils literal notranslate"><span class="pre">restible.model</span></code></li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/ref/restible/model.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-restible.model">
+<span id="restible-model"></span><h1><code class="docutils literal notranslate"><span class="pre">restible.model</span></code><a class="headerlink" href="#module-restible.model" title="Permalink to this headline">¶</a></h1>
+<p>Base class for resources based on DB models.</p>
+<dl class="class">
+<dt id="restible.model.ModelResource">
+<em class="property">class </em><code class="descclassname">restible.model.</code><code class="descname">ModelResource</code><a class="reference internal" href="../../_modules/restible/model.html#ModelResource"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#restible.model.ModelResource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for resources based on DB models.</p>
+<dl class="exception">
+<dt id="restible.model.ModelResource.AlreadyExists">
+<em class="property">exception </em><code class="descname">AlreadyExists</code><a class="reference internal" href="../../_modules/restible/model.html#ModelResource.AlreadyExists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#restible.model.ModelResource.AlreadyExists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised when an object already exists.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="restible.model.ModelResource.ValidationError">
+<em class="property">exception </em><code class="descname">ValidationError</code><span class="sig-paren">(</span><em>jsonschema_error</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/restible/model.html#ModelResource.ValidationError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#restible.model.ModelResource.ValidationError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised by .validate() if it fails.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="restible.model.ModelResource.create_item">
+<code class="descname">create_item</code><span class="sig-paren">(</span><em>request</em>, <em>params</em>, <em>payload</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/restible/model.html#ModelResource.create_item"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#restible.model.ModelResource.create_item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create new model item.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="restible.model.ModelResource.delete_item">
+<code class="descname">delete_item</code><span class="sig-paren">(</span><em>request</em>, <em>params</em>, <em>payload</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/restible/model.html#ModelResource.delete_item"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#restible.model.ModelResource.delete_item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete model instance.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="restible.model.ModelResource.deserialize">
+<code class="descname">deserialize</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/restible/model.html#ModelResource.deserialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#restible.model.ModelResource.deserialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert JSON data into model field types.</p>
+<p>The value returned by this function can be used directly to create new
+item and update existing ones.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="restible.model.ModelResource.get_item">
+<code class="descname">get_item</code><span class="sig-paren">(</span><em>request</em>, <em>params</em>, <em>payload</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/restible/model.html#ModelResource.get_item"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#restible.model.ModelResource.get_item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get an item associated with the request.</p>
+<p>This is used by all detail views/actions to get the item that the
+request is concerned with (usually from the URL). This is an
+implementation detail and is highly dependant on the underlying web
+framework used.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>request</strong> – HTTP request.</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return RestResource:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body">The item associated with the request.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="restible.model.ModelResource.implements">
+<code class="descname">implements</code><span class="sig-paren">(</span><em>rest_verb</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/restible/model.html#ModelResource.implements"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#restible.model.ModelResource.implements" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether this model resource implements a given REST verb.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>rest_verb (str):</dt>
+<dd>The REST verb you want to check. Possible values are <em>create</em>,
+<em>query</em>, <em>get</em>, <em>update</em> and <em>delete</em>.</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd><dl class="first last docutils">
+<dt>bool: <strong>True</strong> if the given REST verb is implemented, <strong>False</strong></dt>
+<dd>otherwise.</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="restible.model.ModelResource.item_for_request">
+<code class="descname">item_for_request</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/restible/model.html#ModelResource.item_for_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#restible.model.ModelResource.item_for_request" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create new model item.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="restible.model.ModelResource.public_props">
+<code class="descname">public_props</code><a class="headerlink" href="#restible.model.ModelResource.public_props" title="Permalink to this definition">¶</a></dt>
+<dd><p>All public properties on the resource model.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="restible.model.ModelResource.query_items">
+<code class="descname">query_items</code><span class="sig-paren">(</span><em>request</em>, <em>params</em>, <em>payload</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/restible/model.html#ModelResource.query_items"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#restible.model.ModelResource.query_items" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a model query with the given filters.</p>
+<p>The query can be further customised like any ndb query.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">Return google.appengine.ext.ndb.Query:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">The query with the given filters already applied.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="restible.model.ModelResource.rest_create">
+<code class="descname">rest_create</code><span class="sig-paren">(</span><em>request</em>, <em>params</em>, <em>payload</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/restible/model.html#ModelResource.rest_create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#restible.model.ModelResource.rest_create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new record.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="restible.model.ModelResource.rest_delete">
+<code class="descname">rest_delete</code><span class="sig-paren">(</span><em>request</em>, <em>params</em>, <em>payload</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/restible/model.html#ModelResource.rest_delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#restible.model.ModelResource.rest_delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>DELETE detail.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="restible.model.ModelResource.rest_get">
+<code class="descname">rest_get</code><span class="sig-paren">(</span><em>request</em>, <em>params</em>, <em>payload</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/restible/model.html#ModelResource.rest_get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#restible.model.ModelResource.rest_get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get one record with the given id.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="restible.model.ModelResource.rest_query">
+<code class="descname">rest_query</code><span class="sig-paren">(</span><em>request</em>, <em>params</em>, <em>payload</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/restible/model.html#ModelResource.rest_query"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#restible.model.ModelResource.rest_query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query existing records as a list.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="restible.model.ModelResource.rest_update">
+<code class="descname">rest_update</code><span class="sig-paren">(</span><em>request</em>, <em>params</em>, <em>payload</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/restible/model.html#ModelResource.rest_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#restible.model.ModelResource.rest_update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update existing item.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="restible.model.ModelResource.serialize">
+<code class="descname">serialize</code><span class="sig-paren">(</span><em>item_or_items</em>, <em>spec=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/restible/model.html#ModelResource.serialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#restible.model.ModelResource.serialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serialize an item or items into a dict.</p>
+<p>This will just call serafin.serialize using the model spec (defined
+class wide in the model - ‘*’ by default).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>item_or_items</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return Dict[Any, Any]:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body">A dict with python native content. Can be easily dumped to any
+format like JSON or YAML.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="restible.model.ModelResource.update_item">
+<code class="descname">update_item</code><span class="sig-paren">(</span><em>request</em>, <em>params</em>, <em>payload</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/restible/model.html#ModelResource.update_item"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#restible.model.ModelResource.update_item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update existing model item.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="restible.model.ModelResource.validate">
+<code class="descname">validate</code><span class="sig-paren">(</span><em>data</em>, <em>schema=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/restible/model.html#ModelResource.validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#restible.model.ModelResource.validate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate the <em>data</em> according to the given <em>schema</em>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>Any</strong><strong>] </strong><strong>data</strong> (<em>Dict</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>,</em>) – A dictionary of data. Probably coming from the user in some way.</li>
+<li><strong>Any</strong><strong>] </strong><strong>schema</strong> (<em>Dict</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>,</em>) – JSONSchema describing the required data structure.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#restible.model.ModelResource.ValidationError" title="restible.model.ModelResource.ValidationError"><strong>ModelResource.ValidationError</strong></a> – If the validation fails. No value is returned.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="endpoint.html" class="btn btn-neutral float-right" title="restible.endpoint" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="resource.html" class="btn btn-neutral" title="restible.resource" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016-2017, Mateusz &#39;novo&#39; Klos.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.11.1',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/language_data.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

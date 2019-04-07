@@ -1,0 +1,7 @@
+
+=====================
+``restible.endpoint``
+=====================
+
+.. automodule:: restible.endpoint
+    :members:

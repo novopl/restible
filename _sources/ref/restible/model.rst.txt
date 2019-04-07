@@ -1,0 +1,7 @@
+
+==================
+``restible.model``
+==================
+
+.. automodule:: restible.model
+    :members:

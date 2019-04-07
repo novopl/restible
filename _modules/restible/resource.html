@@ -1,0 +1,451 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>restible.resource &mdash; restible 0.11.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> restible
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.11.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../ref/restible/index.html">Code Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">restible</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>restible.resource</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for restible.resource</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># Copyright 2017-2019 Mateusz Klos</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1"># http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+<span class="c1">#</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="sd">Working with resources</span>
+<span class="sd">======================</span>
+
+<span class="sd">**restible** resources implementation is divided into two classes:</span>
+
+<span class="sd">    - `RestResource`</span>
+<span class="sd">    - `ModelResource`</span>
+
+<span class="sd">The `RestResource` class is a very basic wrapper around a REST resource where</span>
+<span class="sd">everything has to be implemented manually. This is the most basic usage of</span>
+<span class="sd">resitble and allows the maximum extensibility. The downside is that it requires</span>
+<span class="sd">writing quite a lot of repetitive code in order to get it working. Because of</span>
+<span class="sd">that, **restible** provides another base class that inherits from</span>
+<span class="sd">`RestResource`: the `ModelResource` class.</span>
+
+<span class="sd">Most of the time the REST resource will have some corresponding model class.</span>
+<span class="sd">`ModelResource` contains code for most common operations that you would do on a</span>
+<span class="sd">resource backed by model. It does not manipulate any model classes directly so</span>
+<span class="sd">it&#39;s not DB dependant in any way. It only contains the code that would probably</span>
+<span class="sd">have to be written for any model based resource, no matter what underlying</span>
+<span class="sd">library you use to persist your models. There are separate libraries that</span>
+<span class="sd">provide integration with most common frameworks/libraries:</span>
+
+<span class="sd">:Django: `restible-django &lt;https://github.com/novopl/restible-django&gt;`_.</span>
+<span class="sd">:SQLAlchemy: `restible-sqlalchemy &lt;https://github.com/novopl/restible-sqlalchemy&gt;`_.</span>
+<span class="sd">:AppEngine NDB: `restible-appengine &lt;https://github.com/novopl/restible-appengine&gt;`_.</span>
+
+
+<span class="sd">Simple app example</span>
+<span class="sd">==================</span>
+
+<span class="sd">In this section we will create a simple AppEngine application that uses</span>
+<span class="sd">**restible** to build the REST API. We&#39;ve chosen AppEngine as it comes with</span>
+<span class="sd">everything needed (HTTP and ORM layers) and is easy to deploy without any</span>
+<span class="sd">devops. The free AppEngine account let&#39;s you host 10 of your apps so that also</span>
+<span class="sd">helps.</span>
+
+<span class="sd">.. code-block:: python</span>
+<span class="sd">    :linenos:</span>
+
+<span class="sd">    import restible</span>
+<span class="sd">    import webapp2</span>
+<span class="sd">    from google.appengine.ext import ndb</span>
+<span class="sd">    from restible_appengine.util import ndb_query_from_values</span>
+
+<span class="sd">    class BlogPost(ndb.Model):</span>
+<span class="sd">        title = ndb.StringProperty()</span>
+<span class="sd">        content = ndb.TextProperty()</span>
+<span class="sd">        created_at = ndb.DateTimeProperty(auto_now_add=True)</span>
+
+
+<span class="sd">    class BlogPostResource(ndb.ModelResource):</span>
+<span class="sd">        name = &#39;post&#39;</span>
+<span class="sd">        model = BlogPost</span>
+<span class="sd">        spec = serafin.Fieldspec(&#39;*&#39;)</span>
+<span class="sd">        route_params = [{&quot;name&quot;: &quot;user_id&quot;}]</span>
+
+<span class="sd">        def create_item(self, request, filters):</span>
+<span class="sd">            &quot;&quot;&quot; Get a list of resources. &quot;&quot;&quot;</span>
+<span class="sd">            return ndb_query_from_values(models.Resource, filters)</span>
+
+
+<span class="sd">    wsgi_app = webapp2.WSGIApplication(</span>
+<span class="sd">        routes=[</span>
+
+<span class="sd">        ],</span>
+<span class="sd">        debug=constants.DEBUG,</span>
+<span class="sd">        config=CONFIG</span>
+<span class="sd">    )</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">unicode_literals</span>
+
+<span class="c1"># stdlib imports</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Text</span>
+
+<span class="kn">from</span> <span class="nn">.actions</span> <span class="k">import</span> <span class="n">api_action</span>
+
+
+<div class="viewcode-block" id="RestResource"><a class="viewcode-back" href="../../ref/restible/resource.html#restible.resource.RestResource">[docs]</a><span class="k">class</span> <span class="nc">RestResource</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Represents the operations available on the given resource.</span>
+
+<span class="sd">    This class should not handle HTTP directly. Rather than that there should</span>
+<span class="sd">    be a separate implementation that maps HTTP layer onto resources. This way</span>
+<span class="sd">    we can swap the HTTP layer without reimplementing the resource. This also</span>
+<span class="sd">    follows SRP.</span>
+
+<span class="sd">    If the given `RestResource` subclass doesn&#39;t have one of the REST methods</span>
+<span class="sd">    implemented, the endpoint should return 405 Method not allowed (or 404?)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_NAME_RE</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^[a-zA-Z_][\w\d_]*$&#39;</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_name</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+<div class="viewcode-block" id="RestResource.rest_actions"><a class="viewcode-back" href="../../ref/restible/resource.html#restible.resource.RestResource.rest_actions">[docs]</a>    <span class="k">def</span> <span class="nf">rest_actions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return all actions defined on the current resource.</span>
+
+<span class="sd">        :return List[function]:</span>
+<span class="sd">            List of action handlers. To get the metadata for a given *action*</span>
+<span class="sd">            just use ``api_action.get_meta(action)``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ATTR</span> <span class="o">=</span> <span class="s1">&#39;_actions&#39;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ATTR</span><span class="p">):</span>
+            <span class="n">actions</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inspect</span><span class="o">.</span><span class="n">ismethod</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">api_action</span><span class="o">.</span><span class="n">is_action</span><span class="p">(</span><span class="n">method</span><span class="p">):</span>
+                    <span class="n">actions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">method</span><span class="p">)</span>
+
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ATTR</span><span class="p">,</span> <span class="n">actions</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ATTR</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RestResource.get_pk"><a class="viewcode-back" href="../../ref/restible/resource.html#restible.resource.RestResource.get_pk">[docs]</a>    <span class="k">def</span> <span class="nf">get_pk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Read the current resource type PK from the request.</span>
+
+<span class="sd">        :param HttpRequest request:</span>
+<span class="sd">            An HTTP request. Must contain the ``.rest_keys`` dictionary injected</span>
+<span class="sd">            by `RestEndpoint.dispatch()` method.</span>
+<span class="sd">        :return:</span>
+<span class="sd">            Primary key that is associated with this resource type. This is</span>
+<span class="sd">            extracted from ``.rest_keys`` based on the resource name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;rest_keys&#39;</span><span class="p">):</span>
+
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;route_params&#39;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">route_params</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">rest_keys</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">route_params</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">params</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">request</span><span class="o">.</span><span class="n">rest_keys</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">route_param</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span>
+                        <span class="k">for</span> <span class="n">route_param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">route_params</span>
+                    <span class="p">)</span>
+                    <span class="k">return</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">params</span> <span class="k">if</span> <span class="n">x</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">rest_keys</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{name}</span><span class="s1">_pk&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span></div>
+
+    <span class="k">def</span> <span class="nf">_validate_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Validate the name is a valid resource name. &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_NAME_RE</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;REST endpoint name contain only letters, digits and &#39;</span>
+                <span class="s1">&#39;underscores and cannot start with a digit&#39;</span>
+            <span class="p">)</span>
+
+<div class="viewcode-block" id="RestResource.implements"><a class="viewcode-back" href="../../ref/restible/resource.html#restible.resource.RestResource.implements">[docs]</a>    <span class="k">def</span> <span class="nf">implements</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rest_verb</span><span class="p">):</span>
+        <span class="c1"># type: (Text) -&gt; bool</span>
+        <span class="sd">&quot;&quot;&quot; Check whether this resource implements a given REST verb.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            rest_verb (str):</span>
+<span class="sd">                The REST verb you want to check. Possible values are *create*,</span>
+<span class="sd">                *query*, *get*, *update* and *delete*.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: **True** if the given REST verb is implemented, **False**</span>
+<span class="sd">                otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">test</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;create&#39;</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest_create</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="p">{}),</span>
+            <span class="s1">&#39;query&#39;</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest_query</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="p">{}),</span>
+            <span class="s1">&#39;get&#39;</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest_get</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="p">{}),</span>
+            <span class="s1">&#39;update&#39;</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest_update</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="p">{}),</span>
+            <span class="s1">&#39;delete&#39;</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest_delete</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span>
+        <span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">rest_verb</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">test</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">test</span><span class="p">()</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="RestResource.rest_query"><a class="viewcode-back" href="../../ref/restible/resource.html#restible.resource.RestResource.rest_query">[docs]</a>    <span class="k">def</span> <span class="nf">rest_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">payload</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; GET list. &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;.rest_query() not implemented&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="p">))</span></div>
+
+<div class="viewcode-block" id="RestResource.rest_get"><a class="viewcode-back" href="../../ref/restible/resource.html#restible.resource.RestResource.rest_get">[docs]</a>    <span class="k">def</span> <span class="nf">rest_get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">payload</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; GET detail. &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">.rest_get() not implemented&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="p">))</span></div>
+
+<div class="viewcode-block" id="RestResource.rest_create"><a class="viewcode-back" href="../../ref/restible/resource.html#restible.resource.RestResource.rest_create">[docs]</a>    <span class="k">def</span> <span class="nf">rest_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">payload</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; POST list. &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">.rest_create() not implemented&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="p">))</span></div>
+
+<div class="viewcode-block" id="RestResource.rest_update"><a class="viewcode-back" href="../../ref/restible/resource.html#restible.resource.RestResource.rest_update">[docs]</a>    <span class="k">def</span> <span class="nf">rest_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">payload</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; PUT detail. &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">.rest_update() not implemented&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="p">))</span></div>
+
+<div class="viewcode-block" id="RestResource.rest_delete"><a class="viewcode-back" href="../../ref/restible/resource.html#restible.resource.RestResource.rest_delete">[docs]</a>    <span class="k">def</span> <span class="nf">rest_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">payload</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; DELETE detail. &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">.rest_delete() not implemented&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="p">))</span></div>
+
+<div class="viewcode-block" id="RestResource.rest_options"><a class="viewcode-back" href="../../ref/restible/resource.html#restible.resource.RestResource.rest_options">[docs]</a>    <span class="k">def</span> <span class="nf">rest_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">payload</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; OPTIONS list/detail. &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">.rest_options() not implemented&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="p">))</span></div>
+
+<div class="viewcode-block" id="RestResource.rest_head"><a class="viewcode-back" href="../../ref/restible/resource.html#restible.resource.RestResource.rest_head">[docs]</a>    <span class="k">def</span> <span class="nf">rest_head</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">payload</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; OPTIONS list/detail. &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">.rest_head() not implemented&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="p">))</span></div></div>
+
+
+<span class="c1"># Used only in type hint comments</span>
+<span class="k">del</span> <span class="n">Text</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016-2017, Mateusz &#39;novo&#39; Klos.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.11.1',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/language_data.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
