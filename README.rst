@@ -9,6 +9,10 @@ across different frameworks. The main motivation was that the framework used
 is often dictated by requirements and I wanted to have a concise way of writing
 API endpoints no matter the underlying framework.
 
+- `Docs <https://novopl.github.io/restible`_
+- `CI builds <https://circleci.com/gh/novopl/restible>`_
+
+
 .. note::
 The project follows the semantic versioning scheme: Until 1.0 the minor
 
