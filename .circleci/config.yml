@@ -103,6 +103,8 @@ jobs:
             cp -r docs/html/* ./
             git add .
             git commit -nm "Docs build #${CIRCLECI_BUILD_NUM}"
+            git config user.email ${GIT_EMAIL}
+            git config user.name ${GIT_USER}
             git push --no-verify origin gh-pages
 
 
