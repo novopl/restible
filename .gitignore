@@ -1,0 +1,8 @@
+.build
+.cache
+.cache
+env
+src
+.pytest_cache
+.coverage
+docs
