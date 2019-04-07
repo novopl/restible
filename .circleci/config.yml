@@ -1,0 +1,129 @@
+version: 2
+
+jobs:
+  build:
+    docker:
+      - image: novopl/python36:ci-alpine
+    steps:
+      - checkout
+      - restore_cache:
+          key: deps-rev1-{{ checksum "setup.py" }}
+
+      - run:
+          name: Setup dependencies
+          command: |
+            which pip
+            which python
+            pip install .
+            pip install -r ops/devrequirements.txt
+            peltak --help
+            pylint --version
+
+      - run:
+          name: Lint
+          command: peltak lint
+
+      - restore_cache:
+          key: tox-rev4-{{ checksum "setup.py" }}-{{ checksum "ops/devrequirements.txt" }}
+
+      - run:
+          name: Test
+          command: tox
+
+      - save_cache:
+          key: tox-rev4-{{ checksum "setup.py" }}-{{ checksum "ops/devrequirements.txt" }}
+          paths:
+          - .tox
+
+      - run:
+          name: Build Documentation
+          command: |
+            peltak docs --recreate --run-doctests
+            mv docs/html docs/restible-docs
+            cd docs && zip -r ../.build/restible-docs.zip restible-docs
+
+      - save_cache:
+          key: deps-rev1-{{ checksum "setup.py" }}
+          paths:
+          - /usr/local/bin
+          - /usr/local/lib/python3.6/site-packages
+      - store_test_results:
+          path: .build
+      - store_artifacts:
+          path: .build/coverage/
+          destination: coverage
+      - store_artifacts:
+          path: .build/restible-docs.zip
+          destination: restible-docs.zip
+
+  release:
+    docker:
+      - image: novopl/python36:ci-alpine
+    steps:
+      - checkout
+      - restore_cache:
+          key: deps-rev1-{{ checksum "setup.py" }}
+
+      - run:
+          name: Setup
+          command: python setup.py develop
+
+      - run:
+          name: Upload to pypi
+          command: |
+            peltak pypi configure
+            peltak pypi upload
+            rm ~/.pypirc
+
+      - run:
+          name: Create release tag
+          command: |
+            peltak release tag -m "$(peltak changelog)"
+            git push origin v$(peltak version --porcelain)
+
+  docs:
+    docker:
+      - image: novopl/python36:ci-alpine
+    steps:
+      - checkout
+      - restore_cache:
+          key: deps-rev1-{{ checksum "setup.py" }}
+
+      - run:
+          name: Setup
+          command: |
+            pip install .
+            peltak --help
+
+      - run:
+          name: Deploy gh-pages
+          command: |
+            peltak docs
+            git checkout gh-pages
+            cp -r docs/html/* ./
+            git add .
+            git commit -nm "Docs build #${CIRCLECI_BUILD_NUM}"
+            git push --no-verify origin gh-pages
+
+
+workflows:
+  version: 2
+  main:
+    jobs:
+      - build:
+          filters:
+            branches:
+              ignore: [gh-pages]
+      - release:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
+              ignore: [gh-pages]
+      - docs:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
