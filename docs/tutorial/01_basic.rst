@@ -2,6 +2,13 @@
 Basic restible App
 ##################
 
+.. note::
+    You can get the full source code for this example
+    `here <https://github.com/novopl/restible/tree/master/docs/examples/01_basic>`_.
+
+.. contents:: Table of Contents
+    :local:
+
 This is a very basic example of how to expose a model over HTTP as REST API.
 The example below is geared toward using the least amount of code to achieve
 it's goals.
@@ -15,16 +22,9 @@ We will build a very simple blogging app. In this example it will have just
 one resource, the ``BlogPost`` that will be exposed over HTTP on
 ``/api/post`` URL.
 
-.. note::
-    You can get the full source code for this example
-    `here <github.com/novopl/restible/docs/examples/01_basic>`_
 
-.. contents:: Table of Contents
-    :local:
-
-
-1. Start with an empty Flask app
-================================
+Start with an empty Flask app
+=============================
 
 We use the most basic flask structure there is: everything is contained within
 one ``main.py`` file. The app is very simple so there's not need to split it
@@ -34,10 +34,15 @@ up yet.
     :lines: 1-31,127-130
     :linenos:
 
+And here are the project requirements for this app:
+
+.. literalinclude:: /examples/01_basic/requirements.txt
+    :linenos:
 
 
-2. ``BlogPost`` model
-=====================
+
+``BlogPost`` model
+==================
 
 Next we create a simple model to persist our blog posts. Only the bare minimum
 here as that's not the point.
@@ -47,8 +52,8 @@ here as that's not the point.
     :linenos:
 
 
-3. Create REST Resource for ``BlogPost``
-========================================
+Create REST Resource for ``BlogPost``
+=====================================
 
 .. literalinclude:: /examples/01_basic/main.py
     :lines: 60-63
@@ -63,8 +68,8 @@ Here we just want to kick things of with the simplest one (rarely used in real
 apps).
 
 
-3.1 Query blog posts
-~~~~~~~~~~~~~~~~~~~~
+Query blog posts
+~~~~~~~~~~~~~~~~
 
 .. literalinclude:: /examples/01_basic/main.py
     :lines: 64,71-72
@@ -77,45 +82,51 @@ In real app, this will probably also support some filtering of the results
 and possibly pagination as well.
 
 
-3.2 Get single post
-~~~~~~~~~~~~~~~~~~~
+Get single post
+~~~~~~~~~~~~~~~
 
 .. literalinclude:: /examples/01_basic/main.py
     :lines: 74-80
     :linenos:
 
-This is the detail route to get a blog post by ID (``/api/post/<post_id>``).
+This is the detail route to get a blog post by ID (``GET /api/post/<post_id>``).
 **restible** provides a handy method for getting the route param
 associated with the request: `RestResource.get_pk`. It will take into
 account the
 
 
-3.3 Create new blog post
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. literalinclude:: /examples/01_basic/main.py
-    :lines: 82-93
-    :linenos:
-
-
-3.4 Update blog post
+Create new blog post
 ~~~~~~~~~~~~~~~~~~~~
 
 .. literalinclude:: /examples/01_basic/main.py
-    :lines: 95-115
+    :lines: 82-100
     :linenos:
 
+Next up is the blog post create handler (``POST /api/post``). In this basic
+example we only do a very simple validation - are all the required fields
+present. You can have a more complex validation logic in real life, but as we'll
+learn later in this tutorial series, **restible** has some tools for that as
+well. Here we won't be using them to keep things as simple as possible.
 
-3.5 Delete blog post
-~~~~~~~~~~~~~~~~~~~~
+
+Update blog post
+~~~~~~~~~~~~~~~~
 
 .. literalinclude:: /examples/01_basic/main.py
-    :lines: 117-127
+    :lines: 102-124
     :linenos:
 
 
-4. Setup Flask URLs
-===================
+Delete blog post
+~~~~~~~~~~~~~~~~
+
+.. literalinclude:: /examples/01_basic/main.py
+    :lines: 126-136
+    :linenos:
+
+
+Setup Flask URLs
+================
 
 .. literalinclude:: /examples/01_basic/main.py
     :lines: 27-34
@@ -125,6 +136,8 @@ account the
 
 Putting it all together
 =======================
+
+Here's the full source code for the app we just created:
 
 .. literalinclude:: /examples/01_basic/main.py
     :linenos:
