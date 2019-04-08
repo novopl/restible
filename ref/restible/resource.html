@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>restible.resource &mdash; restible 0.11.8 documentation</title>
+  <title>restible.resource &mdash; restible 0.11.9 documentation</title>
   
 
   
@@ -28,8 +28,8 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="restible.model" href="model.html" />
-    <link rel="prev" title="restible.url_params" href="url_params.html" /> 
+    <link rel="next" title="restible.actions" href="actions.html" />
+    <link rel="prev" title="restible.exc" href="exc.html" /> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                0.11.8
+                0.11.9
               </div>
             
           
@@ -86,18 +86,18 @@
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial/index.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../contrib.html">Contributing</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Code Reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="endpoint.html"><code class="docutils literal notranslate"><span class="pre">restible.endpoint</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="routing.html"><code class="docutils literal notranslate"><span class="pre">restible.routing</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="url_params.html"><code class="docutils literal notranslate"><span class="pre">restible.url_params</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="util.html"><code class="docutils literal notranslate"><span class="pre">restible.util</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.html"><code class="docutils literal notranslate"><span class="pre">restible.model</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="exc.html"><code class="docutils literal notranslate"><span class="pre">restible.exc</span></code></a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">restible.resource</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#working-with-resources">Working with resources</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#simple-app-example">Simple app example</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="model.html"><code class="docutils literal notranslate"><span class="pre">restible.model</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="util.html"><code class="docutils literal notranslate"><span class="pre">restible.util</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="actions.html"><code class="docutils literal notranslate"><span class="pre">restible.actions</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="routing.html"><code class="docutils literal notranslate"><span class="pre">restible.routing</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="exc.html"><code class="docutils literal notranslate"><span class="pre">restible.exc</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="endpoint.html"><code class="docutils literal notranslate"><span class="pre">restible.endpoint</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -173,18 +173,18 @@
 <p><strong>restible</strong> resources implementation is divided into two classes:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><cite>RestResource</cite></p></li>
-<li><p><cite>ModelResource</cite></p></li>
+<li><p><a class="reference internal" href="#restible.resource.RestResource" title="restible.resource.RestResource"><code class="xref any py py-class docutils literal notranslate"><span class="pre">RestResource</span></code></a></p></li>
+<li><p><a class="reference internal" href="model.html#restible.model.ModelResource" title="restible.model.ModelResource"><code class="xref any py py-class docutils literal notranslate"><span class="pre">ModelResource</span></code></a></p></li>
 </ul>
 </div></blockquote>
-<p>The <cite>RestResource</cite> class is a very basic wrapper around a REST resource where
+<p>The <a class="reference internal" href="#restible.resource.RestResource" title="restible.resource.RestResource"><code class="xref any py py-class docutils literal notranslate"><span class="pre">RestResource</span></code></a> class is a very basic wrapper around a REST resource where
 everything has to be implemented manually. This is the most basic usage of
 resitble and allows the maximum extensibility. The downside is that it requires
 writing quite a lot of repetitive code in order to get it working. Because of
 that, <strong>restible</strong> provides another base class that inherits from
-<cite>RestResource</cite>: the <cite>ModelResource</cite> class.</p>
+<a class="reference internal" href="#restible.resource.RestResource" title="restible.resource.RestResource"><code class="xref any py py-class docutils literal notranslate"><span class="pre">RestResource</span></code></a>: the <a class="reference internal" href="model.html#restible.model.ModelResource" title="restible.model.ModelResource"><code class="xref any py py-class docutils literal notranslate"><span class="pre">ModelResource</span></code></a> class.</p>
 <p>Most of the time the REST resource will have some corresponding model class.
-<cite>ModelResource</cite> contains code for most common operations that you would do on a
+<a class="reference internal" href="model.html#restible.model.ModelResource" title="restible.model.ModelResource"><code class="xref any py py-class docutils literal notranslate"><span class="pre">ModelResource</span></code></a> contains code for most common operations that you would do on a
 resource backed by model. It does not manipulate any model classes directly so
 it’s not DB dependant in any way. It only contains the code that would probably
 have to be written for any model based resource, no matter what underlying
@@ -276,7 +276,7 @@ helps.</p>
 be a separate implementation that maps HTTP layer onto resources. This way
 we can swap the HTTP layer without reimplementing the resource. This also
 follows SRP.</p>
-<p>If the given <cite>RestResource</cite> subclass doesn’t have one of the REST methods
+<p>If the given <a class="reference internal" href="#restible.resource.RestResource" title="restible.resource.RestResource"><code class="xref any py py-class docutils literal notranslate"><span class="pre">RestResource</span></code></a> subclass doesn’t have one of the REST methods
 implemented, the endpoint should return 405 Method not allowed (or 404?)</p>
 <dl class="method">
 <dt id="restible.resource.RestResource.get_pk">
@@ -285,7 +285,7 @@ implemented, the endpoint should return 405 Method not allowed (or 404?)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>request</strong> (<em>HttpRequest</em>) – An HTTP request. Must contain the <code class="docutils literal notranslate"><span class="pre">.rest_keys</span></code> dictionary injected
-by <cite>RestEndpoint.dispatch()</cite> method.</p>
+by <a class="reference internal" href="endpoint.html#restible.endpoint.RestEndpoint" title="restible.endpoint.RestEndpoint"><code class="xref any py py-class docutils literal notranslate"><span class="pre">endpoint.RestEndpoint</span></code></a> subclass you use for your project.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Primary key that is associated with this resource type. This is
@@ -380,10 +380,10 @@ just use <code class="docutils literal notranslate"><span class="pre">api_action
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="model.html" class="btn btn-neutral float-right" title="restible.model" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="actions.html" class="btn btn-neutral float-right" title="restible.actions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="url_params.html" class="btn btn-neutral" title="restible.url_params" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="exc.html" class="btn btn-neutral" title="restible.exc" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -414,7 +414,7 @@ just use <code class="docutils literal notranslate"><span class="pre">api_action
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.11.8',
+            VERSION:'0.11.9',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
