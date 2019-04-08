@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>restible.endpoint &mdash; restible 0.11.10 documentation</title>
+  <title>restible.endpoint &mdash; restible 0.11.11 documentation</title>
   
 
   
@@ -56,7 +56,7 @@
             
             
               <div class="version">
-                0.11.10
+                0.11.11
               </div>
             
           
@@ -177,11 +177,11 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">unicode_literals</span>
 
 <span class="c1"># stdlib imports</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">namedtuple</span>
 <span class="kn">from</span> <span class="nn">logging</span> <span class="k">import</span> <span class="n">getLogger</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Text</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Text</span>
 
 <span class="c1"># 3rd party imports</span>
+<span class="kn">import</span> <span class="nn">attr</span>
 <span class="kn">import</span> <span class="nn">jsonschema</span>
 
 <span class="c1"># local imports</span>
@@ -192,16 +192,26 @@
 
 
 <span class="n">L</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
-<span class="n">RestResult</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;RestResult&#39;</span><span class="p">,</span> <span class="s1">&#39;status,headers,data&#39;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="RawResponse"><a class="viewcode-back" href="../../ref/restible/endpoint.html#restible.endpoint.RawResponse">[docs]</a><span class="k">class</span> <span class="nc">RawResponse</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="RestResult"><a class="viewcode-back" href="../../ref/restible/endpoint.html#restible.endpoint.RestResult">[docs]</a><span class="nd">@attr</span><span class="o">.</span><span class="n">s</span>
+<span class="k">class</span> <span class="nc">RestResult</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Rest API call result.</span>
+
+<span class="sd">    Kind of like an API response class and might evelove into one with time.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">status</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">headers</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">Dict</span><span class="p">[</span><span class="n">Text</span><span class="p">,</span> <span class="n">Text</span><span class="p">])</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">Dict</span><span class="p">[</span><span class="n">Text</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="RawResponse"><a class="viewcode-back" href="../../ref/restible/endpoint.html#restible.endpoint.RawResponse">[docs]</a><span class="nd">@attr</span><span class="o">.</span><span class="n">s</span>
+<span class="k">class</span> <span class="nc">RawResponse</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Wrapper around raw framework responses.</span>
 
 <span class="sd">    This exists so it can help distinguish</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">response</span> <span class="o">=</span> <span class="n">response</span></div>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="RestEndpoint"><a class="viewcode-back" href="../../ref/restible/endpoint.html#restible.endpoint.RestEndpoint">[docs]</a><span class="k">class</span> <span class="nc">RestEndpoint</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -555,7 +565,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.11.10',
+            VERSION:'0.11.11',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
