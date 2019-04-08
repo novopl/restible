@@ -9,7 +9,7 @@ across different frameworks. The main motivation was that the framework used
 is often dictated by requirements and I wanted to have a concise way of writing
 API endpoints no matter the underlying framework.
 
-- `Docs <https://novopl.github.io/restible`_
+- `Docs <https://novopl.github.io/restible>`_
 - `CI builds <https://circleci.com/gh/novopl/restible>`_
 
 
