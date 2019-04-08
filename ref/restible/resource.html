@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>restible.resource &mdash; restible 0.11.1 documentation</title>
+  <title>restible.resource &mdash; restible 0.11.4 documentation</title>
   
 
   
@@ -28,8 +28,8 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="restible.model" href="model.html" />
-    <link rel="prev" title="restible.actions" href="actions.html" /> 
+    <link rel="next" title="restible.util" href="util.html" />
+    <link rel="prev" title="restible.endpoint" href="endpoint.html" /> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                0.11.1
+                0.11.4
               </div>
             
           
@@ -84,18 +84,18 @@
             
               <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Code Reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="util.html"><code class="docutils literal notranslate"><span class="pre">restible.util</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="exc.html"><code class="docutils literal notranslate"><span class="pre">restible.exc</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.html"><code class="docutils literal notranslate"><span class="pre">restible.model</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="routing.html"><code class="docutils literal notranslate"><span class="pre">restible.routing</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="actions.html"><code class="docutils literal notranslate"><span class="pre">restible.actions</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="url_params.html"><code class="docutils literal notranslate"><span class="pre">restible.url_params</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="endpoint.html"><code class="docutils literal notranslate"><span class="pre">restible.endpoint</span></code></a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">restible.resource</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#working-with-resources">Working with resources</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#simple-app-example">Simple app example</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="model.html"><code class="docutils literal notranslate"><span class="pre">restible.model</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="endpoint.html"><code class="docutils literal notranslate"><span class="pre">restible.endpoint</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="exc.html"><code class="docutils literal notranslate"><span class="pre">restible.exc</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="routing.html"><code class="docutils literal notranslate"><span class="pre">restible.routing</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="url_params.html"><code class="docutils literal notranslate"><span class="pre">restible.url_params</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="util.html"><code class="docutils literal notranslate"><span class="pre">restible.util</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -171,8 +171,8 @@
 <p><strong>restible</strong> resources implementation is divided into two classes:</p>
 <blockquote>
 <div><ul class="simple">
-<li><cite>RestResource</cite></li>
-<li><cite>ModelResource</cite></li>
+<li><p><cite>RestResource</cite></p></li>
+<li><p><cite>ModelResource</cite></p></li>
 </ul>
 </div></blockquote>
 <p>The <cite>RestResource</cite> class is a very basic wrapper around a REST resource where
@@ -188,18 +188,17 @@ it’s not DB dependant in any way. It only contains the code that would probabl
 have to be written for any model based resource, no matter what underlying
 library you use to persist your models. There are separate libraries that
 provide integration with most common frameworks/libraries:</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Django:</th><td class="field-body"><a class="reference external" href="https://github.com/novopl/restible-django">restible-django</a>.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">SQLAlchemy:</th><td class="field-body"><a class="reference external" href="https://github.com/novopl/restible-sqlalchemy">restible-sqlalchemy</a>.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">AppEngine NDB:</th><td class="field-body"><a class="reference external" href="https://github.com/novopl/restible-appengine">restible-appengine</a>.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Django</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://github.com/novopl/restible-django">restible-django</a>.</p>
+</dd>
+<dt class="field-even">SQLAlchemy</dt>
+<dd class="field-even"><p><a class="reference external" href="https://github.com/novopl/restible-sqlalchemy">restible-sqlalchemy</a>.</p>
+</dd>
+<dt class="field-odd">AppEngine NDB</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://github.com/novopl/restible-appengine">restible-appengine</a>.</p>
+</dd>
+</dl>
 </div>
 <div class="section" id="simple-app-example">
 <h2>Simple app example<a class="headerlink" href="#simple-app-example" title="Permalink to this headline">¶</a></h2>
@@ -281,36 +280,32 @@ implemented, the endpoint should return 405 Method not allowed (or 404?)</p>
 <dt id="restible.resource.RestResource.get_pk">
 <code class="descname">get_pk</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/restible/resource.html#RestResource.get_pk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#restible.resource.RestResource.get_pk" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read the current resource type PK from the request.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>request</strong> (<em>HttpRequest</em>) – An HTTP request. Must contain the <code class="docutils literal notranslate"><span class="pre">.rest_keys</span></code> dictionary injected
-by <cite>RestEndpoint.dispatch()</cite> method.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Primary key that is associated with this resource type. This is
-extracted from <code class="docutils literal notranslate"><span class="pre">.rest_keys</span></code> based on the resource name.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>request</strong> (<em>HttpRequest</em>) – An HTTP request. Must contain the <code class="docutils literal notranslate"><span class="pre">.rest_keys</span></code> dictionary injected
+by <cite>RestEndpoint.dispatch()</cite> method.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Primary key that is associated with this resource type. This is
+extracted from <code class="docutils literal notranslate"><span class="pre">.rest_keys</span></code> based on the resource name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="restible.resource.RestResource.implements">
 <code class="descname">implements</code><span class="sig-paren">(</span><em>rest_verb</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/restible/resource.html#RestResource.implements"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#restible.resource.RestResource.implements" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check whether this resource implements a given REST verb.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd><dl class="first last docutils">
-<dt>rest_verb (str):</dt>
-<dd>The REST verb you want to check. Possible values are <em>create</em>,
-<em>query</em>, <em>get</em>, <em>update</em> and <em>delete</em>.</dd>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>rest_verb (str):</dt><dd><p>The REST verb you want to check. Possible values are <em>create</em>,
+<em>query</em>, <em>get</em>, <em>update</em> and <em>delete</em>.</p>
+</dd>
 </dl>
 </dd>
-<dt>Returns:</dt>
-<dd><dl class="first last docutils">
-<dt>bool: <strong>True</strong> if the given REST verb is implemented, <strong>False</strong></dt>
-<dd>otherwise.</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>bool: <strong>True</strong> if the given REST verb is implemented, <strong>False</strong></dt><dd><p>otherwise.</p>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -320,16 +315,12 @@ extracted from <code class="docutils literal notranslate"><span class="pre">.res
 <dt id="restible.resource.RestResource.rest_actions">
 <code class="descname">rest_actions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/restible/resource.html#RestResource.rest_actions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#restible.resource.RestResource.rest_actions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return all actions defined on the current resource.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name" colspan="2">Return List[function]:</th></tr>
-<tr class="field-odd field"><td>&#160;</td><td class="field-body">List of action handlers. To get the metadata for a given <em>action</em>
-just use <code class="docutils literal notranslate"><span class="pre">api_action.get_meta(action)</span></code></td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Return List[function]</dt>
+<dd class="field-odd"><p>List of action handlers. To get the metadata for a given <em>action</em>
+just use <code class="docutils literal notranslate"><span class="pre">api_action.get_meta(action)</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -387,10 +378,10 @@ just use <code class="docutils literal notranslate"><span class="pre">api_action
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="model.html" class="btn btn-neutral float-right" title="restible.model" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="util.html" class="btn btn-neutral float-right" title="restible.util" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="actions.html" class="btn btn-neutral" title="restible.actions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="endpoint.html" class="btn btn-neutral" title="restible.endpoint" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -421,7 +412,7 @@ just use <code class="docutils literal notranslate"><span class="pre">api_action
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.11.1',
+            VERSION:'0.11.4',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

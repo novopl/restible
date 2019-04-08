@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>restible.util &mdash; restible 0.11.1 documentation</title>
+  <title>restible.util &mdash; restible 0.11.4 documentation</title>
   
 
   
@@ -28,8 +28,7 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="restible.actions" href="actions.html" />
-    <link rel="prev" title="restible" href="index.html" /> 
+    <link rel="prev" title="restible.resource" href="resource.html" /> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
@@ -58,7 +57,7 @@
             
             
               <div class="version">
-                0.11.1
+                0.11.4
               </div>
             
           
@@ -84,14 +83,14 @@
             
               <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Code Reference</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">restible.util</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="actions.html"><code class="docutils literal notranslate"><span class="pre">restible.actions</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="resource.html"><code class="docutils literal notranslate"><span class="pre">restible.resource</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="model.html"><code class="docutils literal notranslate"><span class="pre">restible.model</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="endpoint.html"><code class="docutils literal notranslate"><span class="pre">restible.endpoint</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="exc.html"><code class="docutils literal notranslate"><span class="pre">restible.exc</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.html"><code class="docutils literal notranslate"><span class="pre">restible.model</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="routing.html"><code class="docutils literal notranslate"><span class="pre">restible.routing</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="actions.html"><code class="docutils literal notranslate"><span class="pre">restible.actions</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="url_params.html"><code class="docutils literal notranslate"><span class="pre">restible.url_params</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="endpoint.html"><code class="docutils literal notranslate"><span class="pre">restible.endpoint</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="resource.html"><code class="docutils literal notranslate"><span class="pre">restible.resource</span></code></a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">restible.util</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -170,23 +169,21 @@
 <dl class="classmethod">
 <dt id="restible.util.QsFilter.build">
 <em class="property">classmethod </em><code class="descname">build</code><span class="sig-paren">(</span><em>op_map</em>, <em>param_name</em>, <em>param_value</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/restible/util.html#QsFilter.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#restible.util.QsFilter.build" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>Args:</dt>
-<dd><dl class="first last docutils">
-<dt>op_map (dict[str, str]):</dt>
-<dd>Operator map. This maps the query string op to a method that
-will implement this operator on the model.</dd>
-<dt>param_name (str):</dt>
-<dd>The field name as passed in the query string parameter.</dd>
-<dt>param_value (Any):</dt>
-<dd>The filter value as passed in the query string parameter.</dd>
+<dd><dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>op_map (dict[str, str]):</dt><dd><p>Operator map. This maps the query string op to a method that
+will implement this operator on the model.</p>
+</dd>
+<dt>param_name (str):</dt><dd><p>The field name as passed in the query string parameter.</p>
+</dd>
+<dt>param_value (Any):</dt><dd><p>The filter value as passed in the query string parameter.</p>
+</dd>
 </dl>
 </dd>
-<dt>Returns:</dt>
-<dd><dl class="first last docutils">
-<dt>QsFilter:</dt>
-<dd>A <cite>QsFilter</cite> instance that can be then called on model class to
-generate the actual query filter.</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>QsFilter:</dt><dd><p>A <cite>QsFilter</cite> instance that can be then called on model class to
+generate the actual query filter.</p>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -217,21 +214,17 @@ generate the actual query filter.</dd>
 <dt id="restible.util.iter_public_props">
 <code class="descclassname">restible.util.</code><code class="descname">iter_public_props</code><span class="sig-paren">(</span><em>obj</em>, <em>predicate=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/restible/util.html#iter_public_props"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#restible.util.iter_public_props" title="Permalink to this definition">¶</a></dt>
 <dd><p>Iterate over public properties of an object.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>obj</strong> (<em>Any</em>) – The object we want to get the properties of.</li>
-<li><strong>predicate</strong> (<em>function</em>) – Additional predicate to filter out properties we’re interested in. This
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obj</strong> (<em>Any</em>) – The object we want to get the properties of.</p></li>
+<li><p><strong>predicate</strong> (<em>function</em>) – Additional predicate to filter out properties we’re interested in. This
 function will be called on every property of the object with the
 property name and value as it arguments. If it returns True, the
-property will be yielded by this generator.</li>
+property will be yielded by this generator.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
@@ -239,10 +232,10 @@ property will be yielded by this generator.</li>
 <code class="descclassname">restible.util.</code><code class="descname">update_from_values</code><span class="sig-paren">(</span><em>obj</em>, <em>values</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/restible/util.html#update_from_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#restible.util.update_from_values" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update object attributes from a dict of values.</p>
 <p>This is a small helper to update any object with values from a dictionary.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd>obj (object):
-values (dict[str, Any]):</dd>
+<dl class="simple">
+<dt>Args:</dt><dd><p>obj (object):
+values (dict[str, Any]):</p>
+</dd>
 </dl>
 <p>Examples:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">restible</span> <span class="k">import</span> <span class="n">util</span>
@@ -275,10 +268,8 @@ values (dict[str, Any]):</dd>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="actions.html" class="btn btn-neutral float-right" title="restible.actions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
-      
-        <a href="index.html" class="btn btn-neutral" title="restible" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="resource.html" class="btn btn-neutral" title="restible.resource" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -309,7 +300,7 @@ values (dict[str, Any]):</dd>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.11.1',
+            VERSION:'0.11.4',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
