@@ -2,7 +2,7 @@
 restible
 ########
 
-.. readme_inclusion_marker
+.. readme_intro_start
 
 **restible** is a python library for creating consistent code for REST APIs
 across different frameworks. The main motivation was that the framework used
@@ -16,29 +16,12 @@ Useful links
 - `CI builds <https://circleci.com/gh/novopl/restible>`_
 
 Related libraries
-~~~~~~~~~~~~~~~~~
+-----------------
 
 - `restible-flask <https://github.com/novopl/restible-flask>`_
 - `restible-sqlalchemy <https://github.com/novopl/restible-sqlalchemy>`_
 - `restible-appengine <https://github.com/novopl/restible-appengine>`_
 - `restible-django <https://github.com/novopl/restible-django>`_
-
-
-.. admonition:: Project Versioning
-
-    The project follows the semantic versioning scheme: Until 1.0 the minor
-
-        * The *patch* versions only include bug fixes and changes that do not
-          modify the existing interface. You can safely update a patch version
-          without worrying it will break your code.
-        * The *minor* versions will contain changes to the interface. With a
-          single version update your code will most likely work or might require
-          small adjustments. The more minor versions you update at once the
-          bigger the chance that something will brake.
-        * The *major* versions are reserved for significant refactorings and
-          architecture changes. This should not happen very often so the major
-          version should not change much.
-
 
 
 Installation
@@ -48,6 +31,9 @@ Installation
 
     $ pip install restible
 
+.. readme_intro_end
+
+.. readme_content_start
 
 Contributing
 ============
