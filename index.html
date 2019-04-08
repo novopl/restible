@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>restible documentation &mdash; restible 0.11.6 documentation</title>
+  <title>restible documentation &mdash; restible 0.11.7 documentation</title>
   
 
   
@@ -57,7 +57,7 @@
             
             
               <div class="version">
-                0.11.6
+                0.11.7
               </div>
             
           
@@ -177,6 +177,13 @@ API endpoints no matter the underlying framework.</p>
 <li><p><a class="reference external" href="https://github.com/novopl/restible-appengine">restible-appengine</a></p></li>
 <li><p><a class="reference external" href="https://github.com/novopl/restible-django">restible-django</a></p></li>
 </ul>
+</div>
+</div>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ pip install restible
+</pre></div>
+</div>
 <div class="admonition-project-versioning admonition">
 <p class="admonition-title">Project Versioning</p>
 <p>The project follows the semantic versioning scheme: Until 1.0 the minor</p>
@@ -196,13 +203,6 @@ version should not change much.</p></li>
 </div></blockquote>
 </div>
 </div>
-</div>
-<div class="section" id="installation">
-<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ pip install restible
-</pre></div>
-</div>
-</div>
 <div class="section" id="contributing">
 <h2>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">¶</a></h2>
 <div class="admonition note">
@@ -211,6 +211,8 @@ version should not change much.</p></li>
 part of the code is documented through docstrings but the general purpose
 docs are not written yet nor are any tutorials.</p>
 </div>
+<div class="section" id="cloning-and-setting-up-the-development-repo">
+<h3>Cloning and setting up the development repo<a class="headerlink" href="#cloning-and-setting-up-the-development-repo" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ git clone git@github.com:novopl/restible.git
 $ <span class="nb">cd</span> restible
 $ virtualenv env
@@ -219,20 +221,30 @@ $ pip install -r requirements.txt -r ops/devrequirements.txt
 $ peltak git add-hooks
 </pre></div>
 </div>
+<div class="section" id="running-tests">
+<h4>Running tests<a class="headerlink" href="#running-tests" title="Permalink to this headline">¶</a></h4>
 <p><strong>Config</strong>: The types of tests are defined in <code class="docutils literal notranslate"><span class="pre">pelconf.py</span></code> and the
 pytest configuration is defined in <code class="docutils literal notranslate"><span class="pre">ops/tools/pytest.ini</span></code>.</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ peltak <span class="nb">test</span>
 </pre></div>
 </div>
+</div>
+<div class="section" id="linting">
+<h4>Linting<a class="headerlink" href="#linting" title="Permalink to this headline">¶</a></h4>
 <p><strong>Config</strong>: The list of locations to lint is defined in <code class="docutils literal notranslate"><span class="pre">pelconf.py</span></code> and the
 linters configuration is defined in <code class="docutils literal notranslate"><span class="pre">ops/tools/{pylint,pep8}.ini</span></code>.</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ peltak lint
 </pre></div>
 </div>
+</div>
+<div class="section" id="generating-docs">
+<h4>Generating docs<a class="headerlink" href="#generating-docs" title="Permalink to this headline">¶</a></h4>
 <p><strong>Config</strong>: The list of documented files and general configuration is in
 <code class="docutils literal notranslate"><span class="pre">pelconf.py</span></code> and the Sphinx configuration is defined in <code class="docutils literal notranslate"><span class="pre">docs/conf.py</span></code>.</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ peltak docs
 </pre></div>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -277,7 +289,7 @@ linters configuration is defined in <code class="docutils literal notranslate"><
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.11.6',
+            VERSION:'0.11.7',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
