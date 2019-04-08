@@ -28,11 +28,11 @@ code is left for the subclasses.
 from __future__ import absolute_import, unicode_literals
 
 # stdlib imports
-from collections import namedtuple
 from logging import getLogger
-from typing import List, Text
+from typing import Any, Dict, List, Text
 
 # 3rd party imports
+import attr
 import jsonschema
 
 # local imports
@@ -43,16 +43,26 @@ from . import exc
 
 
 L = getLogger(__name__)
-RestResult = namedtuple('RestResult', 'status,headers,data')
 
 
+@attr.s
+class RestResult(object):
+    """ Rest API call result.
+
+    Kind of like an API response class and might evelove into one with time.
+    """
+    status = attr.ib(type=int)
+    headers = attr.ib(type=Dict[Text, Text])
+    data = attr.ib(type=Dict[Text, Any])
+
+
+@attr.s
 class RawResponse(object):
     """ Wrapper around raw framework responses.
 
     This exists so it can help distinguish
     """
-    def __init__(self, response):
-        self.response = response
+    response = attr.ib()
 
 
 class RestEndpoint(object):

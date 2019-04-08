@@ -72,21 +72,28 @@ class BlogPostApi(restible.RestResource):
         return 200, [x.serialize() for x in posts]
 
     def rest_get(self, request, params, payload):
-        pk = int(self.get_pk(request))
-        item = BlogPost.query.filter(BlogPost.id == pk).one_or_none()
+        post_id = int(self.get_pk(request))
+        item = BlogPost.query.filter(BlogPost.id == post_id).one_or_none()
         if item:
             return 200, item.serialize()
         else:
-            return 404, {'detail': "Blog post #{} not found".format(pk)}
+            return 404, {'detail': "Blog post #{} not found".format(post_id)}
 
     def rest_create(self, request, params, payload):
         session = BlogPost.query.session
 
         try:
-            item = BlogPost(**payload)
-            session.add(item)
+            # Our basic validation only checks if all fields are present.
+            missing = frozenset(['title', 'content']) - frozenset(payload.keys())
+            if missing:
+                raise restible.BadRequest("Missing fields: {}".format(missing))
+
+            # Create a new BlogPost record and commit it to database.
+            post = BlogPost(**payload)
+            session.add(post)
             session.commit()
-            return 201, item.serialize()
+
+            return 201, post.serialize()
 
         except SQLAlchemyError as ex:
             session.rollback()
@@ -94,34 +101,36 @@ class BlogPostApi(restible.RestResource):
 
     def rest_update(self, request, params, payload):
         session = BlogPost.query.session
-        pk = int(self.get_pk(request))
+        post_id = int(self.get_pk(request))
 
-        item = BlogPost.query.filter(BlogPost.id == pk).one_or_none()
-        if item is None:
-            return 404, {'detail': "Blog post #{} not found".format(pk)}
+        # Find the blog post we want to update.
+        post = BlogPost.query.filter(BlogPost.id == post_id).one_or_none()
+        if post is None:
+            return 404, {'detail': "Blog post #{} not found".format(post_id)}
 
+        # Make sure we do not overwrite read only fields.
         read_only = ['id', 'created_at', 'updated_at']
         for field in read_only:
             payload.pop(field, None)
 
-        restible.util.update_from_values(item, payload)
-
+        # Update the database record and commit.
         try:
+            restible.util.update_from_values(post, payload)
             session.commit()
         except SQLAlchemyError as ex:
             session.rollback()
             return 500, {'detail': "DB ERROR: {}".format(ex)}
 
-        return 200, item.serialize()
+        return 200, post.serialize()
 
     def rest_delete(self, request, params, payload):
         session = BlogPost.query.session
-        pk = int(self.get_pk(request))
+        post_id = int(self.get_pk(request))
 
         try:
-            BlogPost.query.filter(BlogPost.id == pk).delete()
+            BlogPost.query.filter(BlogPost.id == post_id).delete()
             session.commit()
-            return 204, {'detail': "Blog post #{} deleted".format(pk)}
+            return 204, {'detail': "Blog post #{} deleted".format(post_id)}
         except SQLAlchemyError as ex:
             session.rollback()
             return 500, {'detail': "DB ERROR: {}".format(ex)}
