@@ -1,20 +1,22 @@
+########
+restible
+########
 
-restible documentation
-######################
 
-Table of Contents
-=================
+**Table of Contents**
 
 .. toctree::
     :maxdepth: 1
 
     tutorial/index
+    contrib
     Code Reference <ref/restible/index>
 
 
 .. include:: ../README.rst
     :start-after: readme_intro_start
     :end-before: readme_intro_end
+
 
 .. admonition:: Project Versioning
 
@@ -30,6 +32,3 @@ Table of Contents
         * The *major* versions are reserved for significant refactorings and
           architecture changes. This should not happen very often so the major
           version should not change much.
-
-.. include:: ../README.rst
-    :start-after: readme_content_start
