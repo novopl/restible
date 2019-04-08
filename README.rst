@@ -13,7 +13,8 @@ Useful links
 ============
 
 - `Docs <https://novopl.github.io/restible>`_
-- `CI builds <https://circleci.com/gh/novopl/restible>`_
+- `Source Code <https://github.com/novopl/restible>`_
+- `CI Builds <https://circleci.com/gh/novopl/restible>`_
 
 Related libraries
 -----------------
@@ -33,10 +34,10 @@ Installation
 
 .. readme_intro_end
 
-.. readme_content_start
-
 Contributing
 ============
+
+.. readme_contrib_start
 
 .. note::
     The library has a pretty good test coverage but not yet at 100%. A large
@@ -85,3 +86,5 @@ Generating docs
 .. code-block:: shell
 
     $ peltak docs
+
+.. readme_contrib_end
