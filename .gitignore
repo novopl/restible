@@ -34,6 +34,7 @@ env
 # Data files #
 ##############
 *.db
+*.sqlite
 *.sqlite3
 *.ipynb
 .ipynb_checkpoints
