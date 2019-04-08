@@ -5,25 +5,25 @@
 
 .. autosummary::
 
-    restible.routing
-    restible.url_params
-    restible.util
-    restible.model
-    restible.exc
-    restible.resource
     restible.actions
+    restible.resource
     restible.endpoint
+    restible.model
+    restible.url_params
+    restible.exc
+    restible.routing
+    restible.util
 
 .. automodule:: restible
 .. toctree::
     :maxdepth: 1
     :hidden:
 
-    routing
-    url_params
-    util
-    model
-    exc
-    resource
     actions
+    resource
     endpoint
+    model
+    url_params
+    exc
+    routing
+    util
