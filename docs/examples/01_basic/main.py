@@ -6,17 +6,17 @@ from __future__ import absolute_import, unicode_literals
 from datetime import datetime
 
 # 3rd party imports
+import flask
+import flask_sqlalchemy
 import restible
 import restible.util
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from restible_flask import FlaskEndpoint
+import restible_flask
 from sqlalchemy.exc import SQLAlchemyError
 
 
 DATETIME_FMT = '%Y-%d-%m %H:%M:%S'
-db = SQLAlchemy()
-app = Flask(__name__)
+db = flask_sqlalchemy.SQLAlchemy()
+app = flask.Flask(__name__)
 app.config.update({
     'DEBUG': True,
     'SQLALCHEMY_DATABASE_URI': 'sqlite:///data.sqlite',
@@ -29,7 +29,7 @@ def init_app(app):
         db.init_app(app)
         db.create_all()
 
-        FlaskEndpoint.init_app(app, resources=[
+        restible_flask.Endpoint.init_app(app, resources=[
             ['/api/post', BlogPostApi, {'protected': False}],
         ])
 
@@ -59,6 +59,7 @@ class BlogPost(db.Model):
 # kick things of with the simplest one (rarely used in real applications).
 class BlogPostApi(restible.RestResource):
     name = 'post'
+    route_params = [{"name": "post_pk"}]
 
     def rest_query(self, request, params, payload):
         """ This is the GET /api/post route.
@@ -67,7 +68,8 @@ class BlogPostApi(restible.RestResource):
         real app, this will probably also support some filtering of the results
         and possibly pagination as well.
         """
-        return 200, [x.serialize() for x in BlogPost.query.all()]
+        posts = BlogPost.query.all()
+        return 200, [x.serialize() for x in posts]
 
     def rest_get(self, request, params, payload):
         pk = int(self.get_pk(request))

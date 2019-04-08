@@ -64,9 +64,9 @@ class RestEndpoint(object):
 
     :param RestResource resource:
         `RestResource` instance. This supersedes whatever is passed in
-        `res_cls`.
+        ``res_cls``.
     :param type res_cls:
-        Class derived from `RestResource`. If `resource` is not passed
+        Class derived from `RestResource`. If *resource* is not passed
         directly you can also specify the resource class. It will be used
         to instantiate the resource when the endpoint is created.
     :param bool protected:

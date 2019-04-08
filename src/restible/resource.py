@@ -139,7 +139,7 @@ class RestResource(object):
 
         :param HttpRequest request:
             An HTTP request. Must contain the ``.rest_keys`` dictionary injected
-            by `RestEndpoint.dispatch()` method.
+            by `endpoint.RestEndpoint` subclass you use for your project.
         :return:
             Primary key that is associated with this resource type. This is
             extracted from ``.rest_keys`` based on the resource name.
