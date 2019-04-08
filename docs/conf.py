@@ -48,6 +48,7 @@ exclude_patterns = [
 todo_include_todos = False
 intersphinx_mapping = {'https://docs.python.org/': None}
 
+default_role = 'any'
 pygments_style = 'monokai'
 html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 html_theme = "sphinx_rtd_theme"
