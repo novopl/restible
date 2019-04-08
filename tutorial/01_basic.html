@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>1 Basic App &mdash; restible 0.11.7 documentation</title>
+  <title>Basic restible App &mdash; restible 0.11.8 documentation</title>
   
 
   
@@ -28,7 +28,7 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="restible" href="../ref/restible/index.html" />
+    <link rel="next" title="Contributing" href="../contrib.html" />
     <link rel="prev" title="Examples" href="index.html" /> 
 
   
@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                0.11.7
+                0.11.8
               </div>
             
           
@@ -84,23 +84,24 @@
             
               <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Examples</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Basic</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#start-with-an-empty-flask-app"><span class="sectnum">1.1</span> Start with an empty Flask app</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#blogpost-model"><span class="sectnum">1.2</span> <code class="docutils literal notranslate"><span class="pre">BlogPost</span></code> model</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#create-rest-resource-for-blogpost"><span class="sectnum">1.3</span> Create REST Resource for <code class="docutils literal notranslate"><span class="pre">BlogPost</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#query-blog-posts"><span class="sectnum">1.3.1</span> Query blog posts</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#get-single-post"><span class="sectnum">1.3.2</span> Get single post</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#create-new-blog-post"><span class="sectnum">1.3.3</span> Create new blog post</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#update-blog-post"><span class="sectnum">1.3.4</span> Update blog post</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#delete-blog-post"><span class="sectnum">1.3.5</span> Delete blog post</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Basic restible App</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#start-with-an-empty-flask-app">1. Start with an empty Flask app</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#blogpost-model">2. <code class="docutils literal notranslate"><span class="pre">BlogPost</span></code> model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#create-rest-resource-for-blogpost">3. Create REST Resource for <code class="docutils literal notranslate"><span class="pre">BlogPost</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#query-blog-posts">3.1 Query blog posts</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#get-single-post">3.2 Get single post</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#create-new-blog-post">3.3 Create new blog post</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#update-blog-post">3.4 Update blog post</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#delete-blog-post">3.5 Delete blog post</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#setup-flask-urls"><span class="sectnum">1.4</span> Setup Flask URLs</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#putting-it-all-together"><span class="sectnum">1.5</span> Putting it all together</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#setup-flask-urls">4. Setup Flask URLs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#putting-it-all-together">Putting it all together</a></li>
 </ul>
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../contrib.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ref/restible/index.html">Code Reference</a></li>
 </ul>
 
@@ -149,7 +150,7 @@
         
           <li><a href="index.html">Examples</a> &raquo;</li>
         
-      <li><span class="sectnum">1</span> Basic App</li>
+      <li>Basic restible App</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -168,8 +169,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="basic-app">
-<h1><span class="sectnum">1</span> Basic App<a class="headerlink" href="#basic-app" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="basic-restible-app">
+<h1>Basic restible App<a class="headerlink" href="#basic-restible-app" title="Permalink to this headline">¶</a></h1>
 <p>This is a very basic example of how to expose a model over HTTP as REST API.
 The example below is geared toward using the least amount of code to achieve
 it’s goals.</p>
@@ -179,24 +180,24 @@ code. You can also use other underlying frameworks through other integrations
 like <strong>restible-django</strong> or <strong>restible-appengine</strong>.</p>
 <div class="contents local topic" id="table-of-contents">
 <p class="topic-title first">Table of Contents</p>
-<ul class="auto-toc simple">
-<li><p><a class="reference internal" href="#start-with-an-empty-flask-app" id="id1"><span class="sectnum">1.1</span> Start with an empty Flask app</a></p></li>
-<li><p><a class="reference internal" href="#blogpost-model" id="id2"><span class="sectnum">1.2</span> <code class="docutils literal notranslate"><span class="pre">BlogPost</span></code> model</a></p></li>
-<li><p><a class="reference internal" href="#create-rest-resource-for-blogpost" id="id3"><span class="sectnum">1.3</span> Create REST Resource for <code class="docutils literal notranslate"><span class="pre">BlogPost</span></code></a></p>
-<ul class="auto-toc">
-<li><p><a class="reference internal" href="#query-blog-posts" id="id4"><span class="sectnum">1.3.1</span> Query blog posts</a></p></li>
-<li><p><a class="reference internal" href="#get-single-post" id="id5"><span class="sectnum">1.3.2</span> Get single post</a></p></li>
-<li><p><a class="reference internal" href="#create-new-blog-post" id="id6"><span class="sectnum">1.3.3</span> Create new blog post</a></p></li>
-<li><p><a class="reference internal" href="#update-blog-post" id="id7"><span class="sectnum">1.3.4</span> Update blog post</a></p></li>
-<li><p><a class="reference internal" href="#delete-blog-post" id="id8"><span class="sectnum">1.3.5</span> Delete blog post</a></p></li>
+<ul class="simple">
+<li><p><a class="reference internal" href="#start-with-an-empty-flask-app" id="id1">1. Start with an empty Flask app</a></p></li>
+<li><p><a class="reference internal" href="#blogpost-model" id="id2">2. <code class="docutils literal notranslate"><span class="pre">BlogPost</span></code> model</a></p></li>
+<li><p><a class="reference internal" href="#create-rest-resource-for-blogpost" id="id3">3. Create REST Resource for <code class="docutils literal notranslate"><span class="pre">BlogPost</span></code></a></p>
+<ul>
+<li><p><a class="reference internal" href="#query-blog-posts" id="id4">3.1 Query blog posts</a></p></li>
+<li><p><a class="reference internal" href="#get-single-post" id="id5">3.2 Get single post</a></p></li>
+<li><p><a class="reference internal" href="#create-new-blog-post" id="id6">3.3 Create new blog post</a></p></li>
+<li><p><a class="reference internal" href="#update-blog-post" id="id7">3.4 Update blog post</a></p></li>
+<li><p><a class="reference internal" href="#delete-blog-post" id="id8">3.5 Delete blog post</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#setup-flask-urls" id="id9"><span class="sectnum">1.4</span> Setup Flask URLs</a></p></li>
-<li><p><a class="reference internal" href="#putting-it-all-together" id="id10"><span class="sectnum">1.5</span> Putting it all together</a></p></li>
+<li><p><a class="reference internal" href="#setup-flask-urls" id="id9">4. Setup Flask URLs</a></p></li>
+<li><p><a class="reference internal" href="#putting-it-all-together" id="id10">Putting it all together</a></p></li>
 </ul>
 </div>
 <div class="section" id="start-with-an-empty-flask-app">
-<h2><a class="toc-backref" href="#id1"><span class="sectnum">1.1</span> Start with an empty Flask app</a><a class="headerlink" href="#start-with-an-empty-flask-app" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id1">1. Start with an empty Flask app</a><a class="headerlink" href="#start-with-an-empty-flask-app" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-default notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -270,7 +271,7 @@ like <strong>restible-django</strong> or <strong>restible-appengine</strong>.</p
 </td></tr></table></div>
 </div>
 <div class="section" id="blogpost-model">
-<h2><a class="toc-backref" href="#id2"><span class="sectnum">1.2</span> <code class="docutils literal notranslate"><span class="pre">BlogPost</span></code> model</a><a class="headerlink" href="#blogpost-model" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id2">2. <code class="docutils literal notranslate"><span class="pre">BlogPost</span></code> model</a><a class="headerlink" href="#blogpost-model" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-default notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -304,7 +305,7 @@ like <strong>restible-django</strong> or <strong>restible-appengine</strong>.</p
 </td></tr></table></div>
 </div>
 <div class="section" id="create-rest-resource-for-blogpost">
-<h2><a class="toc-backref" href="#id3"><span class="sectnum">1.3</span> Create REST Resource for <code class="docutils literal notranslate"><span class="pre">BlogPost</span></code></a><a class="headerlink" href="#create-rest-resource-for-blogpost" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id3">3. Create REST Resource for <code class="docutils literal notranslate"><span class="pre">BlogPost</span></code></a><a class="headerlink" href="#create-rest-resource-for-blogpost" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-default notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">BlogPostApi</span><span class="p">(</span><span class="n">restible</span><span class="o">.</span><span class="n">RestResource</span><span class="p">):</span>
@@ -319,7 +320,7 @@ provided by restible and third party libraries.</p>
 <p>Here we just want to kick things of with the simplest one (rarely used in real
 apps).</p>
 <div class="section" id="query-blog-posts">
-<h3><a class="toc-backref" href="#id4"><span class="sectnum">1.3.1</span> Query blog posts</a><a class="headerlink" href="#query-blog-posts" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id4">3.1 Query blog posts</a><a class="headerlink" href="#query-blog-posts" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-default notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2</pre></div></td><td class="code"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">rest_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">payload</span><span class="p">):</span>
         <span class="k">return</span> <span class="mi">200</span><span class="p">,</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">serialize</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">BlogPost</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">all</span><span class="p">()]</span>
@@ -330,7 +331,7 @@ real app, this will probably also support some filtering of the results
 and possibly pagination as well.</p>
 </div>
 <div class="section" id="get-single-post">
-<h3><a class="toc-backref" href="#id5"><span class="sectnum">1.3.2</span> Get single post</a><a class="headerlink" href="#get-single-post" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id5">3.2 Get single post</a><a class="headerlink" href="#get-single-post" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-default notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -348,7 +349,7 @@ and possibly pagination as well.</p>
 </td></tr></table></div>
 </div>
 <div class="section" id="create-new-blog-post">
-<h3><a class="toc-backref" href="#id6"><span class="sectnum">1.3.3</span> Create new blog post</a><a class="headerlink" href="#create-new-blog-post" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id6">3.3 Create new blog post</a><a class="headerlink" href="#create-new-blog-post" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-default notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -376,7 +377,7 @@ and possibly pagination as well.</p>
 </td></tr></table></div>
 </div>
 <div class="section" id="update-blog-post">
-<h3><a class="toc-backref" href="#id7"><span class="sectnum">1.3.4</span> Update blog post</a><a class="headerlink" href="#update-blog-post" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id7">3.4 Update blog post</a><a class="headerlink" href="#update-blog-post" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-default notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -422,7 +423,7 @@ and possibly pagination as well.</p>
 </td></tr></table></div>
 </div>
 <div class="section" id="delete-blog-post">
-<h3><a class="toc-backref" href="#id8"><span class="sectnum">1.3.5</span> Delete blog post</a><a class="headerlink" href="#delete-blog-post" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id8">3.5 Delete blog post</a><a class="headerlink" href="#delete-blog-post" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-default notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -449,7 +450,7 @@ and possibly pagination as well.</p>
 </div>
 </div>
 <div class="section" id="setup-flask-urls">
-<h2><a class="toc-backref" href="#id9"><span class="sectnum">1.4</span> Setup Flask URLs</a><a class="headerlink" href="#setup-flask-urls" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id9">4. Setup Flask URLs</a><a class="headerlink" href="#setup-flask-urls" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-default notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -469,7 +470,7 @@ and possibly pagination as well.</p>
 </td></tr></table></div>
 </div>
 <div class="section" id="putting-it-all-together">
-<h2><a class="toc-backref" href="#id10"><span class="sectnum">1.5</span> Putting it all together</a><a class="headerlink" href="#putting-it-all-together" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id10">Putting it all together</a><a class="headerlink" href="#putting-it-all-together" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-default notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
   2
   3
@@ -744,7 +745,7 @@ and possibly pagination as well.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../ref/restible/index.html" class="btn btn-neutral float-right" title="restible" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../contrib.html" class="btn btn-neutral float-right" title="Contributing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="index.html" class="btn btn-neutral" title="Examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -778,7 +779,7 @@ and possibly pagination as well.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.11.7',
+            VERSION:'0.11.8',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

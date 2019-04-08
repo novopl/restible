@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>restible documentation &mdash; restible 0.11.7 documentation</title>
+  <title>restible &mdash; restible 0.11.8 documentation</title>
   
 
   
@@ -57,7 +57,7 @@
             
             
               <div class="version">
-                0.11.7
+                0.11.8
               </div>
             
           
@@ -83,6 +83,7 @@
             
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="tutorial/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contrib.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ref/restible/index.html">Code Reference</a></li>
 </ul>
 
@@ -129,7 +130,7 @@
     
       <li><a href="#">Docs</a> &raquo;</li>
         
-      <li>restible documentation</li>
+      <li>restible</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -148,13 +149,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="restible-documentation">
-<h1>restible documentation<a class="headerlink" href="#restible-documentation" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="table-of-contents">
-<h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Permalink to this headline">¶</a></h2>
+  <div class="section" id="restible">
+<h1>restible<a class="headerlink" href="#restible" title="Permalink to this headline">¶</a></h1>
+<p><strong>Table of Contents</strong></p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="tutorial/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contrib.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ref/restible/index.html">Code Reference</a></li>
 </ul>
 </div>
@@ -162,12 +163,12 @@
 across different frameworks. The main motivation was that the framework used
 is often dictated by requirements and I wanted to have a concise way of writing
 API endpoints no matter the underlying framework.</p>
-</div>
 <div class="section" id="useful-links">
 <h2>Useful links<a class="headerlink" href="#useful-links" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://novopl.github.io/restible">Docs</a></p></li>
-<li><p><a class="reference external" href="https://circleci.com/gh/novopl/restible">CI builds</a></p></li>
+<li><p><a class="reference external" href="https://github.com/novopl/restible">Source Code</a></p></li>
+<li><p><a class="reference external" href="https://circleci.com/gh/novopl/restible">CI Builds</a></p></li>
 </ul>
 <div class="section" id="related-libraries">
 <h3>Related libraries<a class="headerlink" href="#related-libraries" title="Permalink to this headline">¶</a></h3>
@@ -201,50 +202,6 @@ architecture changes. This should not happen very often so the major
 version should not change much.</p></li>
 </ul>
 </div></blockquote>
-</div>
-</div>
-<div class="section" id="contributing">
-<h2>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">¶</a></h2>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The library has a pretty good test coverage but not yet at 100%. A large
-part of the code is documented through docstrings but the general purpose
-docs are not written yet nor are any tutorials.</p>
-</div>
-<div class="section" id="cloning-and-setting-up-the-development-repo">
-<h3>Cloning and setting up the development repo<a class="headerlink" href="#cloning-and-setting-up-the-development-repo" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ git clone git@github.com:novopl/restible.git
-$ <span class="nb">cd</span> restible
-$ virtualenv env
-$ <span class="nb">source</span> ./env/bin/activate
-$ pip install -r requirements.txt -r ops/devrequirements.txt
-$ peltak git add-hooks
-</pre></div>
-</div>
-<div class="section" id="running-tests">
-<h4>Running tests<a class="headerlink" href="#running-tests" title="Permalink to this headline">¶</a></h4>
-<p><strong>Config</strong>: The types of tests are defined in <code class="docutils literal notranslate"><span class="pre">pelconf.py</span></code> and the
-pytest configuration is defined in <code class="docutils literal notranslate"><span class="pre">ops/tools/pytest.ini</span></code>.</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ peltak <span class="nb">test</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="linting">
-<h4>Linting<a class="headerlink" href="#linting" title="Permalink to this headline">¶</a></h4>
-<p><strong>Config</strong>: The list of locations to lint is defined in <code class="docutils literal notranslate"><span class="pre">pelconf.py</span></code> and the
-linters configuration is defined in <code class="docutils literal notranslate"><span class="pre">ops/tools/{pylint,pep8}.ini</span></code>.</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ peltak lint
-</pre></div>
-</div>
-</div>
-<div class="section" id="generating-docs">
-<h4>Generating docs<a class="headerlink" href="#generating-docs" title="Permalink to this headline">¶</a></h4>
-<p><strong>Config</strong>: The list of documented files and general configuration is in
-<code class="docutils literal notranslate"><span class="pre">pelconf.py</span></code> and the Sphinx configuration is defined in <code class="docutils literal notranslate"><span class="pre">docs/conf.py</span></code>.</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ peltak docs
-</pre></div>
-</div>
-</div>
 </div>
 </div>
 </div>
@@ -289,7 +246,7 @@ linters configuration is defined in <code class="docutils literal notranslate"><
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.11.7',
+            VERSION:'0.11.8',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
