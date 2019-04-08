@@ -19,7 +19,7 @@ like **restible-django** or **restible-appengine**.
 1. Start with an empty Flask app
 ================================
 
-.. literalinclude:: /../examples/01_basic/main.py
+.. literalinclude:: /examples/01_basic/main.py
     :lines: 1-31,127-130
     :linenos:
 
@@ -27,7 +27,7 @@ like **restible-django** or **restible-appengine**.
 2. ``BlogPost`` model
 =====================
 
-.. literalinclude:: /../examples/01_basic/main.py
+.. literalinclude:: /examples/01_basic/main.py
     :lines: 38-52
     :linenos:
 
@@ -35,7 +35,7 @@ like **restible-django** or **restible-appengine**.
 3. Create REST Resource for ``BlogPost``
 ========================================
 
-.. literalinclude:: /../examples/01_basic/main.py
+.. literalinclude:: /examples/01_basic/main.py
     :lines: 60-62
     :linenos:
 
@@ -51,7 +51,7 @@ apps).
 3.1 Query blog posts
 ~~~~~~~~~~~~~~~~~~~~
 
-.. literalinclude:: /../examples/01_basic/main.py
+.. literalinclude:: /examples/01_basic/main.py
     :lines: 63,70
     :linenos:
 
@@ -63,7 +63,7 @@ and possibly pagination as well.
 3.2 Get single post
 ~~~~~~~~~~~~~~~~~~~
 
-.. literalinclude:: /../examples/01_basic/main.py
+.. literalinclude:: /examples/01_basic/main.py
     :lines: 72-78
     :linenos:
 
@@ -71,7 +71,7 @@ and possibly pagination as well.
 3.3 Create new blog post
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. literalinclude:: /../examples/01_basic/main.py
+.. literalinclude:: /examples/01_basic/main.py
     :lines: 80-91
     :linenos:
 
@@ -79,7 +79,7 @@ and possibly pagination as well.
 3.4 Update blog post
 ~~~~~~~~~~~~~~~~~~~~
 
-.. literalinclude:: /../examples/01_basic/main.py
+.. literalinclude:: /examples/01_basic/main.py
     :lines: 93-113
     :linenos:
 
@@ -87,7 +87,7 @@ and possibly pagination as well.
 3.5 Delete blog post
 ~~~~~~~~~~~~~~~~~~~~
 
-.. literalinclude:: /../examples/01_basic/main.py
+.. literalinclude:: /examples/01_basic/main.py
     :lines: 115-125
     :linenos:
 
@@ -95,7 +95,7 @@ and possibly pagination as well.
 4. Setup Flask URLs
 ===================
 
-.. literalinclude:: /../examples/01_basic/main.py
+.. literalinclude:: /examples/01_basic/main.py
     :lines: 27-34
     :emphasize-lines: 6-8
     :linenos:
@@ -104,5 +104,5 @@ and possibly pagination as well.
 Putting it all together
 =======================
 
-.. literalinclude:: /../examples/01_basic/main.py
+.. literalinclude:: /examples/01_basic/main.py
     :linenos:
