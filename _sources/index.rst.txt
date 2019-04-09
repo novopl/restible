@@ -2,20 +2,21 @@
 restible
 ########
 
-
-**Table of Contents**
+.. include:: ../README.rst
+    :start-after: about_project_start
+    :end-before: about_project_end
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
 
     tutorial/index
-    contrib
     Code Reference <ref/restible/index>
+    contrib
 
 
 .. include:: ../README.rst
-    :start-after: readme_intro_start
-    :end-before: readme_intro_end
+    :start-after: project_links_start
+    :end-before: project_links_end
 
 
 .. admonition:: Project Versioning

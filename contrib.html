@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Contributing &mdash; restible 0.11.11 documentation</title>
+  <title>Working with the code base &mdash; restible 0.11.12 documentation</title>
   
 
   
@@ -28,8 +28,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="restible" href="ref/restible/index.html" />
-    <link rel="prev" title="1. Basic restible App" href="tutorial/01_basic.html" /> 
+    <link rel="prev" title="restible.resource" href="ref/restible/resource.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -58,7 +57,7 @@
             
             
               <div class="version">
-                0.11.11
+                0.11.12
               </div>
             
           
@@ -83,17 +82,15 @@
             
             
               <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="tutorial/index.html">Tutorial</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Contributing</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#cloning-and-setting-up-the-development-repo">Cloning and setting up the development repo</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#running-tests">Running tests</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#linting">Linting</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#generating-docs">Generating docs</a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/index.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ref/restible/index.html">Code Reference</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Working with the code base</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#cloning-and-setting-up-the-development-repo">Cloning and setting up the development repo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-tests">Running tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#linting">Linting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#generating-docs">Generating docs</a></li>
+</ul>
+</li>
 </ul>
 
             
@@ -139,7 +136,7 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>Contributing</li>
+      <li>Working with the code base</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -158,8 +155,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="contributing">
-<h1>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="working-with-the-code-base">
+<h1>Working with the code base<a class="headerlink" href="#working-with-the-code-base" title="Permalink to this headline">¶</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The library has a pretty good test coverage but not yet at 100%. A large
@@ -176,8 +173,9 @@ $ pip install -r requirements.txt -r ops/devrequirements.txt
 $ peltak git add-hooks
 </pre></div>
 </div>
+</div>
 <div class="section" id="running-tests">
-<h3>Running tests<a class="headerlink" href="#running-tests" title="Permalink to this headline">¶</a></h3>
+<h2>Running tests<a class="headerlink" href="#running-tests" title="Permalink to this headline">¶</a></h2>
 <p><strong>Config</strong>: The types of tests are defined in <code class="docutils literal notranslate"><span class="pre">pelconf.py</span></code> and the
 pytest configuration is defined in <code class="docutils literal notranslate"><span class="pre">ops/tools/pytest.ini</span></code>.</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ peltak <span class="nb">test</span>
@@ -185,7 +183,7 @@ pytest configuration is defined in <code class="docutils literal notranslate"><s
 </div>
 </div>
 <div class="section" id="linting">
-<h3>Linting<a class="headerlink" href="#linting" title="Permalink to this headline">¶</a></h3>
+<h2>Linting<a class="headerlink" href="#linting" title="Permalink to this headline">¶</a></h2>
 <p><strong>Config</strong>: The list of locations to lint is defined in <code class="docutils literal notranslate"><span class="pre">pelconf.py</span></code> and the
 linters configuration is defined in <code class="docutils literal notranslate"><span class="pre">ops/tools/{pylint,pep8}.ini</span></code>.</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ peltak lint
@@ -193,12 +191,11 @@ linters configuration is defined in <code class="docutils literal notranslate"><
 </div>
 </div>
 <div class="section" id="generating-docs">
-<h3>Generating docs<a class="headerlink" href="#generating-docs" title="Permalink to this headline">¶</a></h3>
+<h2>Generating docs<a class="headerlink" href="#generating-docs" title="Permalink to this headline">¶</a></h2>
 <p><strong>Config</strong>: The list of documented files and general configuration is in
 <code class="docutils literal notranslate"><span class="pre">pelconf.py</span></code> and the Sphinx configuration is defined in <code class="docutils literal notranslate"><span class="pre">docs/conf.py</span></code>.</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ peltak docs
 </pre></div>
-</div>
 </div>
 </div>
 </div>
@@ -211,10 +208,8 @@ linters configuration is defined in <code class="docutils literal notranslate"><
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="ref/restible/index.html" class="btn btn-neutral float-right" title="restible" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
-      
-        <a href="tutorial/01_basic.html" class="btn btn-neutral" title="1. Basic restible App" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="ref/restible/resource.html" class="btn btn-neutral" title="restible.resource" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -245,7 +240,7 @@ linters configuration is defined in <code class="docutils literal notranslate"><
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.11.11',
+            VERSION:'0.11.12',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

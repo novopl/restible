@@ -31,14 +31,13 @@ one ``main.py`` file. The app is very simple so there's not need to split it
 up yet.
 
 .. literalinclude:: /examples/01_basic/main.py
-    :lines: 1-31,127-130
+    :lines: 1-31,141-145
     :linenos:
 
 And here are the project requirements for this app:
 
 .. literalinclude:: /examples/01_basic/requirements.txt
     :linenos:
-
 
 
 ``BlogPost`` model
@@ -48,7 +47,7 @@ Next we create a simple model to persist our blog posts. Only the bare minimum
 here as that's not the point.
 
 .. literalinclude:: /examples/01_basic/main.py
-    :lines: 38-52
+    :lines: 41-55
     :linenos:
 
 
@@ -56,7 +55,7 @@ Create REST Resource for ``BlogPost``
 =====================================
 
 .. literalinclude:: /examples/01_basic/main.py
-    :lines: 60-63
+    :lines: 63-66
     :linenos:
 
 This is the REST resource associated with the BlogPost model. We're using
@@ -72,7 +71,7 @@ Query blog posts
 ~~~~~~~~~~~~~~~~
 
 .. literalinclude:: /examples/01_basic/main.py
-    :lines: 64,71-72
+    :lines: 67,74-75
     :linenos:
 
 Here we define the generic ``GET /api/post`` route. In our case it will return
@@ -86,7 +85,7 @@ Get single post
 ~~~~~~~~~~~~~~~
 
 .. literalinclude:: /examples/01_basic/main.py
-    :lines: 74-80
+    :lines: 77-83
     :linenos:
 
 This is the detail route to get a blog post by ID (``GET /api/post/<post_id>``).
@@ -99,7 +98,7 @@ Create new blog post
 ~~~~~~~~~~~~~~~~~~~~
 
 .. literalinclude:: /examples/01_basic/main.py
-    :lines: 82-100
+    :lines: 85-103
     :linenos:
 
 Next up is the blog post create handler (``POST /api/post``). In this basic
@@ -113,31 +112,67 @@ Update blog post
 ~~~~~~~~~~~~~~~~
 
 .. literalinclude:: /examples/01_basic/main.py
-    :lines: 102-124
+    :lines: 105-128
     :linenos:
+
+Here we allow the users to update any existing post (``PUT /api/post/<post_id>``).
+The code is pretty self-explanatory, but there are a few things we can point out
+here. As you can see we remove few values from the payload to prevent overwriting
+them (they are set automatically by the backend and user should not be able to
+overwrite those).
+
+Another thing is the use of `restible.util.update_from_values`.
+This is a small helper function that will take each item in *values* (second
+argument) and set the corresponding attribute on the object passed to it as the
+first argument (*post* in this case). The first argument doesn't have to be a
+model, any python object will do (as long as you can set each of the properties
+passed in *values*).
 
 
 Delete blog post
 ~~~~~~~~~~~~~~~~
 
 .. literalinclude:: /examples/01_basic/main.py
-    :lines: 126-136
+    :lines: 130-140
     :linenos:
+
+And last but not least: deleting posts (``DELETE /api/post/<post_id>``). Not
+much left to say here, just get the ID of the requested post and delete it from
+database.
 
 
 Setup Flask URLs
 ================
 
+Now that we have our API resource defined, the last thing to do is setup the
+flask URL mappings. For that, we will use an integration library
+`restible-flask <https://github.com/novopl/restible-flask>`_ and the
+``Endpoint`` class provided by it. You just need to pass the resource base URL
+and the associated resource class.
+
+The resource <-> URL mapping is the one thing that will be very differente
+depending on what framework/libraries are you using to power restible.
+`restible-flask <https://github.com/novopl/restible-flask>`_,
+`restible-django <https://github.com/novopl/restible-django>`_ and
+`restible-appengine <https://github.com/novopl/restible-appengine>`_ all have a
+different way of mapping the URLs, for more information consult the docs for
+the library of your choosing.
+
+In general, the resource definitions (not models) should be easy to move when
+you change the underlying libraries framewroks, but the mapping of those
+resources onto URL fully depends on the underlying library and thus can be very
+different.
+
+
 .. literalinclude:: /examples/01_basic/main.py
-    :lines: 27-34
+    :lines: 21-37
     :emphasize-lines: 6-8
     :linenos:
 
 
-Putting it all together
-=======================
+Next steps
+==========
 
-Here's the full source code for the app we just created:
 
-.. literalinclude:: /examples/01_basic/main.py
-    :linenos:
+In the :doc:`next section </tutorial/02_models>` we will reimplement the same
+app, but this time we will use `ModelResource` instead of `RestResource`.
