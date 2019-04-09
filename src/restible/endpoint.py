@@ -13,8 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-"""
-Rest endpoint base implementation.
+""" Base endpoint class for all 3rd party routing integrations.
 
 Endpoints take care of interacting with HTTP. They for a bridge between HTTP
 requests/responses and the REST resources. They should never be implemented

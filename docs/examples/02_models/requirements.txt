@@ -1,6 +1,0 @@
-Flask==1.0.2
-Flask-SQLAlchemy==2.3.2
-restible==0.11
-restible-flask==0.1
-serafin==0.12.2
-serafin-sqlalchemy==0.1

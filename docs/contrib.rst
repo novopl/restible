@@ -1,6 +1,6 @@
-############
-Contributing
-############
+##########################
+Working with the code base
+##########################
 
 
 .. include:: ../README.rst

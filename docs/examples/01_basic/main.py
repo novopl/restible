@@ -14,24 +14,27 @@ import restible_flask
 from sqlalchemy.exc import SQLAlchemyError
 
 
-DATETIME_FMT = '%Y-%d-%m %H:%M:%S'
 db = flask_sqlalchemy.SQLAlchemy()
-app = flask.Flask(__name__)
-app.config.update({
-    'DEBUG': True,
-    'SQLALCHEMY_DATABASE_URI': 'sqlite:///data.sqlite',
-    'SQLALCHEMY_TRACK_MODIFICATIONS': False,
-})
+DATETIME_FMT = '%Y-%d-%m %H:%M:%S'
 
 
-def init_app(app):
+def create_app():
+    app = flask.Flask(__name__)
+    app.config.update({
+        'DEBUG': True,
+        'SQLALCHEMY_DATABASE_URI': 'sqlite:///data.sqlite',
+        'SQLALCHEMY_TRACK_MODIFICATIONS': False,
+    })
+
     with app.app_context():
         db.init_app(app)
         db.create_all()
 
         restible_flask.Endpoint.init_app(app, resources=[
-            ['/api/post', BlogPostApi, {'protected': False}],
+            ['/api/post', BlogPostResource],
         ])
+
+    return app
 
 
 # Our application models
@@ -57,7 +60,7 @@ class BlogPost(db.Model):
 # built-in so everything has to be done manually. There are more base resource
 # classes provided by restible and third party libraries. Here we just want to
 # kick things of with the simplest one (rarely used in real applications).
-class BlogPostApi(restible.RestResource):
+class BlogPostResource(restible.RestResource):
     name = 'post'
     route_params = [{"name": "post_pk"}]
 
@@ -113,15 +116,16 @@ class BlogPostApi(restible.RestResource):
         for field in read_only:
             payload.pop(field, None)
 
-        # Update the database record and commit.
         try:
+            # Update the database record and commit.
             restible.util.update_from_values(post, payload)
             session.commit()
+
+            return 200, post.serialize()
+
         except SQLAlchemyError as ex:
             session.rollback()
             return 500, {'detail': "DB ERROR: {}".format(ex)}
-
-        return 200, post.serialize()
 
     def rest_delete(self, request, params, payload):
         session = BlogPost.query.session
@@ -137,6 +141,6 @@ class BlogPostApi(restible.RestResource):
 
 
 if __name__ == '__main__':
-    init_app(app)
+    app = create_app()
     app.run(port=5000)
 

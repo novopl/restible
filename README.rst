@@ -2,12 +2,16 @@
 restible
 ########
 
-.. readme_intro_start
+.. about_project_start
 
 **restible** is a python library for creating consistent code for REST APIs
 across different frameworks. The main motivation was that the framework used
 is often dictated by requirements and I wanted to have a concise way of writing
 API endpoints no matter the underlying framework.
+
+.. about_project_end
+
+.. project_links_start
 
 Useful links
 ============
@@ -32,7 +36,7 @@ Installation
 
     $ pip install restible
 
-.. readme_intro_end
+.. project_links_end
 
 Contributing
 ============
@@ -58,7 +62,7 @@ Cloning and setting up the development repo
 
 
 Running tests
-.............
+-------------
 
 **Config**: The types of tests are defined in ``pelconf.py`` and the
 pytest configuration is defined in ``ops/tools/pytest.ini``.
@@ -68,7 +72,7 @@ pytest configuration is defined in ``ops/tools/pytest.ini``.
     $ peltak test
 
 Linting
-.......
+-------
 
 **Config**: The list of locations to lint is defined in ``pelconf.py`` and the
 linters configuration is defined in ``ops/tools/{pylint,pep8}.ini``.
@@ -78,7 +82,7 @@ linters configuration is defined in ``ops/tools/{pylint,pep8}.ini``.
     $ peltak lint
 
 Generating docs
-...............
+---------------
 
 **Config**: The list of documented files and general configuration is in
 ``pelconf.py`` and the Sphinx configuration is defined in ``docs/conf.py``.
