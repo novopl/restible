@@ -67,7 +67,7 @@ class ModelResource(RestResource):
         except jsonschema.ValidationError as ex:
             raise ModelResource.ValidationError(ex)
 
-    def serialize(self, item_or_items, spec=None):
+    def serialize(self, item, spec=None):
         """ Serialize an item or items into a dict.
 
         This will just call serafin.serialize using the model spec (defined
@@ -81,7 +81,7 @@ class ModelResource(RestResource):
         if spec is None:
             spec = self.spec
 
-        return serialize(item_or_items, spec)
+        return serialize(item, spec)
 
     def deserialize(self, data):
         """ Convert JSON data into model field types.
@@ -187,8 +187,7 @@ class ModelResource(RestResource):
             items = self.query_items(request, filters, payload)
 
             spec = Fieldspec(self.spec).restrict(Fieldspec(fields))
-            ret = self.serialize(items, spec)
-            return 200, ret
+            return 200, [self.serialize(x, spec) for x in items]
 
         except NotImplementedError:
             return 404, {'detail': 'Not Found'}
