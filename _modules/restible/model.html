@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>restible.model &mdash; restible 0.11.12 documentation</title>
+  <title>restible.model &mdash; restible 0.12 documentation</title>
   
 
   
@@ -56,7 +56,7 @@
             
             
               <div class="version">
-                0.11.12
+                0.12
               </div>
             
           
@@ -216,7 +216,7 @@
         <span class="k">except</span> <span class="n">jsonschema</span><span class="o">.</span><span class="n">ValidationError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">ModelResource</span><span class="o">.</span><span class="n">ValidationError</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ModelResource.serialize"><a class="viewcode-back" href="../../ref/restible/model.html#restible.model.ModelResource.serialize">[docs]</a>    <span class="k">def</span> <span class="nf">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item_or_items</span><span class="p">,</span> <span class="n">spec</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="ModelResource.serialize"><a class="viewcode-back" href="../../ref/restible/model.html#restible.model.ModelResource.serialize">[docs]</a>    <span class="k">def</span> <span class="nf">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">spec</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Serialize an item or items into a dict.</span>
 
 <span class="sd">        This will just call serafin.serialize using the model spec (defined</span>
@@ -230,7 +230,7 @@
         <span class="k">if</span> <span class="n">spec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spec</span>
 
-        <span class="k">return</span> <span class="n">serialize</span><span class="p">(</span><span class="n">item_or_items</span><span class="p">,</span> <span class="n">spec</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">serialize</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">spec</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ModelResource.deserialize"><a class="viewcode-back" href="../../ref/restible/model.html#restible.model.ModelResource.deserialize">[docs]</a>    <span class="k">def</span> <span class="nf">deserialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Convert JSON data into model field types.</span>
@@ -336,8 +336,7 @@
             <span class="n">items</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_items</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">payload</span><span class="p">)</span>
 
             <span class="n">spec</span> <span class="o">=</span> <span class="n">Fieldspec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spec</span><span class="p">)</span><span class="o">.</span><span class="n">restrict</span><span class="p">(</span><span class="n">Fieldspec</span><span class="p">(</span><span class="n">fields</span><span class="p">))</span>
-            <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="n">spec</span><span class="p">)</span>
-            <span class="k">return</span> <span class="mi">200</span><span class="p">,</span> <span class="n">ret</span>
+            <span class="k">return</span> <span class="mi">200</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">spec</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">items</span><span class="p">]</span>
 
         <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
             <span class="k">return</span> <span class="mi">404</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;detail&#39;</span><span class="p">:</span> <span class="s1">&#39;Not Found&#39;</span><span class="p">}</span></div>
@@ -455,7 +454,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.11.12',
+            VERSION:'0.12',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

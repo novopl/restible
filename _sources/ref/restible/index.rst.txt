@@ -6,13 +6,13 @@
 .. autosummary::
 
     restible.exc
-    restible.url_params
-    restible.model
     restible.util
+    restible.model
+    restible.url_params
+    restible.resource
     restible.actions
     restible.routing
     restible.endpoint
-    restible.resource
 
 .. automodule:: restible
 .. toctree::
@@ -20,10 +20,10 @@
     :hidden:
 
     exc
-    url_params
-    model
     util
+    model
+    url_params
+    resource
     actions
     routing
     endpoint
-    resource
