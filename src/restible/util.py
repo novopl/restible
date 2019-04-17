@@ -79,6 +79,9 @@ class QsFilter(object):
             op = 'eq'
             name = parts[0]
 
+        if param_value == 'null':
+            param_value = None
+
         rv = cls(name=name, op=op, op_fn=op_map.get(op), value=param_value)
 
         if not rv.op_fn:
