@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>restible.util &mdash; restible 0.12 documentation</title>
+  <title>restible.util &mdash; restible 0.12.1 documentation</title>
   
 
   
@@ -56,7 +56,7 @@
             
             
               <div class="version">
-                0.12
+                0.12.1
               </div>
             
           
@@ -228,6 +228,9 @@
             <span class="n">op</span> <span class="o">=</span> <span class="s1">&#39;eq&#39;</span>
             <span class="n">name</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
+        <span class="k">if</span> <span class="n">param_value</span> <span class="o">==</span> <span class="s1">&#39;null&#39;</span><span class="p">:</span>
+            <span class="n">param_value</span> <span class="o">=</span> <span class="kc">None</span>
+
         <span class="n">rv</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">op</span><span class="o">=</span><span class="n">op</span><span class="p">,</span> <span class="n">op_fn</span><span class="o">=</span><span class="n">op_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">op</span><span class="p">),</span> <span class="n">value</span><span class="o">=</span><span class="n">param_value</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">rv</span><span class="o">.</span><span class="n">op_fn</span><span class="p">:</span>
@@ -349,7 +352,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.12',
+            VERSION:'0.12.1',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
