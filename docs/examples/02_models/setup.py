@@ -12,7 +12,7 @@ setup(
     package_dir={'': 'src'},
     packages=find_packages('src', exclude=('test', 'test.*')),
     install_requires=[
-        'Flask==1.0.2',
+        'Flask==2.3.2',
         'Flask-SQLAlchemy==2.3.2',
         'restible==0.11.11',
         'restible-flask==0.2.2',
